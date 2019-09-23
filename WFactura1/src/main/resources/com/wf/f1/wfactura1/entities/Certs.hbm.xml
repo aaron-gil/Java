@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2019 02:19:05 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.wf.f1.wfactura1.entities.Certs" table="certs" schema="dbo" catalog="Pac32pro" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="rfc" type="string">
+            <column name="rfc" length="13" not-null="true" />
+        </property>
+        <property name="llave" type="string">
+            <column name="llave" length="5000" not-null="true" />
+        </property>
+        <property name="cer" type="string">
+            <column name="cer" length="5000" not-null="true" />
+        </property>
+        <property name="clave" type="string">
+            <column name="clave" length="100" not-null="true" />
+        </property>
+        <property name="usu" type="string">
+            <column name="usu" length="50" />
+        </property>
+        <property name="alta" type="timestamp">
+            <column name="alta" length="23" not-null="true" />
+        </property>
+        <property name="modifico" type="timestamp">
+            <column name="modifico" length="23" not-null="true" />
+        </property>
+        <property name="estatus" type="int">
+            <column name="estatus" not-null="true" />
+        </property>
+        <property name="idUsuario" type="int">
+            <column name="id_usuario" not-null="true" />
+        </property>
+        <property name="inicio" type="timestamp">
+            <column name="inicio" length="23" />
+        </property>
+        <property name="fin" type="timestamp">
+            <column name="fin" length="23" />
+        </property>
+        <property name="noCert" type="string">
+            <column name="noCert" length="50" />
+        </property>
+        <property name="estatusCer" type="string">
+            <column name="estatusCer" length="5" />
+        </property>
+    </class>
+</hibernate-mapping>

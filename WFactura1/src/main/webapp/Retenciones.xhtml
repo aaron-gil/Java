@@ -1,0 +1,287 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Retenciones</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="webjars/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+        <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+        <script src="webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </h:head>
+    <h:body>
+        <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                        template="template/plantilla.xhtml">
+            <ui:define name="menuP"></ui:define>
+            <ui:define name="contenido"></ui:define>
+            <ui:define name="contenidoFull">
+                <h:form>
+                    <div class="accordion texto13" id="cfdi33">
+                        <div class="card">
+                            <div class="card-header" id="emisor">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#emisorM" aria-expanded="true" aria-controls="emisorM">
+                                        Emisor
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="emisorM" class="collapse show" aria-labelledby="emisor" data-parent="#cfdi33">
+                                <div class="card-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*RFC:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="XEXX010101000" />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Sucursal: " />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="sucursal" />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Razon Social:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="razon social" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Folio:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="0" />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Tipo retención:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Fecha:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="2019-01-01T12:00:00:00" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Clave retención:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>                                            
+                                        </div>                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                       
+                        
+                        
+                        <div class="card">
+                            <div class="card-header" id="receptor">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#receptorM" aria-expanded="true" aria-controls="receptorM">
+                                        Receptor
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="receptorM" class="collapse" aria-labelledby="receptor" data-parent="#cfdi33">
+                                <div class="card-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Nacionalidad:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Busqueda de cliente: " />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                        </div>                                                                               
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header" id="periodo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#periodoM" aria-expanded="true" aria-controls="periodoM">
+                                        Periodo
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="periodoM" class="collapse" aria-labelledby="periodo" data-parent="#cfdi33">
+                                <div class="card-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Ejercicio fiscal:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Mes inicial: " />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Mes final: " />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                        </div>                                                                               
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header" id="impuestos">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#impuestosM" aria-expanded="true" aria-controls="impuestosM">
+                                        Impuestos
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="impuestosM" class="collapse" aria-labelledby="impuestos" data-parent="#cfdi33">
+                                <div class="card-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Base retención:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Tipo de impuesto: " />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Monto retención: " />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                        </div>   
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Tipo pago retención:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-8 text-right">
+                                                <h:commandButton value="Limpiar"/>
+                                                <h:commandButton value="Agregar"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header" id="etiq">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#etiqM" aria-expanded="false" aria-controls="etiqM">
+                                        Etiquetas y Firmas
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="etiqM" class="collapse" aria-labelledby="etiq" data-parent="#cfdi33">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 text-left">
+                                            <h:selectBooleanCheckbox /><h:outputText value="Llenar etiquetas" /><br/>
+                                        </div>                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header" id="total">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#totalM" aria-expanded="false" aria-controls="totalM">
+                                        Total
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="totalM" class="collapse" aria-labelledby="total" data-parent="#cfdi33">
+                                <div class="card-body">                                   
+                                    <div class="row">
+                                        <div class="col-md-7"></div>
+                                        <div class="col-md-3 text-right">
+                                            <h:outputText value="*Monto total de la operación:" />
+                                        </div>
+                                        <div class="col-md-2 text-left">
+                                            <h:inputText/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-7"></div>
+                                        <div class="col-md-3 text-right">
+                                            <h:outputText value="*Monto total gravado:" />
+                                        </div>
+                                        <div class="col-md-2 text-left">
+                                            <h:inputText/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-7"></div>
+                                        <div class="col-md-3 text-right">
+                                            <h:outputText value="*Monto total exento:" />
+                                        </div>
+                                        <div class="col-md-2 text-left">
+                                            <h:inputText/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-7"></div>
+                                        <div class="col-md-3 text-right">
+                                            <h:outputText value="*Monto total de las retenciones:" />
+                                        </div>
+                                        <div class="col-md-2 text-left">
+                                            <h:inputText/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8"></div>
+                                        <div class="col-md-4 text-right">
+                                            <h:commandButton value="Vista previa"/>
+                                            <h:commandButton value="Emitir retención"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

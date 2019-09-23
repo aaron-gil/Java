@@ -1,0 +1,494 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>CFDI 3.3</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="webjars/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+        <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+        <script src="webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </h:head>
+    <h:body>
+        <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                        template="template/plantilla.xhtml">
+            <ui:define name="menuP"></ui:define>
+            <ui:define name="contenido"></ui:define>
+            <ui:define name="contenidoFull">
+                <h:form>
+                    <div class="accordion texto13" id="cfdi33">
+                        <div class="card">
+                            <div class="card-header" id="emisor">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#emisorM" aria-expanded="true" aria-controls="emisorM">
+                                        Comprobante Emisor
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="emisorM" class="collapse show" aria-labelledby="emisor" data-parent="#cfdi33">
+                                <div class="card-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*RFC:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="XEXX010101000" />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Sucursal: " />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="sucursal" />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Razon Social:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="razon social" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Serie:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="serie" />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Tipo de documento:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Tipo de comprobante:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="Ingreso" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Folio:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="123" />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Titulo del comprobante:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Fecha:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="01/01/2019T00:00:00" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Forma de pago:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="forma pago" />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Metodo de pago" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="metodo pago" />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Moneda" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:outputText value="moneda" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Lugar de expedición:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Regimen fiscal:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Confirmación:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="card">
+                            <div class="card-header" id="emisorD">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#emisorMD" aria-expanded="true" aria-controls="emisorMD">
+                                        Emisor
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="emisorMD" class="collapse" aria-labelledby="emisorD" data-parent="#cfdi33">
+                                <div class="card-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*CURP:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Registro patronal: " />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="RFC patón de origen:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header" id="Empleado">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#EmpleadoD" aria-expanded="true" aria-controls="EmpleadoD">
+                                        Empleado
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="EmpleadoD" class="collapse" aria-labelledby="Empleado" data-parent="#cfdi33">
+                                <div class="card-body">
+                                    <div class="container-fluid">
+                                        <div class="border border-warning padding10" style=" margin: 5px; border-radius: 10px">
+                                            <div class="row">
+                                                <div class="col-md-3 text-right">
+                                                    <h:outputText value="*Busqueda de empleado:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>                                            
+                                            </div>  
+                                            <div class="row padding10">
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*RFC:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Nombre: " />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*Uso del CFDI:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                            </div> 
+                                        </div>
+                                        <div class="border border-warning padding10" style=" margin: 5px; border-radius: 10px">
+                                            <div class="row">
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*No empleado:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*CURP: " />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*Tipo de nomina:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*Periodo del pago:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*Entidad federativa: " />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*Tipo de contrato:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*Tipo de régimen:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="NSS: " />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Salario base, cuotas y aportaciones:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Riesgo del puesto:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Salario diario integrado: " />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Tipo de jornada:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Departamento:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Puesto: " />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Sindicalizado:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Cuenta bancaria:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Banco: " />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Fecha inicio relación laboral:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="border border-warning padding10" style=" margin: 5px; border-radius: 10px">
+                                            <div class="row">
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*Fecha inicial de pago:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*Fecha final de pago: " />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Fecha de pago:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="*Dias pagados:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                                <div class="col-md-4 text-right">
+                                                    <h:selectOneRadio>
+                                                        <f:selectItem itemLabel="Semanas "/>
+                                                        <f:selectItem itemLabel=" Años, meses y dias"/>
+                                                    </h:selectOneRadio>
+                                                </div>
+
+                                                <div class="col-md-2 text-right">
+                                                    <h:outputText value="Antiguedad:" />
+                                                </div>
+                                                <div class="col-md-2 text-left">
+                                                    <h:inputText />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 text-right">
+                                                    <h:commandButton value="Calcular antiguedad"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <h:selectBooleanCheckbox /><h:outputText value=" Agregar subcontratación " /><br/>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <h:selectBooleanCheckbox /><h:outputText value=" Agregar percepciones " /><br/>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <h:selectBooleanCheckbox /><h:outputText value=" Agregar deducciones " /><br/>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <h:selectBooleanCheckbox /><h:outputText value=" Agregar otros pagos " /><br/>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <h:selectBooleanCheckbox /><h:outputText value=" Agregar incapacidades " /><br/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="total">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#totalD" aria-expanded="true" aria-controls="totalD">
+                                        Total
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="totalD" class="collapse" aria-labelledby="total" data-parent="#cfdi33">
+                                <div class="card-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h:outputText value=" Importe con letra:   importecon letra" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-9 text-left">
+
+                                            </div>
+                                            <div class="col-md-3">
+                                                <h:selectOneRadio>
+                                                    <f:selectItem itemLabel="PDF español "/>
+                                                    <f:selectItem itemLabel="PDF inglés"/>
+                                                </h:selectOneRadio>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Subtotal:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Descuento total:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="*Total:" />
+                                            </div>
+                                            <div class="col-md-2 text-left">
+                                                <h:inputText />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h:commandButton value="Vista previa"/>
+                                                <h:commandButton value="Guardar prefactura"/>
+                                                <h:commandButton value="Emitir CFDI"/>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

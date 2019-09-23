@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2019 02:19:05 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.wf.f1.wfactura1.entities.Usuario" table="usuario" schema="dbo" catalog="Pac32pro" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="assigned" />
+        </id>
+        <property name="mail" type="string">
+            <column name="MAIL" length="50" />
+        </property>
+        <property name="mail2" type="string">
+            <column name="MAIL2" length="50" />
+        </property>
+        <property name="clave" type="string">
+            <column name="CLAVE" length="50" />
+        </property>
+        <property name="webpass" type="string">
+            <column name="WEBPASS" length="20" />
+        </property>
+        <property name="usuario" type="string">
+            <column name="USUARIO" length="50" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="NOMBRE" />
+        </property>
+        <property name="rolId" type="java.lang.Integer">
+            <column name="ROL_ID" />
+        </property>
+        <property name="telefono" type="string">
+            <column name="TELEFONO" length="20" />
+        </property>
+        <property name="telefono2" type="string">
+            <column name="TELEFONO2" length="20" />
+        </property>
+        <property name="celular" type="string">
+            <column name="CELULAR" length="20" />
+        </property>
+        <property name="fechaCreacion" type="timestamp">
+            <column name="FECHA_CREACION" length="23" />
+        </property>
+        <property name="fechaModificacion" type="timestamp">
+            <column name="FECHA_MODIFICACION" length="23" />
+        </property>
+        <property name="ip" type="string">
+            <column name="IP" length="50" />
+        </property>
+        <property name="ultimoAcceso" type="timestamp">
+            <column name="ULTIMO_ACCESO" length="23" />
+        </property>
+        <property name="estatus" type="java.lang.Integer">
+            <column name="ESTATUS" />
+        </property>
+        <property name="rfc" type="string">
+            <column name="RFC" length="13" />
+        </property>
+        <property name="razonSocial" type="string">
+            <column name="RAZON_SOCIAL" />
+        </property>
+        <property name="calle" type="string">
+            <column name="CALLE" length="50" />
+        </property>
+        <property name="next" type="string">
+            <column name="NEXT" length="50" />
+        </property>
+        <property name="nint" type="string">
+            <column name="NINT" length="50" />
+        </property>
+        <property name="colonia" type="string">
+            <column name="COLONIA" length="50" />
+        </property>
+        <property name="municipio" type="string">
+            <column name="MUNICIPIO" length="50" />
+        </property>
+        <property name="cp" type="string">
+            <column name="CP" length="5" />
+        </property>
+        <property name="estado" type="string">
+            <column name="ESTADO" length="50" />
+        </property>
+        <property name="pais" type="string">
+            <column name="PAIS" length="50" />
+        </property>
+        <property name="ta" type="java.lang.Long">
+            <column name="TA" precision="18" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

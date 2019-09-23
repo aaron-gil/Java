@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2019 02:19:05 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.wf.f1.wfactura1.entities.Permisos" table="permisos" schema="dbo" catalog="Pac32pro" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="userid" type="int">
+            <column name="userid" not-null="true" />
+        </property>
+        <property name="rfc" type="string">
+            <column name="rfc" length="13" not-null="true" />
+        </property>
+        <property name="facturas" type="java.lang.Integer">
+            <column name="facturas" />
+        </property>
+        <property name="periodoini" type="timestamp">
+            <column name="periodoini" length="23" />
+        </property>
+        <property name="periodofin" type="timestamp">
+            <column name="periodofin" length="23" />
+        </property>
+        <property name="status" type="java.lang.Integer">
+            <column name="status" />
+        </property>
+        <property name="fechacambio" type="timestamp">
+            <column name="fechacambio" length="23" />
+        </property>
+        <property name="inicioPruebasF1" type="timestamp">
+            <column name="inicioPruebasF1" length="23" />
+        </property>
+        <property name="finPruebasF1" type="timestamp">
+            <column name="finPruebasF1" length="23" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Factura 1</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="webjars/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+        <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+        <script src="webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <style>
+            .backgroundWF{
+                background: rgb(244,129,16);
+                color:white;
+            }
+            ul[class*=nav-tabs]>li[class*=nav-item]>a[class*=nav-link]{
+                color: white;
+            }
+            .texto13{
+                font-size: 13px;
+            }
+            .btn-link{
+                text-decoration: none;
+                color: white;
+            }
+            .card-header{
+                background: rgb(244,129,16);
+                padding: 5px 10px 5px 10px !important;
+
+            }
+            .btn-link:hover {
+                color: rgb(251,201,151);
+                text-decoration: none !important;
+            }
+            .card{
+                border-radius: 10px 10px 0px 0px;
+
+            }
+            div[class=card-body]>div[class=container-fluid]>div[class=row]{
+                padding: 5px !important;
+            }
+            div[class=card-body]{
+                background: rgba(136,136,136,.1);
+            }
+            div[class=row]>div[class=col-md-4]>div[class=row]{
+                padding: 2px !important;
+            }
+            
+            input[type=submit]{
+                background: rgb(244,129,16);
+                color: white;
+                border-radius: 7px;
+            }
+            #totalM>div[class=card-body]>div[class=row]{
+                padding: 2px !important;
+            }
+            .padding10{
+                padding: 5px !important;
+            }
+            
+            div[class="border border-warning padding10"]> div[class=row]{
+                padding: 5px !important;
+            }
+            /*
+             LAOS800716JT3
+             Folios1084++1
+            */
+        </style>
+    </h:head>
+    <h:body>
+        <h:messages globalOnly="true" />
+        <div class="container">
+            <div class="row" style="margin-top: 15%">
+                <div class="col-md-6 text-right">
+                    <img src="resources/img/LogoWF.png" alt="WF Consulting logo"/>
+                </div>
+                <div class="col-md-6">
+                    <h:form>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12">&ensp;</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">&ensp;</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h:outputText value="Usuario: &ensp;&ensp;&ensp;&ensp;" />
+                                    <h:inputText value="#{indexV.usuario}"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">&ensp;</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h:outputText value="Contraseña: &ensp;" />
+                                    <h:inputText value="#{indexV.contrasena}"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">&ensp;</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-7 text-right">
+                                    <h:commandButton value="Ingresar" action="#{indexV.validarInicioSesion()}" />
+                                </div>
+                            </div>
+                        </div>                        
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </h:body>
+</html>
+
