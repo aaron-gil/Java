@@ -79,4 +79,7 @@ public class regCFDI33 implements Serializable {
     public void MAIL(Factura f) {
 
     }
+    public void Cancelar(Factura f) {
+
+    }
 }

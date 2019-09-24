@@ -46,6 +46,10 @@
             <from-outcome>RegCancelaciones</from-outcome>
             <to-view-id>/RegCancelaciones.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>petCancelar</from-outcome>
+            <to-view-id>/PetCancelar.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/CFDI33.xhtml</from-view-id>
@@ -182,6 +186,13 @@
         <from-view-id>/RegCancelaciones.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>RegCancelaciones</from-outcome>
+            <to-view-id>/inicio.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+        <navigation-rule>
+        <from-view-id>/PetCancelar.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>petCancelar</from-outcome>
             <to-view-id>/inicio.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
