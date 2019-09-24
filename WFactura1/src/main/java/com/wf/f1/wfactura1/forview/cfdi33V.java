@@ -104,6 +104,9 @@ public class cfdi33V implements Serializable {
     private boolean activChecksImp;
     private boolean impRetPan;
     private boolean impTraPan;
+    private boolean conceptosTableActv;
+    private boolean btnAgrRet;
+    private boolean btnAgrTra;
 
     @ManagedProperty(value = "#{usoCfdiService}")
     private usoCfdiService service;
@@ -114,6 +117,11 @@ public class cfdi33V implements Serializable {
 
     @PostConstruct
     public void inicializar() {
+        btnAgrRet=true;
+        btnAgrTra=true;
+        conceptos = new ArrayList<conceptos>();
+        listTras = new ArrayList<impTrasladados>();
+        listRete = new ArrayList<impRetenidos>();
         importe = new BigDecimal(0);
         cantidad = new BigDecimal(0);
         porcentajeDes = new BigDecimal(0);
@@ -142,6 +150,31 @@ public class cfdi33V implements Serializable {
 
     }
 
+    public boolean isBtnAgrTra() {
+        return btnAgrTra;
+    }
+
+    public void setBtnAgrTra(boolean btnAgrTra) {
+        this.btnAgrTra = btnAgrTra;
+    }
+    
+    public boolean isBtnAgrRet() {
+        return btnAgrRet;
+    }
+
+    public void setBtnAgrRet(boolean btnAgrRet) {
+        this.btnAgrRet = btnAgrRet;
+    }
+
+    public boolean isConceptosTableActv() {
+        return conceptosTableActv;
+    }
+
+    public void setConceptosTableActv(boolean conceptosTableActv) {
+        this.conceptosTableActv = conceptosTableActv;
+    }
+
+    
     public boolean isImpRetPan() {
         return impRetPan;
     }
@@ -841,6 +874,7 @@ public class cfdi33V implements Serializable {
             Double br = baseR.doubleValue();
             Double tc = tasaOCuotaR.doubleValue();
             importeR = new BigDecimal(br * tc);
+            btnAgrRet=false;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -852,6 +886,7 @@ public class cfdi33V implements Serializable {
             Double br = baseT.doubleValue();
             Double tc = tasaOCuotaT.doubleValue();
             importeT = new BigDecimal(br * tc);
+            btnAgrTra=false;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -860,29 +895,42 @@ public class cfdi33V implements Serializable {
     public void agregarImpRete() {
         if (!ivaR.equals("") && !tipoFactorR.equals("")) {
             try {
+                System.out.println("datos en imprt rete " + baseR + " " + importeR + " " + ivaR + " " + tasaOCuotaR + " " + tipoFactorR);
                 impRetenidos im = new impRetenidos();
                 im.setBase(baseR);
-                im.setImporte(importe);
+                im.setImporte(importeR);
                 im.setIva(ivaR);
                 im.setTasaOCuota(tasaOCuotaR);
                 im.setTipoFactor(tipoFactorR);
                 listRete.add(im);
-                importe = new BigDecimal(0);
+                importeR = new BigDecimal(0);
                 ivaR = "";
                 tasaOCuotaR = new BigDecimal(0);
                 tipoFactorR = "";
                 tipoFactorRActiv = true;
                 tipoTasaOCRActiv = true;
+                btnAgrRet=true;
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
         }
+        if (listRete.size() > 0) {
+            impRetPan = true;
+        } else {
+            impRetPan = false;
+        }
     }
-    
-    public void eliminarImpRet(impRetenidos ipR){
-        listRete.remove(ipR);
-        if(listRete.size()==0){
-            impRetPan=false;
+
+    public void eliminarImpRet(impRetenidos ipR) {
+        
+        try {
+            listRete.remove(ipR);
+            System.out.println("tamaño de la lista 1 " +listRete.size());
+            if (listRete == null || listRete.size() == 0) {
+                impRetPan = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -891,34 +939,46 @@ public class cfdi33V implements Serializable {
             try {
                 impTrasladados im = new impTrasladados();
                 im.setBase(baseT);
-                im.setImporte(importe);
+                im.setImporte(importeT);
                 im.setIva(ivaT);
                 im.setTasaOCuota(tasaOCuotaT);
                 im.setTipoFactor(tipoFactorT);
                 listTras.add(im);
-                importe = new BigDecimal(0);
+                importeT = new BigDecimal(0);
                 ivaT = "";
                 tasaOCuotaT = new BigDecimal(0);
                 tipoFactorT = "";
                 tipoFactorTActiv = true;
                 tipoTasaOCTActiv = true;
+                btnAgrTra=true;
             } catch (NullPointerException e) {
+                e.printStackTrace();
             }
         }
-        if(listTras.size()>0){
-            impTraPan=true;
+        if (listTras.size() > 0) {
+            impTraPan = true;
+        } else {
+            impTraPan = false;
         }
     }
 
-    public void eliminarImpTra(impTrasladados ipT){
-        listTras.remove(ipT);
-        if(listTras.size()==0){
-            impTraPan=false;
+    public void eliminarImpTra(impTrasladados ipT) {
+        
+        try {
+            listTras.remove(ipT);
+            System.out.println("tamaño de la lista 2 " +listTras.size());
+            if (listTras == null || listTras.size() == 0) {
+                impTraPan = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
     public void agregarConcepto() {
         try {
             if (cantidad.intValue() > 0) {
+                System.out.println("agregando ........");
                 conceptos c = new conceptos();
                 c.setCantidad(cantidad);
                 c.setDescripcion("");
@@ -938,11 +998,23 @@ public class cfdi33V implements Serializable {
                 importe = new BigDecimal(0);
                 porcentajeDes = new BigDecimal(0);
                 producto = new Producto();
+                producto.setIdentifica(0);
                 listRete = new ArrayList<>();
                 listTras = new ArrayList<>();
+                conceptosTableActv=true;
+                checkRetenidos=false;
+                checktrasladados=false;
+                activChecksImp=false;
+                impRetPan=false;
+                impTraPan=false;
+                btnAgrRet=true;
+                btnAgrTra=true;
+                agregarVRetenciones();
+                agregarVTrasladados();
+                System.out.println("agregado ........");
             }
-        } catch (NullPointerException e) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

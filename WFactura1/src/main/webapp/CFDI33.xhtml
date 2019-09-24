@@ -440,82 +440,88 @@
                                         </div>
 
                                         <p:outputPanel id="panelReten">
-                                            <div class="row" >
-                                                <div class="col-md-1 text-right">
-                                                    <h:outputText value="Base: " rendered="#{cfdi33V.checkRetenidos}" />
+                                            <p:outputPanel style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;" rendered="#{cfdi33V.checkRetenidos}" >
+                                                <div class="row" >
+                                                    <div class="col-md-1 text-right">
+                                                        <h:outputText value="Base: " rendered="#{cfdi33V.checkRetenidos}" />
+                                                    </div>
+                                                    <div class="col-md-2 text-left">
+                                                        <h:inputText value="#{cfdi33V.baseR}" rendered="#{cfdi33V.checkRetenidos}" />
+                                                    </div>
+                                                    <div class="col-md-2 text-right">
+                                                        <h:outputText value="Impuesto:  " rendered="#{cfdi33V.checkRetenidos}"/>
+                                                    </div>
+                                                    <div class="col-md-2 text-left">
+                                                        <p:selectOneMenu value="#{cfdi33V.ivaR}" disabled="false" rendered="#{cfdi33V.checkRetenidos}" >
+                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
+                                                            <f:selectItem itemValue="iva" itemLabel="IVA"></f:selectItem>
+                                                            <f:selectItem itemValue="ieps" itemLabel="IEPS"></f:selectItem>
+                                                            <f:selectItem itemValue="isr" itemLabel="ISR"></f:selectItem>
+                                                            <p:ajax event="itemSelect" update="formcfdi33:tipFR" listener="#{cfdi33V.activTipFacRet}"></p:ajax>
+                                                        </p:selectOneMenu>
+                                                    </div>
+                                                    <div class="col-md-2 text-right">
+                                                        <h:outputText value="Tipo Factor:  " rendered="#{cfdi33V.checkRetenidos}" />
+                                                    </div>
+                                                    <div class="col-md-2 text-left">
+                                                        <p:selectOneMenu id="tipFR" value="#{cfdi33V.tipoFactorR}" rendered="#{cfdi33V.checkRetenidos}" disabled="#{cfdi33V.tipoFactorRActiv}">
+                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
+                                                            <f:selectItems value="#{cfdi33V.tipoFactorRL}" var="tf" itemLabel="#{tf}" itemValue="#{tf}" />
+                                                            <p:ajax event="itemSelect" update="formcfdi33:tasCR" listener="#{cfdi33V.tasaOCuotaRetList}"></p:ajax>
+                                                        </p:selectOneMenu>
+                                                    </div>                                             
                                                 </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:inputText value="#{cfdi33V.baseR}" rendered="#{cfdi33V.checkRetenidos}" />
+                                                <div class="row">
+                                                    <div class="col-md-2 text-right">
+                                                        <h:outputText value="Tasa o Cuota:  " rendered="#{cfdi33V.checkRetenidos}"/>
+                                                    </div>
+                                                    <div class="col-md-2 text-left">
+                                                        <p:selectOneMenu id="tasCR" value="#{cfdi33V.tasaOCuotaR}" rendered="#{cfdi33V.checkRetenidos}" disabled="#{cfdi33V.tipoTasaOCRActiv}">
+                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
+                                                            <f:selectItems value="#{cfdi33V.listTCReten}"/>
+                                                            <p:ajax event="itemSelect" update=":formcfdi33:panelReten" listener="#{cfdi33V.calcularImpuestosRetenidos}"></p:ajax>
+                                                        </p:selectOneMenu>
+                                                    </div> 
+                                                    <div class="col-md-2 text-right">
+                                                        <h:outputText value="Importe:  " rendered="#{cfdi33V.checkRetenidos}"/>
+                                                    </div>
+                                                    <div class="col-md-1 text-left">
+                                                        <h:outputText id="impotR" value="#{cfdi33V.importeR}" rendered="#{cfdi33V.checkRetenidos}" >
+                                                            <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="6" type="currency" locale="es_MX" />
+                                                        </h:outputText>
+                                                    </div> 
+                                                    <div class="col-md-5 text-right">
+                                                        <h:commandButton value="Agregar Retenido" rendered="#{cfdi33V.btnAgrRet}">
+                                                            <p:ajax listener="#{cfdi33V.agregarImpRete}" update="formcfdi33:impRetenidosTable formcfdi33:panelReten" ></p:ajax>
+                                                        </h:commandButton>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Impuesto:  " rendered="#{cfdi33V.checkRetenidos}"/>
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:selectOneMenu value="#{cfdi33V.ivaR}" disabled="false" rendered="#{cfdi33V.checkRetenidos}" >
-                                                        <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
-                                                        <f:selectItem itemValue="iva" itemLabel="IVA"></f:selectItem>
-                                                        <f:selectItem itemValue="ieps" itemLabel="IEPS"></f:selectItem>
-                                                        <f:selectItem itemValue="isr" itemLabel="ISR"></f:selectItem>
-                                                        <p:ajax event="itemSelect" update="formcfdi33:tipFR" listener="#{cfdi33V.activTipFacRet}"></p:ajax>
-                                                    </p:selectOneMenu>
-                                                </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Tipo Factor:  " rendered="#{cfdi33V.checkRetenidos}" />
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:selectOneMenu id="tipFR" value="#{cfdi33V.tipoFactorR}" rendered="#{cfdi33V.checkRetenidos}" disabled="#{cfdi33V.tipoFactorRActiv}">
-                                                        <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
-                                                        <f:selectItems value="#{cfdi33V.tipoFactorRL}" var="tf" itemLabel="#{tf}" itemValue="#{tf}" />
-                                                        <p:ajax event="itemSelect" update="formcfdi33:tasCR" listener="#{cfdi33V.tasaOCuotaRetList}"></p:ajax>
-                                                    </p:selectOneMenu>
-                                                </div>                                             
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Tasa o Cuota:  " rendered="#{cfdi33V.checkRetenidos}"/>
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:selectOneMenu id="tasCR" value="#{cfdi33V.tasaOCuotaR}" rendered="#{cfdi33V.checkRetenidos}" disabled="#{cfdi33V.tipoTasaOCRActiv}">
-                                                        <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
-                                                        <f:selectItems value="#{cfdi33V.listTCReten}"/>
-                                                        <p:ajax event="itemSelect" update=":formcfdi33:panelReten" listener="#{cfdi33V.calcularImpuestosRetenidos}"></p:ajax>
-                                                    </p:selectOneMenu>
-                                                </div> 
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Importe:  " rendered="#{cfdi33V.checkRetenidos}"/>
-                                                </div>
-                                                <div class="col-md-1 text-left">
-                                                    <h:outputText id="impotR" value="#{cfdi33V.importeR}" rendered="#{cfdi33V.checkRetenidos}" >
-                                                        <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="6" type="currency" locale="es_MX" />
-                                                    </h:outputText>
-                                                </div> 
-                                                <div class="col-md-5 text-right">
-                                                    <h:commandButton value="Agregar Retenido" rendered="#{cfdi33V.checkRetenidos}">
-                                                        <p:ajax listener="#{cfdi33V.agregarImpRete}" update=":formcfdi33:impRetenidosPanel" ></p:ajax>
-                                                    </h:commandButton>
-                                                </div>
-                                            </div>
-                                            <p:outputPanel id="impRetenidosPanel" rendered="true">
-                                                <p:dataTable var="impRet" value="#{cfdi33V.listRete}">
-                                                    <p:column headerText="Base">
-                                                        <h:outputText value="#{impRet.base}" />
-                                                    </p:column>
-                                                    <p:column headerText="Impuesto">
-                                                        <h:outputText value="#{impRet.iva}" />
-                                                    </p:column>
-                                                    <p:column headerText="TA">
-                                                        <h:outputText value="#{impRet.tasaOCuota}" />
-                                                    </p:column>
-                                                    <p:column headerText="TF">
-                                                        <h:outputText value="#{impRet.tipoFactor}" />
-                                                    </p:column>
-                                                    <p:column headerText="Importe">
-                                                        <h:outputText value="#{impRet.importe}" />
-                                                    </p:column>
-                                                    <p:column headerText="Eliminar">
-                                                        <p:commandButton value="Eliminar" actionListener="#{cfdi33V.eliminarImpRet(impRet)}" update="impRetenidosPanel"/>
-                                                    </p:column>
-                                                </p:dataTable>
+                                                <p:outputPanel id="impRetenidosPanel" style="margin-top: 5px">
+                                                    <p:dataTable var="impRet" value="#{cfdi33V.listRete}" id="impRetenidosTable" rendered="#{cfdi33V.impRetPan}">
+                                                        <p:column headerText="Base" class="texto13">
+                                                            <h:outputText value="#{impRet.base}" />
+                                                        </p:column>
+                                                        <p:column headerText="Impuesto" class="texto13">
+                                                            <h:outputText value="#{impRet.iva}" />
+                                                        </p:column>
+                                                        <p:column headerText="T Factor" class="texto13">
+                                                            <h:outputText value="#{impRet.tipoFactor}" />
+                                                        </p:column>
+                                                        <p:column headerText="TasaOCuota" class="texto13">
+                                                            <h:outputText value="#{impRet.tasaOCuota}" />
+                                                        </p:column>
+                                                        <p:column headerText="Importe" class="texto13">
+                                                            <h:outputText value="#{impRet.importe}" />
+                                                        </p:column>
+                                                        <p:column headerText="Opción" class="texto13">
+                                                            <div class="text-right">
+                                                                <h:commandButton value="Eliminar">
+                                                                    <p:ajax listener="#{cfdi33V.eliminarImpRet(impRet)}" update="formcfdi33:impRetenidosTable formcfdi33:impRetenidosPanel" ></p:ajax>
+                                                                </h:commandButton>
+                                                            </div>
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                </p:outputPanel>
                                             </p:outputPanel>
                                         </p:outputPanel>
                                         <div class="row">
@@ -526,79 +532,87 @@
                                             </div>
                                         </div>
                                         <p:outputPanel id="panelTrasl">
-                                            <div class="row" >
-                                                <div class="col-md-1 text-right">
-                                                    <h:outputText value="Base: " rendered="#{cfdi33V.checktrasladados}" />
+                                            <p:outputPanel style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;" rendered="#{cfdi33V.checktrasladados}" >
+                                                <div class="row" >
+                                                    <div class="col-md-1 text-right">
+                                                        <h:outputText value="Base: " rendered="#{cfdi33V.checktrasladados}" />
+                                                    </div>
+                                                    <div class="col-md-2 text-left">
+                                                        <h:inputText value="#{cfdi33V.baseT}" rendered="#{cfdi33V.checktrasladados}" />
+                                                    </div>
+                                                    <div class="col-md-2 text-right">
+                                                        <h:outputText value="Impuesto:  " rendered="#{cfdi33V.checktrasladados}"/>
+                                                    </div>
+                                                    <div class="col-md-2 text-left">
+                                                        <p:selectOneMenu value="#{cfdi33V.ivaT}" disabled="false" rendered="#{cfdi33V.checktrasladados}" >
+                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
+                                                            <f:selectItem itemValue="iva" itemLabel="IVA"></f:selectItem>
+                                                            <f:selectItem itemValue="ieps" itemLabel="IEPS"></f:selectItem>
+                                                            <p:ajax event="itemSelect" update="formcfdi33:tipFT" listener="#{cfdi33V.activTipFacTra}"></p:ajax>
+                                                        </p:selectOneMenu>
+                                                    </div>
+                                                    <div class="col-md-2 text-right">
+                                                        <h:outputText value="Tipo Factor:  " rendered="#{cfdi33V.checktrasladados}" />
+                                                    </div>
+                                                    <div class="col-md-2 text-left">
+                                                        <p:selectOneMenu id="tipFT" value="#{cfdi33V.tipoFactorT}" rendered="#{cfdi33V.checktrasladados}" disabled="#{cfdi33V.tipoFactorTActiv}">
+                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
+                                                            <f:selectItems value="#{cfdi33V.tipoFactorTL}" var="tf" itemLabel="#{tf}" itemValue="#{tf}" />
+                                                            <p:ajax event="itemSelect" update="formcfdi33:tasCT" listener="#{cfdi33V.tasaOCuotaTraList}"></p:ajax>
+                                                        </p:selectOneMenu>
+                                                    </div>                                             
                                                 </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:inputText value="#{cfdi33V.baseT}" rendered="#{cfdi33V.checktrasladados}" />
+                                                <div class="row">
+                                                    <div class="col-md-2 text-right">
+                                                        <h:outputText value="Tasa o Cuota:  " rendered="#{cfdi33V.checktrasladados}"/>
+                                                    </div>
+                                                    <div class="col-md-2 text-left">
+                                                        <p:selectOneMenu id="tasCT" value="#{cfdi33V.tasaOCuotaT}" rendered="#{cfdi33V.checktrasladados}" disabled="#{cfdi33V.tipoTasaOCTActiv}">
+                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
+                                                            <f:selectItems value="#{cfdi33V.listTCTras}"/>
+                                                            <p:ajax event="itemSelect" update=":formcfdi33:panelTrasl" listener="#{cfdi33V.calcularImpuestosTrasladados}"></p:ajax>
+                                                        </p:selectOneMenu>
+                                                    </div> 
+                                                    <div class="col-md-2 text-right">
+                                                        <h:outputText value="Importe:  " rendered="#{cfdi33V.checktrasladados}"/>
+                                                    </div>
+                                                    <div class="col-md-1 text-left">
+                                                        <h:outputText id="impotT" value="#{cfdi33V.importeT}" rendered="#{cfdi33V.checktrasladados}" >
+                                                            <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="6" type="currency" locale="es_MX" />
+                                                        </h:outputText>
+                                                    </div> 
+                                                    <div class="col-md-5 text-right">
+                                                        <h:commandButton value="Agregar Traslado" rendered="#{cfdi33V.checktrasladados}" >
+                                                            <p:ajax listener="#{cfdi33V.agregarImpTras}" update="formcfdi33:impTrasladadosTable formcfdi33:panelTrasl" ></p:ajax>
+                                                        </h:commandButton>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Impuesto:  " rendered="#{cfdi33V.checktrasladados}"/>
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:selectOneMenu value="#{cfdi33V.ivaT}" disabled="false" rendered="#{cfdi33V.checktrasladados}" >
-                                                        <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
-                                                        <f:selectItem itemValue="iva" itemLabel="IVA"></f:selectItem>
-                                                        <f:selectItem itemValue="ieps" itemLabel="IEPS"></f:selectItem>
-                                                        <p:ajax event="itemSelect" update="formcfdi33:tipFT" listener="#{cfdi33V.activTipFacTra}"></p:ajax>
-                                                    </p:selectOneMenu>
-                                                </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Tipo Factor:  " rendered="#{cfdi33V.checktrasladados}" />
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:selectOneMenu id="tipFT" value="#{cfdi33V.tipoFactorT}" rendered="#{cfdi33V.checktrasladados}" disabled="#{cfdi33V.tipoFactorTActiv}">
-                                                        <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
-                                                        <f:selectItems value="#{cfdi33V.tipoFactorTL}" var="tf" itemLabel="#{tf}" itemValue="#{tf}" />
-                                                        <p:ajax event="itemSelect" update="formcfdi33:tasCT" listener="#{cfdi33V.tasaOCuotaTraList}"></p:ajax>
-                                                    </p:selectOneMenu>
-                                                </div>                                             
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Tasa o Cuota:  " rendered="#{cfdi33V.checktrasladados}"/>
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:selectOneMenu id="tasCT" value="#{cfdi33V.tasaOCuotaT}" rendered="#{cfdi33V.checktrasladados}" disabled="#{cfdi33V.tipoTasaOCTActiv}">
-                                                        <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
-                                                        <f:selectItems value="#{cfdi33V.listTCTras}"/>
-                                                        <p:ajax event="itemSelect" update=":formcfdi33:panelTrasl" listener="#{cfdi33V.calcularImpuestosTrasladados}"></p:ajax>
-                                                    </p:selectOneMenu>
-                                                </div> 
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Importe:  " rendered="#{cfdi33V.checktrasladados}"/>
-                                                </div>
-                                                <div class="col-md-1 text-left">
-                                                    <h:outputText id="impotT" value="#{cfdi33V.importeT}" rendered="#{cfdi33V.checktrasladados}" >
-                                                        <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="6" type="currency" locale="es_MX" />
-                                                    </h:outputText>
-                                                </div> 
-                                                <div class="col-md-5 text-right">
-                                                    <p:commandButton value="Agregar Traslado" rendered="#{cfdi33V.checktrasladados}" actionListener="#{cfdi33V.agregarImpTras}" update="impTrasladadosPanel" />
-                                                </div>
-                                            </div>
-                                            <p:outputPanel id="impTrasladadosPanel" rendered="#{cfdi33V.impTraPan}">
-                                                <p:dataTable var="impTras" value="#{cfdi33V.listTras}">
-                                                    <p:column headerText="Base">
-                                                        <h:outputText value="#{impTras.base}" />
-                                                    </p:column>
-                                                    <p:column headerText="Impuesto">
-                                                        <h:outputText value="#{impTras.iva}" />
-                                                    </p:column>
-                                                    <p:column headerText="TA">
-                                                        <h:outputText value="#{impTras.tasaOCuota}" />
-                                                    </p:column>
-                                                    <p:column headerText="TF">
-                                                        <h:outputText value="#{impTras.tipoFactor}" />
-                                                    </p:column>
-                                                    <p:column headerText="Importe">
-                                                        <h:outputText value="#{impTras.importe}" />
-                                                    </p:column>
-                                                    <p:column headerText="Eliminar">
-                                                        <p:commandButton value="Eliminar" actionListener="#{cfdi33V.eliminarImpTra(impTras)}" update="impTrasladadosPanel"/>
-                                                    </p:column>
-                                                </p:dataTable>
+                                                <p:outputPanel id="impTrasladadosPanel" >
+                                                    <p:dataTable var="impTras" value="#{cfdi33V.listTras}" id="impTrasladadosTable" rendered="#{cfdi33V.impTraPan}">
+                                                        <p:column headerText="Base" class="texto13">
+                                                            <h:outputText value="#{impTras.base}" />
+                                                        </p:column>
+                                                        <p:column headerText="Impuesto" class="texto13">
+                                                            <h:outputText value="#{impTras.iva}" />
+                                                        </p:column>                                                    
+                                                        <p:column headerText="T Factor" class="texto13">
+                                                            <h:outputText value="#{impTras.tipoFactor}" />
+                                                        </p:column>
+                                                        <p:column headerText="TasaOCuota" class="texto13">
+                                                            <h:outputText value="#{impTras.tasaOCuota}" />
+                                                        </p:column>
+                                                        <p:column headerText="Importe" class="texto13">
+                                                            <h:outputText value="#{impTras.importe}" />
+                                                        </p:column>
+                                                        <p:column headerText="Opción" class="texto13" >
+                                                            <div class="text-right">
+                                                                <h:commandButton value="Eliminar">
+                                                                    <p:ajax listener="#{cfdi33V.eliminarImpTra(impTras)}" update="formcfdi33:impTrasladadosTable formcfdi33:impTrasladadosPanel" ></p:ajax>
+                                                                </h:commandButton>
+                                                            </div>
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                </p:outputPanel>
                                             </p:outputPanel>
                                         </p:outputPanel>
                                         <div class="row">
@@ -606,25 +620,41 @@
                                                 <h:outputText value="" />
                                             </div>
                                             <div class="col-md-7 text-right">
-                                                <p:commandButton value="Agregar Concepto"  actionListener="#{cfdi33V.agregarConcepto}" update=":formcfdi33:conceptosPanel" />
+                                                <h:commandButton value="Agregar Concepto">
+                                                    <p:ajax listener="#{cfdi33V.agregarConcepto}" update="formcfdi33:listaConceptosPanel formcfdi33:listaConceptosTable formcfdi33:conceptosPanel"></p:ajax>
+                                                </h:commandButton>
                                             </div>
                                         </div>
                                     </p:outputPanel>
-                                    <p:outputPanel id="listaConceptosPanel">
-                                        <p:dataTable var="conc" value="#{cfdi33V.conceptos}">
-                                            <p:column headerText="Producto">
-                                                <h:outputText value="#{conc.producto.descripcion}" />
-                                            </p:column>
-                                            <p:column headerText="Cantidad">
-                                                <h:outputText value="#{conc.cantidad}" />
-                                            </p:column>
-                                            <p:column headerText="Importe">
-                                                <h:outputText value="#{conc.importe}" />
-                                            </p:column>
-                                            <p:column headerText="Eliminar">
-                                                <p:commandButton value="Eliminar" actionListener="#{cfdi33V.eliminarConcepto(conc)}" update="listaConceptosPanel"/>
-                                            </p:column>
-                                        </p:dataTable>
+                                    <p:outputPanel id="listaConceptosPanel" style="margin-top: 20px">
+                                        <p:outputPanel style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;" rendered="#{cfdi33V.conceptosTableActv}" >
+                                           
+                                            <p:dataTable var="conc" value="#{cfdi33V.conceptos}" id="listaConceptosTable" rendered="#{cfdi33V.conceptosTableActv}">
+                                                <f:facet name="header">
+                                                    <h:outputText value="Conceptos agregados"/>
+                                                </f:facet>
+                                                <p:column headerText="Cod. SAT" class="texto13">
+                                                    <h:outputText value="#{conc.producto.codigoSat}" />
+                                                </p:column>
+                                                <p:column headerText="Producto" class="texto13">
+                                                    <h:outputText value="#{conc.producto.descripcion}" />
+                                                </p:column>
+                                                <p:column headerText="Cantidad" class="texto13">
+                                                    <h:outputText value="#{conc.cantidad}" />
+                                                </p:column>
+                                                <p:column headerText="Descuento" class="texto13">
+                                                    <h:outputText value="#{conc.descuento}" />
+                                                </p:column>
+                                                <p:column headerText="Importe" class="texto13">
+                                                    <h:outputText value="#{conc.importe}" />
+                                                </p:column>
+                                                <p:column headerText="Eliminar" class="texto13">
+                                                    <h:commandButton value="Eliminar" >
+                                                        <p:ajax listener="#{cfdi33V.eliminarConcepto(conc)}" update="formcfdi33:listaConceptosPanel formcfdi33:listaConceptosTable"></p:ajax>
+                                                    </h:commandButton>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </p:outputPanel>
                                     </p:outputPanel>
                                 </div>
                             </div>
