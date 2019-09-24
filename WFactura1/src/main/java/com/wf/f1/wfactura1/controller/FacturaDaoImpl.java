@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import com.wf.f1.wfactura1.model.Factura;
 import com.wf.f1.wfactura1.model.Usuario;
+import java.util.ArrayList;
 
 /**
  * Clase de tipo EJB que implementa los metodos cargados de la interface de un
@@ -166,5 +167,20 @@ public class FacturaDaoImpl implements FacturaDao {
             e.printStackTrace();
         }
         return factura;
+    }
+    
+    @Override
+    public List<Factura> buscarFacturas (Usuario usuario){
+        List<Factura> lista= null;
+        try {
+            Query query = em.createQuery("from Factura f where f.responsableCreacion=:nombre and f.uuid is not null order by f.fechaCreacion desc");
+            query.setParameter("nombre", usuario.getNombre());
+           lista = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return lista;
+        
     }
 }

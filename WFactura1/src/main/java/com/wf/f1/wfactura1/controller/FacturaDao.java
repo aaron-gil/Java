@@ -33,5 +33,7 @@ public interface FacturaDao {
      public List<Factura> listarFacturasPorEstadoUsuarioPagosRFC(String estadoPago, Usuario usuario,Cliente identifica,String uuid);
      
      public Factura consultaPagos(String uuid);
+     
+     public List<Factura> buscarFacturas (Usuario usuario);
 
 }
