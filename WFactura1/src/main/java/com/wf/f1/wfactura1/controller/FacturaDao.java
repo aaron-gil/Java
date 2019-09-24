@@ -35,5 +35,7 @@ public interface FacturaDao {
      public Factura consultaPagos(String uuid);
      
      public List<Factura> buscarFacturas (Usuario usuario);
+     
+     public List<Factura> buscarcanceladas (Usuario usuario);
 
 }
