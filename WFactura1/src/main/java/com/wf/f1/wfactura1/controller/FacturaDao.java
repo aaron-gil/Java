@@ -37,5 +37,9 @@ public interface FacturaDao {
      public List<Factura> buscarFacturas (Usuario usuario);
      
      public List<Factura> buscarcanceladas (Usuario usuario);
+     
+     public List<Factura> petcanceladas (Usuario usuario);
+     
+     public List<Factura> buscarRetenciones (Usuario usuario);
 
 }

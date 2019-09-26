@@ -173,7 +173,7 @@ public class FacturaDaoImpl implements FacturaDao {
     public List<Factura> buscarFacturas (Usuario usuario){
         List<Factura> lista= null;
         try {
-            Query query = em.createQuery("from Factura f where f.responsableCreacion=:nombre and f.uuid is not null order by f.fechaCreacion desc");
+            Query query = em.createQuery("from Factura f where f.responsableCreacion=:nombre and f.totalImpuestoRetenidos=0.0000 and f.uuid is not null order by f.fechaCreacion desc");
             query.setParameter("nombre", usuario.getNombre());
            lista = query.getResultList();
         } catch (Exception e) {
@@ -184,12 +184,45 @@ public class FacturaDaoImpl implements FacturaDao {
         
     }
     
+    @Override
     public List<Factura> buscarcanceladas (Usuario usuario){
         List<Factura> lista= null;
         try {
             Query query = em.createQuery("from Factura f where f.responsableCreacion=:nombre and f.estado=:estado and f.uuid is not null order by f.fechaCreacion desc");
             query.setParameter("nombre", usuario.getNombre());
             query.setParameter("estado", "FACTURA CANCELADA");
+           lista = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return lista;
+        
+    }
+    
+    @Override
+        public List<Factura> petcanceladas (Usuario usuario){
+        List<Factura> lista= null;
+        try {
+            Query query = em.createQuery("from Factura f where f.responsableCreacion=:nombre and f.estado=:estado and f.uuid is not null order by f.fechaCreacion desc");
+            query.setParameter("nombre", usuario.getNombre());
+            query.setParameter("estado", "FACTURA CREADA EXITOSAMENTE");
+           lista = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return lista;
+        
+    }
+        
+    @Override
+    public List<Factura> buscarRetenciones (Usuario usuario){
+        List<Factura> lista= null;
+        try {
+            Query query = em.createQuery("from Factura f where f.responsableCreacion=:nombre and f.totalImpuestoRetenidos>0.0000 and f.uuid is not null order by f.fechaCreacion desc");
+            query.setParameter("nombre", usuario.getNombre());
+            //query.setParameter("totret", "0.0000");
            lista = query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
