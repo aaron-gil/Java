@@ -43,58 +43,58 @@
                 <div class="row   backgroundWF">
                     <h:form>
                         <p:outputPanel id="listaConceptosPanel">
-                            <p:dataTable var="fac" value="#{regCFDI33.facturas33}" paginator="true"
+                            <p:dataTable var="pag" value="#{regPagos.facturas33}" paginator="true"
                                          rows="10"
                                          paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" scrollable="true"  scrollHeight="250px" emptyMessage="No hay Facturas Timbradas"
                                          rowsPerPageTemplate="10,25,50,100" class="texto13">
                                 <f:facet name="header" >
-                                    <h:outputText value="Registro de Facturas"/>
+                                    <h:outputText value="Registro de Pagos"/>
                                 </f:facet>
                                 <p:column headerText="Folio" class="texto13" style="width: 50px">
-                                    <h:outputText value="#{fac.folio}" />
+                                    <h:outputText value="#{pag.folio}" />
                                 </p:column>
                                 <p:column headerText="UUID"  class="texto13" >
-                                    <h:outputText value="#{fac.uuid}" style="font-size: 9px !important"/>
+                                    <h:outputText value="#{pag.uuid}" style="font-size: 9px !important"/>
                                 </p:column>
                                 <p:column headerText="Fecha" class="texto13">
-                                    <h:outputText value="#{fac.fechaCreacion}" >
+                                    <h:outputText value="#{pag.fechaCreacion}" >
                                         <f:convertDateTime type="date" pattern="yyyy-MM-dd"/>
                                     </h:outputText>
                                 </p:column>
                                 <p:column headerText="Hora" class="texto13">
-                                    <h:outputText value="#{fac.fechaCreacion}" >
+                                    <h:outputText value="#{pag.fechaCreacion}" >
                                         <f:convertDateTime type="date" pattern="HH:mm:ss"/>
                                     </h:outputText>
                                 </p:column>
                                 <p:column headerText="RFC" class="texto13">
-                                    <h:outputText value="#{fac.cliente.rfc}" />
+                                    <h:outputText value="#{pag.cliente.rfc}" />
                                 </p:column>
                                 <p:column headerText="Estado" class="texto13" >
-                                    <h:outputText value="#{fac.estado}" style="font-size: 10px !important"/>
+                                    <h:outputText value="#{pag.estado}" style="font-size: 10px !important"/>
                                 </p:column>
                                 <p:column headerText="Subtotal" class="texto13">
-                                    <h:outputText value="#{fac.subtotal}" >
+                                    <h:outputText value="#{pag.subtotal}" >
                                         <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
                                     </h:outputText>
                                 </p:column>
                                 <p:column headerText="Total" class="texto13">
-                                    <h:outputText value="#{fac.total}" >
+                                    <h:outputText value="#{pag.total}" >
                                         <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
                                     </h:outputText>
                                 </p:column>
                                 <p:column headerText="XML" class="texto13" style="width: 50px">
                                     <h:commandButton value="XML" >
-                                        <p:ajax listener="#{regCFDI33.XML(fac)}"/>
+                                        <p:ajax listener="#{regPagos.XML(pag)}"/>
                                     </h:commandButton>
                                 </p:column>
                                 <p:column headerText="PDF" class="texto13" style="width: 50px">
                                     <h:commandButton value="PDF" >
-                                        <p:ajax listener="#{regCFDI33.PDF(fac)}"/>
+                                        <p:ajax listener="#{regPagos.PDF(pag)}"/>
                                     </h:commandButton>
                                 </p:column>
                                 <p:column headerText="EMAIL" class="texto13" style="width: 50px">
                                     <h:commandButton value="EMAIL" >
-                                        <p:ajax listener="#{regCFDI33.MAIL(fac)}"/>
+                                        <p:ajax listener="#{regPagos.MAIL(pag)}"/>
                                     </h:commandButton>
                                 </p:column>
                             </p:dataTable>
@@ -106,4 +106,3 @@
         </ui:composition>
     </h:body>
 </html>
-

@@ -41,5 +41,7 @@ public interface FacturaDao {
      public List<Factura> petcanceladas (Usuario usuario);
      
      public List<Factura> buscarRetenciones (Usuario usuario);
+     
+     public List<Factura> buscarPagos (Usuario usuario);
 
 }
