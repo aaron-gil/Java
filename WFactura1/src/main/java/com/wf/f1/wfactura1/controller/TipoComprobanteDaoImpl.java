@@ -7,6 +7,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.wf.f1.wfactura1.model.TipoComprobante;
+import java.util.ArrayList;
+import javax.persistence.Query;
 
 /**
  * TipoComprobante de TipoComprobante EJB que implementa los metodos cargados de la interface de un TipoComprobante
@@ -72,4 +74,16 @@ public class TipoComprobanteDaoImpl implements TipoComprobanteDao {
 		em.remove(tipoComprobante);
 
 	}
+        
+        
+        @Override
+        public List<TipoComprobante> listaTiposNormal(){
+            List<TipoComprobante> tipos= new ArrayList<>();
+            try {
+                Query query = em.createQuery("from TipoComprobante t where t.identifica in('I','E') order by t.identifica");
+                tipos = query.getResultList();
+            } catch (Exception e) {
+            }
+            return tipos;
+        }
 }

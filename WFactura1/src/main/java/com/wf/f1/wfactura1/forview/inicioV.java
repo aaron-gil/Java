@@ -168,8 +168,6 @@ public class inicioV implements Serializable {
                 series += ser.getNombre() + "\t";
                 folios += ser.getFolioActual() + "\t";
             }
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("seriesSeleccionadas", seriesSeleccionado);
-           // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Encontrado",null));
         }
     }
 

@@ -22,4 +22,6 @@ public interface TipoComprobanteDao {
  
     public void deleteTipoComprobante(TipoComprobante tipoComprobante);
     
+    public List<TipoComprobante> listaTiposNormal();
+    
 }
