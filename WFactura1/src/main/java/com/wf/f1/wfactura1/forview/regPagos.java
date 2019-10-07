@@ -20,22 +20,14 @@ import javax.faces.view.ViewScoped;
  *
  * @author Fernando
  */
-
-@ManagedBean(name = "regCancelaciones")
+@ManagedBean(name = "regPagos")
 @ViewScoped
-public class regCancelaciones implements Serializable{
-        @EJB
+public class regPagos implements Serializable {
+
+    @EJB
     private FacturaDao facturaDao;
     private List<Factura> facturas33;
     private Usuario usuarioSeleccionado;
-
-    public FacturaDao getFacturaDao() {
-        return facturaDao;
-    }
-
-    public void setFacturaDao(FacturaDao facturaDao) {
-        this.facturaDao = facturaDao;
-    }
 
     public List<Factura> getFacturas33() {
         return facturas33;
@@ -52,6 +44,7 @@ public class regCancelaciones implements Serializable{
     public void setUsuarioSeleccionado(Usuario usuarioSeleccionado) {
         this.usuarioSeleccionado = usuarioSeleccionado;
     }
+
     @PostConstruct
     public void inicializar() {
         verificarSesion();
@@ -64,14 +57,29 @@ public class regCancelaciones implements Serializable{
             if (usuarioSeleccionado == null) {
                 context.getExternalContext().redirect("index.xhtml");
             } else {
-                buscarcanceladas();
+                buscarPagos();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void buscarcanceladas() {
-        facturas33 = facturaDao.buscarcanceladas(usuarioSeleccionado);
-    }     
+    public void buscarPagos() {
+        facturas33 = facturaDao.buscarPagos(usuarioSeleccionado);
+    }
+
+    public void XML(Factura f) {
+
+    }
+
+    public void PDF(Factura f) {
+
+    }
+
+    public void MAIL(Factura f) {
+
+    }
+    public void Cancelar(Factura f) {
+
+    }
 }

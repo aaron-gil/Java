@@ -21,9 +21,9 @@ import javax.faces.view.ViewScoped;
  * @author Fernando
  */
 
-@ManagedBean(name = "regCancelaciones")
+@ManagedBean(name = "petCancela")
 @ViewScoped
-public class regCancelaciones implements Serializable{
+public class petCancela implements Serializable{
         @EJB
     private FacturaDao facturaDao;
     private List<Factura> facturas33;
@@ -64,14 +64,19 @@ public class regCancelaciones implements Serializable{
             if (usuarioSeleccionado == null) {
                 context.getExternalContext().redirect("index.xhtml");
             } else {
-                buscarcanceladas();
+                petcanceladas();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void buscarcanceladas() {
-        facturas33 = facturaDao.buscarcanceladas(usuarioSeleccionado);
-    }     
+    public void petcanceladas() {
+        facturas33 = facturaDao.petcanceladas(usuarioSeleccionado);
+    }
+    public void cancelacion(Factura f) {
+
+        
+    }
+    
 }

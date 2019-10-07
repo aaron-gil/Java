@@ -5,7 +5,7 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>RegCFDI 3.3</title>
+        <title>RegRtenciones</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <link href="webjars/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
@@ -40,55 +40,68 @@
                 <p:growl>
                     <p:autoUpdate />
                 </p:growl>
+                <div class="row   backgroundWF">
                     <h:form>
                         <p:outputPanel id="listaConceptosPanel">
-                            <p:dataTable var="facC" value="#{petCancela.facturas33}" paginator="true"
+                            <p:dataTable var="rec" value="#{regRetenciones.facturas33}" paginator="true"
                                          rows="10"
                                          paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" scrollable="true"  scrollHeight="250px" emptyMessage="No hay Facturas Timbradas"
                                          rowsPerPageTemplate="10,25,50,100" class="texto13">
                                 <f:facet name="header" >
-                                    <h:outputText value="Registro de Facturas"/>
+                                    <h:outputText value="Registro de Retenciones"/>
                                 </f:facet>
                                 <p:column headerText="Folio" class="texto13" style="width: 50px">
-                                    <h:outputText value="#{facC.folio} " />
+                                    <h:outputText value="#{rec.folio}" />
                                 </p:column>
-                                <p:column headerText="UUID"  class="texto13" style="width: 80px">
-                                    <h:outputText value="#{facC.uuid}" style="font-size: 9px !important"/>
+                                <p:column headerText="UUID"  class="texto13" style="font-size: 9px !important">
+                                    <h:outputText value="#{rec.uuid}" />
                                 </p:column>
-                                <p:column headerText="Fecha" class="texto13" style="width: 80px">
-                                    <h:outputText value="#{facC.fechaCreacion}" >
+                                <p:column headerText="Fecha" class="texto13">
+                                    <h:outputText value="#{rec.fechaCreacion}" >
                                         <f:convertDateTime type="date" pattern="yyyy-MM-dd"/>
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Hora" class="texto13" style="width: 50px">
-                                    <h:outputText value="#{facC.fechaCreacion}" >
+                                <p:column headerText="Hora" class="texto13">
+                                    <h:outputText value="#{rec.fechaCreacion}" >
                                         <f:convertDateTime type="date" pattern="HH:mm:ss"/>
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="RFC" class="texto13" style="width: 80px" >
-                                    <h:outputText value="#{facC.cliente.rfc}" />
+                                <p:column headerText="RFC" class="texto13">
+                                    <h:outputText value="#{rec.cliente.rfc}" />
                                 </p:column>
-                                <p:column headerText="Estado" class="texto13" style="width: 80px">
-                                    <h:outputText value="#{facC.estado}" style="font-size: 10px !important"/>
+                                <p:column headerText="Estado" class="texto13" style="font-size: 10px !important">
+                                    <h:outputText value="#{rec.estado}" />
                                 </p:column>
-                                <p:column headerText="Subtotal" class="texto13" style="width: 80px">
-                                    <h:outputText value="#{facC.subtotal}" >
+                                <p:column headerText="Subtotal" class="texto13">
+                                    <h:outputText value="#{rec.subtotal}" >
                                         <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Total" class="texto13" style="width: 80px">
-                                    <h:outputText value="#{facC.total}" >
+                                <p:column headerText="Total" class="texto13">
+                                    <h:outputText value="#{rec.total}" >
                                         <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Cancelar" class="texto13" style="width: 70px">
-                                    <h:commandButton value="Cancelar" >
-                                        <p:ajax listener="#{regCFDI33.Cancelar(facC)}"/>
+                                <p:column headerText="XML" class="texto13" style="width: 50px">
+                                    <h:commandButton value="XML" >
+                                        <p:ajax listener="#{regCFDI33.XML(rec)}"/>
+                                    </h:commandButton>
+                                </p:column>
+                                <p:column headerText="PDF" class="texto13" style="width: 50px">
+                                    <h:commandButton value="PDF" >
+                                        <p:ajax listener="#{regRetenciones.PDF(rec)}"/>
+                                    </h:commandButton>
+                                </p:column>
+                                <p:column headerText="EMAIL" class="texto13" style="width: 50px">
+                                    <h:commandButton value="EMAIL" >
+                                        <p:ajax listener="#{regRetenciones.MAIL(fac)}"/>
                                     </h:commandButton>
                                 </p:column>
                             </p:dataTable>
                         </p:outputPanel>
                     </h:form>
+                </div>
+
             </ui:define>
         </ui:composition>
     </h:body>

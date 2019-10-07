@@ -50,6 +50,14 @@
             <from-outcome>petCancelar</from-outcome>
             <to-view-id>/petCancelar.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>regRetenciones</from-outcome>
+            <to-view-id>/RegRetenciones.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>regPagos</from-outcome>
+            <to-view-id>/RegPagos.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/CFDI33.xhtml</from-view-id>
@@ -189,10 +197,24 @@
             <to-view-id>/inicio.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
-        <navigation-rule>
+    <navigation-rule>
         <from-view-id>/petCancelar.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>petCancelar</from-outcome>
+            <to-view-id>/inicio.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+        <navigation-rule>
+        <from-view-id>/RegRetenciones.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>regRetenciones</from-outcome>
+            <to-view-id>/inicio.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+        <navigation-rule>
+        <from-view-id>/RegPagos.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>regPagos</from-outcome>
             <to-view-id>/inicio.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
