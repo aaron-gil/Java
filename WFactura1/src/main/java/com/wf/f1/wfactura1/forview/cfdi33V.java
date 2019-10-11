@@ -5,6 +5,7 @@
  */
 package com.wf.f1.wfactura1.forview;
 
+import com.wf.f1.wfactura1.beanext.ComplementoSEP;
 import com.wf.f1.wfactura1.beanext.Conceptos;
 import com.wf.f1.wfactura1.beanext.ImpuestosLocalesC;
 import com.wf.f1.wfactura1.beanext.impRetenidos;
@@ -21,6 +22,7 @@ import com.wf.f1.wfactura1.converterbeans.clienteService;
 import com.wf.f1.wfactura1.converterbeans.productoService;
 import com.wf.f1.wfactura1.converterbeans.usoCfdiService;
 import com.wf.f1.wfactura1.model.Cliente;
+import com.wf.f1.wfactura1.model.Factura;
 import com.wf.f1.wfactura1.model.FormaPago;
 import com.wf.f1.wfactura1.model.MetodoPago;
 import com.wf.f1.wfactura1.model.Moneda;
@@ -30,6 +32,8 @@ import com.wf.f1.wfactura1.model.TipoComprobante;
 import com.wf.f1.wfactura1.model.TipoRelacion;
 import com.wf.f1.wfactura1.model.UsoCfdi;
 import com.wf.f1.wfactura1.model.Usuario;
+import com.wf.f1.wfactura1.utileria.CreacionArchivo;
+import com.wf.f1.wfactura1.utileria.CrearXML;
 import com.wf.f1.wfactura1.utileria.MontoLetra;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -80,6 +84,7 @@ public class cfdi33V implements Serializable {
     private Integer nextFolio = 0;
     private Cliente cliente;
     private UsoCfdiBean usoCfdiBean;
+    private String numRegIdTrib;
     private List<UsoCfdiBean> todoUsos;
     private List<MetodoPago> listaMetodosPago;
     private MetodoPago metodoPago;
@@ -175,6 +180,7 @@ public class cfdi33V implements Serializable {
     private Boolean relacionSelect;
     private String uuidRela;
     private FormaPago formapago;
+    private Factura factura;
 
     @ManagedProperty(value = "#{usoCfdiService}")
     private usoCfdiService service;
@@ -185,15 +191,18 @@ public class cfdi33V implements Serializable {
 
     @PostConstruct
     public void inicializar() {
-        moneda= new Moneda();
+        numRegIdTrib = "";
+        factura = new Factura();
+        CURP = "";
+        moneda = new Moneda();
         moneda.setDecimales(new Byte("2"));
         moneda.setDescripcion("Peso Mexicano");
         moneda.setIdentifica("MXN");
         moneda.setPorcentajeVariacion("35%");
-        monedaS="";
-        metodoPagoS="";
+        monedaS = "";
+        metodoPagoS = "";
         formapago = new FormaPago();
-        formaPagoS="";
+        formaPagoS = "";
         tipoRelacionS = "";
         uuidRela = "";
         tipoRelacion = new TipoRelacion();
@@ -256,7 +265,6 @@ public class cfdi33V implements Serializable {
     public void setMetodoPagoS(String metodoPagoS) {
         this.metodoPagoS = metodoPagoS;
     }
-    
 
     public String getTipoRelacionS() {
         return tipoRelacionS;
@@ -1078,6 +1086,14 @@ public class cfdi33V implements Serializable {
         this.serieS = serieS;
     }
 
+    public String getNumRegIdTrib() {
+        return numRegIdTrib;
+    }
+
+    public void setNumRegIdTrib(String numRegIdTrib) {
+        this.numRegIdTrib = numRegIdTrib;
+    }
+
     public void verificarSesion() {
         System.out.println("verificando..................");
         try {
@@ -1201,7 +1217,7 @@ public class cfdi33V implements Serializable {
 
     public void descuentoProd() {
         try {
-            descuento = (porcentajeDes.multiply(new BigDecimal(0.01))).multiply(importe);
+            descuento = (porcentajeDes.multiply(new BigDecimal(0.01))).multiply(importe).setScale(2, RoundingMode.HALF_UP);
         } catch (NullPointerException e) {
             descuento = new BigDecimal(0);
         }
@@ -1268,7 +1284,6 @@ public class cfdi33V implements Serializable {
     public void tasaOCuotaRetList() {
         listTCReten = new HashMap<String, BigDecimal>();
         if (ivaR.equals("iva")) {
-            System.out.println("iva " + tipoFactorR);
             if (tipoFactorR.equals("Tasa")) {
                 listTCReten.put("0", new BigDecimal("0.000000"));
                 listTCReten.put("8", new BigDecimal("0.080000"));
@@ -1338,7 +1353,6 @@ public class cfdi33V implements Serializable {
     public void tasaOCuotaTraList() {
         listTCTras = new HashMap<String, BigDecimal>();
         if (ivaT.equals("iva")) {
-            System.out.println("iva " + tipoFactorT);
             if (tipoFactorT.equals("Tasa")) {
                 listTCTras.put("0", new BigDecimal("0.000000"));
                 listTCTras.put("8", new BigDecimal("0.080000"));
@@ -1381,7 +1395,6 @@ public class cfdi33V implements Serializable {
     }
 
     public void calcularImpuestosRetenidos() {
-        System.out.println("tasa o cuota " + tasaOCuotaR);
         try {
             Double br = baseR.doubleValue();
             Double tc = tasaOCuotaR.doubleValue();
@@ -1393,7 +1406,6 @@ public class cfdi33V implements Serializable {
     }
 
     public void calcularImpuestosTrasladados() {
-        System.out.println("tasa o cuota " + tasaOCuotaT);
         try {
             Double br = baseT.doubleValue();
             Double tc = tasaOCuotaT.doubleValue();
@@ -1407,7 +1419,6 @@ public class cfdi33V implements Serializable {
     public void agregarImpRete() {
         if (!ivaR.equals("") && !tipoFactorR.equals("")) {
             try {
-                System.out.println("datos en imprt rete " + baseR + " " + importeR + " " + ivaR + " " + tasaOCuotaR + " " + tipoFactorR);
                 impRetenidos im = new impRetenidos();
                 im.setBase(baseR);
                 im.setImporte(importeR);
@@ -1437,7 +1448,6 @@ public class cfdi33V implements Serializable {
 
         try {
             listRete.remove(ipR);
-            System.out.println("tamaño de la lista 1 " + listRete.size());
             if (listRete == null || listRete.size() == 0) {
                 impRetPan = false;
             }
@@ -1478,7 +1488,6 @@ public class cfdi33V implements Serializable {
 
         try {
             listTras.remove(ipT);
-            System.out.println("tamaño de la lista 2 " + listTras.size());
             if (listTras == null || listTras.size() == 0) {
                 impTraPan = false;
             }
@@ -1490,7 +1499,6 @@ public class cfdi33V implements Serializable {
     public void agregarConcepto() {
         try {
             if (cantidad.intValue() > 0) {
-                System.out.println("agregando ........");
                 Conceptos c = new Conceptos();
                 c.setCantidad(cantidad);
                 c.setDescripcion("");
@@ -1525,7 +1533,6 @@ public class cfdi33V implements Serializable {
                 inputCon = true;
                 agregarVRetenciones();
                 agregarVTrasladados();
-                System.out.println("agregado ........");
             }
             calcularTotalGlobal();
         } catch (Exception e) {
@@ -1540,16 +1547,11 @@ public class cfdi33V implements Serializable {
             Double retenidosC = 0.0;
             Double trasladadosC = 0.0;
             for (Conceptos c : conceptos) {
-                System.out.println("importe ");
                 importeC += c.getImporte().setScale(2, RoundingMode.HALF_UP).doubleValue();
-                System.out.println("->" + c.getImporte());
                 if (c.getDescuento() != null) {
-
                     decuentoC += c.getDescuento().setScale(2, RoundingMode.HALF_UP).doubleValue();
-                    System.out.println("descuento " + decuentoC);
                 }
                 if (c.getRetenidos() != null && c.getRetenidos().size() > 0) {
-                    System.out.println("retenidos ");
                     for (impRetenidos r : c.getRetenidos()) {
 
                         retenidosC += r.getImporte().setScale(2, RoundingMode.HALF_UP).doubleValue();
@@ -1557,7 +1559,6 @@ public class cfdi33V implements Serializable {
                     }
                 }
                 if (c.getTrasladados() != null && c.getTrasladados().size() > 0) {
-                    System.out.println("trasladados ");
                     for (impTrasladados t : c.getTrasladados()) {
 
                         trasladadosC += t.getImporte().setScale(2, RoundingMode.HALF_UP).doubleValue();
@@ -1568,9 +1569,7 @@ public class cfdi33V implements Serializable {
             subTotal = new BigDecimal(importeC);
             descuentoTotal = new BigDecimal(decuentoC);
             total = new BigDecimal((((subTotal.doubleValue() + trasladadosC + importeCompImpLocTra.doubleValue()) - retenidosC) - descuentoTotal.doubleValue()));
-            System.out.println("si realizo la operacion " + total);
         } else {
-            System.out.println("no realizo la operacion");
             subTotal = new BigDecimal(0);
             descuentoTotal = new BigDecimal(0);
             total = new BigDecimal(0);
@@ -1738,8 +1737,6 @@ public class cfdi33V implements Serializable {
             uuidRela = "";
             relacionSelect = true;
             relacionTable = true;
-        } else {
-            System.out.println("no entro");
         }
     }
 
@@ -1809,27 +1806,111 @@ public class cfdi33V implements Serializable {
 
     public void validarCamposCFDI() {
         FacesContext context = FacesContext.getCurrentInstance();
+        CreacionArchivo creacionArchivo = new CreacionArchivo();
+        String[] error;
+        ComplementoSEP sep = new ComplementoSEP();
         if (tipoComp != null && !tipoComp.equals("")) {
             if (serie != null) {
                 if (cliente != null) {
                     if (usoCfdiBean == null) {
                         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Receptor) Elegir Uso de CFDI"));
                     } else {
-                        System.out.println("esto es  "+usoCfdiBean.getDescripcion());
                         if (!formaPagoS.equals("")) {
                             if (metodoPago != null && !metodoPago.getIdentifica().equals("")) {
-                                if (tipoCambio.doubleValue() > 0) {                                    
-                                    if (conceptos.size()>0) {
-                                        if(uuidRelacionados.size()>0){
+                                if (tipoCambio.doubleValue() > 0) {
+                                    if (conceptos.size() > 0) {
+                                        Boolean bandera = false;
+                                        Boolean complemtoSEP = false;
+                                        if (!CURP.equals("")) {
+                                            if (CURP.length() == 18) {
+                                                if (!Alumno.equals("")) {
+                                                    if (!RFCAl.equals("")) {
+                                                        if (RFCAl.length() >= 12) {
+                                                            if (!autRVOE.equals("")) {
+                                                                if (!nivelEduc.equals("")) {
+                                                                    bandera = true;
+                                                                    complemtoSEP = true;
+                                                                    sep.setAlumno(Alumno);
+                                                                    sep.setAutoRVOE(autRVOE);
+                                                                    sep.setCurp(CURP);
+                                                                    sep.setNivelEducativo(nivelEduc);
+                                                                    sep.setRfc(RFCAl);
+                                                                } else {
+                                                                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Selecionar Nivel Educativo"));
+                                                                }
+                                                            } else {
+                                                                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Agregar autRVOE"));
+                                                            }
+                                                        } else {
+                                                            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) RFC no cumle con la especificacion"));
+                                                        }
+                                                    } else {
+                                                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Agregar RFC"));
+                                                    }
+                                                } else {
+                                                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Agregar Alumno"));
+                                                }
+                                            } else {
+                                                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) CURP no cumple con la especificacion"));
+                                            }
+
+                                        } else {
+                                            sep=null;
+                                            bandera = true;
+                                        }
+
+                                        if (bandera) {
+                                            if(uuidRelacionados.size()>0){
+                                                factura.setRelacionado(true);
+                                                factura.setTipoRelacion(tipoRelacion);
+                                            }else{
+                                                factura.setRelacionado(false);
+                                                factura.setTipoRelacion(null);
+                                            }
+                                            factura.setSucursal(usuarioSeleccionado.getSucursal());
+                                            factura.setCliente(cliente);
+                                            factura.setTipoComprobante(tcc.getIdentifica());
+                                            factura.setMetodoPago(metodoPago);
+                                            //factura.setEstado(""); despues de timbrado
+                                            factura.setEstatus(null);
+                                            factura.setMoneda(moneda);
+                                            factura.setUsoCfdi(usosDao.buscarXIdentifica(usoCfdiBean.getIdentifica()));
+                                            factura.setSubtotal(subTotal.setScale(2, RoundingMode.HALF_UP));
+                                            factura.setTotal(total.setScale(2, RoundingMode.HALF_UP));
+                                            
+                                            factura.setFechaCreacion(new Date());
+                                            factura.setResponsableCreacion(usuarioSeleccionado.getNombre());
+                                            factura.setLugarExpedicion(usuarioSeleccionado.getCp());
+                                            factura.setCondicionPago(condicionesPago);
+                                            if (moneda.getIdentifica().equals("MXN")) {
+                                                factura.setTipoCambio(tipoCambio);
+                                            } else {
+                                                factura.setTipoCambio(new BigDecimal(0));
+                                            }
+                                            factura.setFolio(serie.getNombre() + serie.getFolioActual());
+                                            factura.setConsecutivo(serie.getFolioActual());
+                                            factura.setSerie(serie.getIdentifica());  
+                                            factura.setFormaPago(formaPagoS);                           
+                                            factura.setConfirmacion("");
+                                            Double descuT =0.0;
+                                            for(Conceptos con:conceptos){
+                                                if(con.getDescuento().doubleValue()>0){
+                                                   descuT+= con.getDescuento().setScale(2, RoundingMode.HALF_UP).doubleValue();
+                                                }
+                                            }
+                                            factura.setDescuento(new BigDecimal(descuT).setScale(2, RoundingMode.HALF_UP));
+                                            CrearXML xml= new CrearXML();
+                                            String datoXML=xml.crear(factura, serie, usuarioSeleccionado, uuidRelacionados, cliente, usoCfdiBean, numRegIdTrib, conceptos, sep, listILCT, listILCR);
+                                            System.out.println(datoXML);
+                                               //factura.setXml(creacionArchivo.generarXML(factura, serie, listaDetalleFactura, usuarioSeleccionado));
+//                                            Serie actualizarConsecutivo = new Serie();
+//                                            actualizarConsecutivo.setIdentifica(factura.getSerie());
+//                                            actualizarConsecutivo = serieDao.findSerieByIdentifica(actualizarConsecutivo);
+//                                            actualizarConsecutivo.setFolioActual(factura.getConsecutivo());
+//                                            serieDao.updateSerie(actualizarConsecutivo);
                                             
                                         }
-                                        if(listILCR.size()>0){
-                                            
-                                        }
-                                        if(listILCT.size()>0){
-                                            
-                                        }
-                                        
+
                                     } else {
                                         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Conceptos) Elegir Producto"));
                                     }
@@ -1855,6 +1936,9 @@ public class cfdi33V implements Serializable {
 
     }
 
+    public void condicionesP(){
+        condicionesPago= condicionesPago.toUpperCase();
+    }
     public void tipoRel() {
         if (!tipoRelacionS.equals("")) {
             for (TipoRelacion tp : listaTiposRelacion) {
@@ -1874,44 +1958,44 @@ public class cfdi33V implements Serializable {
 
     public void formPag() {
         if (!formaPagoS.equals("")) {
-            for(FormaPago fp:listaFormasPago){
-                if(fp.getIdentifica().equals(formaPagoS)){
-                    formapago=fp;
+            for (FormaPago fp : listaFormasPago) {
+                if (fp.getIdentifica().equals(formaPagoS)) {
+                    formapago = fp;
                 }
             }
-        }else{
-            formapago= new FormaPago();
+        } else {
+            formapago = new FormaPago();
         }
-        formaPagoS=formaPagoS;
+        formaPagoS = formaPagoS;
     }
-    
-    public void metodoP(){
-       if(!metodoPagoS.equals("")){
-           for(MetodoPago mp:listaMetodosPago){
-               if(mp.getIdentifica().equals(metodoPagoS)){
-                   metodoPago=mp;
-               }
-           }
-       } else{
-           metodoPago= new MetodoPago();
-       }
-       metodoPagoS=metodoPagoS;
-    }
-    public void monedaM(){
-        System.out.println(monedaS + "  ------------------->");
-        if(!monedaS.equals("")){
-            for(Moneda m: listaMonedas){
-                if(m.getIdentifica().equals(monedaS)){
-                    moneda=m;
+
+    public void metodoP() {
+        if (!metodoPagoS.equals("")) {
+            for (MetodoPago mp : listaMetodosPago) {
+                if (mp.getIdentifica().equals(metodoPagoS)) {
+                    metodoPago = mp;
                 }
             }
-        }else{
+        } else {
+            metodoPago = new MetodoPago();
+        }
+        metodoPagoS = metodoPagoS;
+    }
+
+    public void monedaM() {
+        if (!monedaS.equals("")) {
+            for (Moneda m : listaMonedas) {
+                if (m.getIdentifica().equals(monedaS)) {
+                    moneda = m;
+                }
+            }
+        } else {
             moneda = new Moneda();
         }
-        monedaS=monedaS;
+        monedaS = monedaS;
     }
-    
-    public void usoCfdiBeanM(UsoCfdiBean us){
-        usoCfdiBean=us;
+
+    public void usoCfdiBeanM(UsoCfdiBean us) {
+        usoCfdiBean = us;
     }
 }

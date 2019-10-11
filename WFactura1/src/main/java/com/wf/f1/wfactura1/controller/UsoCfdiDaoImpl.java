@@ -120,5 +120,24 @@ public class UsoCfdiDaoImpl implements UsoCfdiDao {
         }
         return usos;
     }
+    
+    @Override
+    public UsoCfdi buscarXIdentifica(String id){
+        UsoCfdi uso= new UsoCfdi();
+        try {
+            Query query = em.createQuery("from UsoCfdi u where u.identifica=:id order by u.identifica");
+            query.setParameter("id", id);
+            List<UsoCfdi> usosL = query.getResultList();
+            if (usosL.size() > 0) {
+                uso=usosL.get(0);
+            }
+        } catch (Exception e) {
+            uso = null;
+            e.printStackTrace();
+        }
+        
+        return uso;
+        
+    }
 
 }

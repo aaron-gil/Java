@@ -32,7 +32,6 @@ public class clienteConverter implements Converter{
         ValueExpression ve = fc.getApplication().getExpressionFactory().createValueExpression(fc.getELContext(), "#{clienteService}", clienteService.class);
         clienteService bean = (clienteService) ve.getValue(fc.getELContext());
         Cliente pac = new Cliente();
-        System.out.println("value " + value);
         try {
             pac = bean.buscarCliente(new Integer(value).intValue());
         } catch (Exception e) {

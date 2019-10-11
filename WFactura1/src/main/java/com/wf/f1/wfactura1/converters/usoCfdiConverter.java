@@ -38,7 +38,6 @@ public class usoCfdiConverter implements Converter {
         ValueExpression ve = fc.getApplication().getExpressionFactory().createValueExpression(fc.getELContext(), "#{usoCfdiService}", usoCfdiService.class);
         usoCfdiService bean = (usoCfdiService) ve.getValue(fc.getELContext());
         UsoCfdiBean pac = new UsoCfdiBean();
-        System.out.println("value " + value);
         try {
             pac = bean.buscarIdDato(value);
         } catch (Exception e) {

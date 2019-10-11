@@ -126,13 +126,18 @@
 
                         <div class="card" >
                             <div class="card-header" id="relacionados">
-                                <h2 class="mb-0">
-                                    <button class="btn btn-link collapsed"  type="button" data-toggle="collapse" 
-                                            data-target="#relacionadosM" aria-expanded="false" aria-controls="relacionadosM" title="Opcional Para agregar UUID relacionado">
-                                        UUID Relacionados
-                                    </button>
-                                </h2>
+                                <p:outputPanel id="uuidRB">
+                                    <h6 class="mb-0">
+                                        <button class="btn btn-link collapsed" id="focus"  type="button" data-toggle="collapse" 
+                                                data-target="#relacionadosM" aria-expanded="false" aria-controls="relacionadosM" title="Opcional Para agregar UUID relacionado">
+                                            UUID Relacionados 
+                                        </button>                                   
+                                    </h6>
+                                </p:outputPanel>
+                                <p:tooltip id="toolTipGrow" for="uuidRB" value="Nodo OPCIONAL para agregar UUID's relacionados."
+                                           position="top"/>
                             </div>
+                            <!--<p:tooltip id="toolTipFocus" for="relacionados" showEffect="clip" hideEffect="explode" position="left" />-->
                             <div id="relacionadosM" class="collapse" aria-labelledby="relacionados" data-parent="#cfdi33">
                                 <div class="card-body">
                                     <div class="container-fluid">
@@ -266,7 +271,7 @@
                                                     <h:outputText value="Número de registro:" />
                                                 </div>
                                                 <div class="col-md-2 text-left">
-                                                    <h:outputText  value="#{cfdi33V.usoCfdiBean.identifica}" />
+                                                    <h:inputText  value="#{cfdi33V.numRegIdTrib}" />
                                                 </div>
                                             </div>
                                         </p:outputPanel>
@@ -335,7 +340,9 @@
                                                     <h:outputText value="Condiciones de pago:" />
                                                 </div>
                                                 <div class="col-md-2 text-left ">
-                                                    <h:inputText value="#{cfdi33V.condicionesPago}" />
+                                                    <h:inputText value="#{cfdi33V.condicionesPago}">
+                                                        <p:ajax event="blur" listener="#{cfdi33V.condicionesP()}" />
+                                                    </h:inputText>
                                                 </div>
                                             </div>
                                         </p:outputPanel>
@@ -778,6 +785,7 @@
                                                         <f:selectItem itemLabel="Secundaria" itemValue="Secundaria" />
                                                         <f:selectItem itemLabel="Profesional tecnico" itemValue="Profesional tecnico" />
                                                         <f:selectItem itemLabel="Bachillerato o su equivalente" itemValue="Bachillerato o su equivalente" />
+                                                        <p:ajax event="itemSelect" update="formcfdi33:sepPanel" />
                                                     </p:selectOneMenu>
                                                 </div>                                       
                                             </div>

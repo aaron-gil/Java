@@ -1,5 +1,5 @@
 package com.wf.f1.wfactura1.entities;
-// Generated 21/08/2019 02:19:05 PM by Hibernate Tools 4.3.1
+// Generated 9/10/2019 05:52:57 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;

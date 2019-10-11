@@ -45,8 +45,8 @@ Contributor(s):
     <property name="hibernate.connection.url">jdbc:jtds:sqlserver://prod.cwzhotoigrx9.us-west-2.rds.amazonaws.com:1433/Pac32pro</property>
     <property name="hibernate.connection.username">sa</property>
     <property name="hibernate.connection.password">Wf12345678</property>
+    <mapping resource="com/wf/f1/wfactura1/entities/Usuario.hbm.xml"/>
     <mapping resource="com/wf/f1/wfactura1/entities/Certs.hbm.xml"/>
     <mapping resource="com/wf/f1/wfactura1/entities/Permisos.hbm.xml"/>
-    <mapping resource="com/wf/f1/wfactura1/entities/Usuario.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

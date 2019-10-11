@@ -142,14 +142,24 @@ public class Factura implements Serializable {
     private String uuidPago;
     @Column(name = "UUIDPAGOA", length = 50)
     private String uuidPagoA;
-
+    @Column(name = "FORMAPAGO", length = 50)
     private String formaPago;
+    @Column(name = "CONFIRMACION", length = 100)
+    private String confirmacion;
 
     /**
      * Constructor vacio que debe tener la entidad por defecto
      */
     public Factura() {
 
+    }
+
+    public String getConfirmacion() {
+        return confirmacion;
+    }
+
+    public void setConfirmacion(String confirmacion) {
+        this.confirmacion = confirmacion;
     }
 
     public String getFormaPago() {

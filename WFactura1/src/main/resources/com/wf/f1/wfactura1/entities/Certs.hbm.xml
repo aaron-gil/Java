@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 21/08/2019 02:19:05 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 9/10/2019 05:52:58 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="com.wf.f1.wfactura1.entities.Certs" table="certs" schema="dbo" catalog="Pac32pro" optimistic-lock="version">
         <id name="id" type="int">

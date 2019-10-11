@@ -27,4 +27,6 @@ public interface UsoCfdiDao {
     
     public List<UsoCfdiBean> buscarUsos();
     
+    public UsoCfdi buscarXIdentifica(String id);
+    
 }

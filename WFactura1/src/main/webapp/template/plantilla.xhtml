@@ -73,17 +73,35 @@
                 background: rgb(244,129,16) !important;
                 color: white !important;
             }
-            
+
             div[role="navigation"]{
-                 font-size: 13px;
+                font-size: 13px;
             }
-            
+
             div[class="ui-datatable-header ui-widget-header ui-corner-top"]{
                 background: rgb(244,129,16) !important;
                 color: white !important;
-                
+
             }
-            
+            .footer {
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                background-color: rgb(244,129,16);
+                color: white;
+                text-align: center;
+                border-top: 5px solid chocolate;
+                height: 50px;
+            }
+            .espacio{
+                border-bottom: 5px solid chocolate;
+                height: 50px;
+            }
+            div[class="ui-tooltip ui-widget ui-tooltip-top"]{
+                font-size: 13px !important;
+            }
+
             /*
              LAOS800716JT3
              Folios1084++1
@@ -92,37 +110,21 @@
         <title>Inicio</title>
     </h:head>
     <h:body>
-
         <header id="cabecera">
             <ui:insert name="cabecera" >
                 <div class="container-fluid">
-                    <div class="row   backgroundWF">
+                    <div class="row   backgroundWF espacio">
                         <div class="container">
                             <div class="row   backgroundWF">
-                                <div class="col-12">
+                                <div class="col-12">                                   
                                     <h:form>
-                                        <h:commandButton value="Panel Principal" style="border: 0;" action="#{menuV.principal()}" />
-                                        <h:commandButton value="Generar CFDI" style="border: 0;" action="#{menuV.cfdi()}" />
-                                        <h:commandButton value="Ayuda" style="border: 0;" action="#" />
-                                        <h:commandButton value="Cerrar sesión" style="border: 0;" action="#{menuV.sessionC()}" />
-                                    </h:form>
-                                    <!--<ul class="nav nav-tabs">
-                                        <li class="nav-item">
-                                            <h:link class="nav-link" outcome="inicio" >Panel Principal</h:link>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#">Registro CFDI</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <h:link class="nav-link" outcome="CFDI">Generar CFDI</h:link>
-                                        </li>
-                                        <li class="nav-item">
-                                            <h:commandButton value="Ayuda" />
-                                        </li>
-                                        <li class="nav-item">
-                                            <h:link class="nav-link" outcome="cerrar">Cerrar sesión</h:link>
-                                        </li>
-                                    </ul>-->
+                                        <div class="d-flex align-content-center" style="height: 2.8em !important">
+                                            <h:commandButton value="Panel Principal" style="border: 0;" action="#{menuV.principal()}" />
+                                            <h:commandButton value="Generar CFDI" style="border: 0;" action="#{menuV.cfdi()}" />
+                                            <h:commandButton value="Ayuda" style="border: 0;" action="#" />
+                                            <h:commandButton value="Cerrar sesión" style="border: 0;" action="#{menuV.sessionC()}" />
+                                        </div>
+                                    </h:form>                                    
                                 </div>
                             </div>
                         </div>
@@ -146,7 +148,7 @@
                 </div>
             </ui:insert>
         </header>
-        <div class="cuerpo">
+        <div class="cuerpo" style="margin-bottom: 100px !important;">
             <div class="container-fluid">
                 <div class="container">
                     <div class="row">
@@ -201,9 +203,6 @@
                                                     <li class="nav-item">
                                                         <h:link value="Retenciones" outcome="regRetenciones"/>
                                                     </li>
-                                                 <!--   <li class="nav-item">
-                                                        <h:link value="CFDI 3.2" />
-                                                    </li>-->
                                                     <li class="nav-item">
                                                         <h:link value="Pagos" outcome="regPagos"/>
                                                     </li>
@@ -327,7 +326,6 @@
                                                     <li class="nav-item">
                                                         <h:link value="Conf General" />
                                                     </li>
-
                                                 </ul>
                                             </div>
                                         </div>
@@ -353,6 +351,14 @@
                 </div>
             </div>
         </div>
+        <div id="footer" class="footer">
+            <ui:insert name="footer" >
+                <div class="container">
+                    <span class="text-white">CORRESPONDENCIA NO. 17 INT. 7, COL. ÁLAMOS, C.P. 03400, BENITO JUAREZ, CDMX., TELEFONOS:  +52 (55) 6271-3209 y 6271-3210</span>
+                </div>
+            </ui:insert>
+        </div>
+
     </h:body>
 </html>
 
