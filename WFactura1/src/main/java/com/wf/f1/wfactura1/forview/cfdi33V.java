@@ -5,9 +5,15 @@
  */
 package com.wf.f1.wfactura1.forview;
 
+import com.wf.f1.wfactura1.beanext.ComplementoComExt;
 import com.wf.f1.wfactura1.beanext.ComplementoSEP;
 import com.wf.f1.wfactura1.beanext.Conceptos;
+import com.wf.f1.wfactura1.beanext.DescEspecCompComExt;
+import com.wf.f1.wfactura1.beanext.DestinatarioCompComExt;
+import com.wf.f1.wfactura1.beanext.DomicilioCompComExt;
 import com.wf.f1.wfactura1.beanext.ImpuestosLocalesC;
+import com.wf.f1.wfactura1.beanext.MercanciasCompComExt;
+import com.wf.f1.wfactura1.beanext.PropietarioCompComExt;
 import com.wf.f1.wfactura1.beanext.impRetenidos;
 import com.wf.f1.wfactura1.beanext.impTrasladados;
 import com.wf.f1.wfactura1.controller.FormaPagoDao;
@@ -38,7 +44,6 @@ import com.wf.f1.wfactura1.utileria.MontoLetra;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -76,7 +81,6 @@ public class cfdi33V implements Serializable {
     private TipoRelacionDao tipoRelacionService;
 
     private Usuario usuarioSeleccionado;
-    private String fechaActual;
     private List<Serie> seriesSeleccionadas;
     private List<String> opcSeries;
     private Serie serie;
@@ -181,6 +185,75 @@ public class cfdi33V implements Serializable {
     private String uuidRela;
     private FormaPago formapago;
     private Factura factura;
+    private String observaciones;
+    private ComplementoComExt compComExt;
+    private PropietarioCompComExt propietario;
+    private DestinatarioCompComExt destinatario;
+    private DomicilioCompComExt domicilioDestin;
+    private MercanciasCompComExt mercancia;
+    private DescEspecCompComExt descpEsp;
+    private Boolean tablaPropietarios;
+    private Boolean tablaDomicilios;
+    private Boolean tablaDestinatarios;
+    private Boolean tablaDescripciones;
+    private Boolean tablaMercancias;
+    private String tipoOperacionCE;
+    private String motivoTrasladoCE;
+    private String clavePedimentoCE;
+    private String certificadoOrigenCE;
+    private String numCertificadoOrigenCE;
+    private String numExportConfiabCE;
+    private String incotermCE;
+    private String subdivisionCE;
+    private String observacionesCE;
+    private String tipoCambioUSDCE;
+    private String totalUSDCE;
+    private String CurpCE;
+    private String CalleECE;
+    private String numExtECE;
+    private String numIntECE;
+    private String coloniaECE;
+    private String localidadECE;
+    private String ReferenciaECE;
+    private String municipioECE;
+    private String estadoECE;
+    private String paisECE;
+    private String cpECE;
+    private String CalleRCE;
+    private String numExtRCE;
+    private String numIntRCE;
+    private String coloniaRCE;
+    private String localidadRCE;
+    private String ReferenciaRCE;
+    private String municipioRCE;
+    private String estadoRCE;
+    private String paisRCE;
+    private String cpRCE;
+    private String numRegIdTribECE;
+    private String numRegIdTribPCE;
+    private String recidenciaFiscalPCE;
+    private String numRegIdTribDCE;
+    private String nombreDCE;
+    private String CalleDCE;
+    private String numExtDCE;
+    private String numIntDCE;
+    private String coloniaDCE;
+    private String localidadDCE;
+    private String ReferenciaDCE;
+    private String municipioDCE;
+    private String estadoDCE;
+    private String paisDCE;
+    private String cpDCE;
+    private String noIdentificacionCE;
+    private String fraccionArancelariaCE;
+    private String cantidadAduanaCE;
+    private String unidadAdunaCE;
+    private String valorUnitarioAduanaCE;
+    private String valorDolaresCE;
+    private String marcaCE;
+    private String modeloCE;
+    private String submodeloCE;
+    private String umSerieCE;
 
     @ManagedProperty(value = "#{usoCfdiService}")
     private usoCfdiService service;
@@ -189,8 +262,22 @@ public class cfdi33V implements Serializable {
     @ManagedProperty(value = "#{productoService}")
     private productoService serviceP;
 
+    FacesContext context = FacesContext.getCurrentInstance();
+
     @PostConstruct
     public void inicializar() {
+        tipoOperacionCE="2";
+        descpEsp = new DescEspecCompComExt();
+        mercancia = new MercanciasCompComExt();
+        destinatario = new DestinatarioCompComExt();
+        domicilioDestin = new DomicilioCompComExt();
+        propietario = new PropietarioCompComExt();
+        compComExt = new ComplementoComExt();
+        observaciones = "";
+        renderAlu = true;
+        renderRfc = true;
+        renderAut = true;
+        renderNEdu = true;
         numRegIdTrib = "";
         factura = new Factura();
         CURP = "";
@@ -242,12 +329,559 @@ public class cfdi33V implements Serializable {
         opcSeries = new ArrayList<String>();
         nextFolio = 0;
         todoUsos = new ArrayList<UsoCfdiBean>();
-        //moneda.setIdentifica("MXN");
-        Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd'T'hh:mm:ss");
-        fechaActual = formatter.format(date);
         verificarSesion();
 
+    }
+ 
+    public String getMunicipioRCE() {
+        return municipioRCE;
+    }
+
+    public void setMunicipioRCE(String municipioRCE) {
+        this.municipioRCE = municipioRCE;
+    }
+    public String getTipoOperacionCE() {
+        return tipoOperacionCE;
+    }
+
+    public void setTipoOperacionCE(String tipoOperacionCE) {
+        this.tipoOperacionCE = tipoOperacionCE;
+    }
+
+    public String getMotivoTrasladoCE() {
+        return motivoTrasladoCE;
+    }
+
+    public void setMotivoTrasladoCE(String motivoTrasladoCE) {
+        this.motivoTrasladoCE = motivoTrasladoCE;
+    }
+
+    public String getClavePedimentoCE() {
+        return clavePedimentoCE;
+    }
+
+    public void setClavePedimentoCE(String clavePedimentoCE) {
+        this.clavePedimentoCE = clavePedimentoCE;
+    }
+
+    public String getCertificadoOrigenCE() {
+        return certificadoOrigenCE;
+    }
+
+    public void setCertificadoOrigenCE(String certificadoOrigenCE) {
+        this.certificadoOrigenCE = certificadoOrigenCE;
+    }
+
+    public String getNumCertificadoOrigenCE() {
+        return numCertificadoOrigenCE;
+    }
+
+    public void setNumCertificadoOrigenCE(String numCertificadoOrigenCE) {
+        this.numCertificadoOrigenCE = numCertificadoOrigenCE;
+    }
+
+    public String getNumExportConfiabCE() {
+        return numExportConfiabCE;
+    }
+
+    public void setNumExportConfiabCE(String numExportConfiabCE) {
+        this.numExportConfiabCE = numExportConfiabCE;
+    }
+
+    public String getIncotermCE() {
+        return incotermCE;
+    }
+
+    public void setIncotermCE(String incotermCE) {
+        this.incotermCE = incotermCE;
+    }
+
+    public String getSubdivisionCE() {
+        return subdivisionCE;
+    }
+
+    public void setSubdivisionCE(String subdivisionCE) {
+        this.subdivisionCE = subdivisionCE;
+    }
+
+    public String getObservacionesCE() {
+        return observacionesCE;
+    }
+
+    public void setObservacionesCE(String observacionesCE) {
+        this.observacionesCE = observacionesCE;
+    }
+
+    public String getTipoCambioUSDCE() {
+        return tipoCambioUSDCE;
+    }
+
+    public void setTipoCambioUSDCE(String tipoCambioUSDCE) {
+        this.tipoCambioUSDCE = tipoCambioUSDCE;
+    }
+
+    public String getTotalUSDCE() {
+        return totalUSDCE;
+    }
+
+    public void setTotalUSDCE(String totalUSDCE) {
+        this.totalUSDCE = totalUSDCE;
+    }
+
+    public String getCurpCE() {
+        return CurpCE;
+    }
+
+    public void setCurpCE(String CurpCE) {
+        this.CurpCE = CurpCE;
+    }
+
+    public String getCalleECE() {
+        return CalleECE;
+    }
+
+    public void setCalleECE(String CalleECE) {
+        this.CalleECE = CalleECE;
+    }
+
+    public String getNumExtECE() {
+        return numExtECE;
+    }
+
+    public void setNumExtECE(String numExtECE) {
+        this.numExtECE = numExtECE;
+    }
+
+    public String getNumIntECE() {
+        return numIntECE;
+    }
+
+    public void setNumIntECE(String numIntECE) {
+        this.numIntECE = numIntECE;
+    }
+
+    public String getColoniaECE() {
+        return coloniaECE;
+    }
+
+    public void setColoniaECE(String coloniaECE) {
+        this.coloniaECE = coloniaECE;
+    }
+
+    public String getLocalidadECE() {
+        return localidadECE;
+    }
+
+    public void setLocalidadECE(String localidadECE) {
+        this.localidadECE = localidadECE;
+    }
+
+    public String getReferenciaECE() {
+        return ReferenciaECE;
+    }
+
+    public void setReferenciaECE(String ReferenciaECE) {
+        this.ReferenciaECE = ReferenciaECE;
+    }
+
+    public String getMunicipioECE() {
+        return municipioECE;
+    }
+
+    public void setMunicipioECE(String municipioECE) {
+        this.municipioECE = municipioECE;
+    }
+
+    public String getEstadoECE() {
+        return estadoECE;
+    }
+
+    public void setEstadoECE(String estadoECE) {
+        this.estadoECE = estadoECE;
+    }
+
+    public String getPaisECE() {
+        return paisECE;
+    }
+
+    public void setPaisECE(String paisECE) {
+        this.paisECE = paisECE;
+    }
+
+    public String getCpECE() {
+        return cpECE;
+    }
+
+    public void setCpECE(String cpECE) {
+        this.cpECE = cpECE;
+    }
+
+    public String getCalleRCE() {
+        return CalleRCE;
+    }
+
+    public void setCalleRCE(String CalleRCE) {
+        this.CalleRCE = CalleRCE;
+    }
+
+    public String getNumExtRCE() {
+        return numExtRCE;
+    }
+
+    public void setNumExtRCE(String numExtRCE) {
+        this.numExtRCE = numExtRCE;
+    }
+
+    public String getNumIntRCE() {
+        return numIntRCE;
+    }
+
+    public void setNumIntRCE(String numIntRCE) {
+        this.numIntRCE = numIntRCE;
+    }
+
+    public String getColoniaRCE() {
+        return coloniaRCE;
+    }
+
+    public void setColoniaRCE(String coloniaRCE) {
+        this.coloniaRCE = coloniaRCE;
+    }
+
+    public String getLocalidadRCE() {
+        return localidadRCE;
+    }
+
+    public void setLocalidadRCE(String localidadRCE) {
+        this.localidadRCE = localidadRCE;
+    }
+
+    public String getReferenciaRCE() {
+        return ReferenciaRCE;
+    }
+
+    public void setReferenciaRCE(String ReferenciaRCE) {
+        this.ReferenciaRCE = ReferenciaRCE;
+    }
+
+    public String getEstadoRCE() {
+        return estadoRCE;
+    }
+
+    public void setEstadoRCE(String estadoRCE) {
+        this.estadoRCE = estadoRCE;
+    }
+
+    public String getPaisRCE() {
+        return paisRCE;
+    }
+
+    public void setPaisRCE(String paisRCE) {
+        this.paisRCE = paisRCE;
+    }
+
+    public String getCpRCE() {
+        return cpRCE;
+    }
+
+    public void setCpRCE(String cpRCE) {
+        this.cpRCE = cpRCE;
+    }
+
+    public String getNumRegIdTribECE() {
+        return numRegIdTribECE;
+    }
+
+    public void setNumRegIdTribECE(String numRegIdTribECE) {
+        this.numRegIdTribECE = numRegIdTribECE;
+    }
+
+    public String getNumRegIdTribPCE() {
+        return numRegIdTribPCE;
+    }
+
+    public void setNumRegIdTribPCE(String numRegIdTribPCE) {
+        this.numRegIdTribPCE = numRegIdTribPCE;
+    }
+
+    public String getRecidenciaFiscalPCE() {
+        return recidenciaFiscalPCE;
+    }
+
+    public void setRecidenciaFiscalPCE(String recidenciaFiscalPCE) {
+        this.recidenciaFiscalPCE = recidenciaFiscalPCE;
+    }
+
+    public String getNumRegIdTribDCE() {
+        return numRegIdTribDCE;
+    }
+
+    public void setNumRegIdTribDCE(String numRegIdTribDCE) {
+        this.numRegIdTribDCE = numRegIdTribDCE;
+    }
+
+    public String getNombreDCE() {
+        return nombreDCE;
+    }
+
+    public void setNombreDCE(String nombreDCE) {
+        this.nombreDCE = nombreDCE;
+    }
+
+    public String getCalleDCE() {
+        return CalleDCE;
+    }
+
+    public void setCalleDCE(String CalleDCE) {
+        this.CalleDCE = CalleDCE;
+    }
+
+    public String getNumExtDCE() {
+        return numExtDCE;
+    }
+
+    public void setNumExtDCE(String numExtDCE) {
+        this.numExtDCE = numExtDCE;
+    }
+
+    public String getNumIntDCE() {
+        return numIntDCE;
+    }
+
+    public void setNumIntDCE(String numIntDCE) {
+        this.numIntDCE = numIntDCE;
+    }
+
+    public String getColoniaDCE() {
+        return coloniaDCE;
+    }
+
+    public void setColoniaDCE(String coloniaDCE) {
+        this.coloniaDCE = coloniaDCE;
+    }
+
+    public String getLocalidadDCE() {
+        return localidadDCE;
+    }
+
+    public void setLocalidadDCE(String localidadDCE) {
+        this.localidadDCE = localidadDCE;
+    }
+
+    public String getReferenciaDCE() {
+        return ReferenciaDCE;
+    }
+
+    public void setReferenciaDCE(String ReferenciaDCE) {
+        this.ReferenciaDCE = ReferenciaDCE;
+    }
+
+    public String getMunicipioDCE() {
+        return municipioDCE;
+    }
+
+    public void setMunicipioDCE(String municipioDCE) {
+        this.municipioDCE = municipioDCE;
+    }
+
+    public String getEstadoDCE() {
+        return estadoDCE;
+    }
+
+    public void setEstadoDCE(String estadoDCE) {
+        this.estadoDCE = estadoDCE;
+    }
+
+    public String getPaisDCE() {
+        return paisDCE;
+    }
+
+    public void setPaisDCE(String paisDCE) {
+        this.paisDCE = paisDCE;
+    }
+
+    public String getCpDCE() {
+        return cpDCE;
+    }
+
+    public void setCpDCE(String cpDCE) {
+        this.cpDCE = cpDCE;
+    }
+
+    public String getNoIdentificacionCE() {
+        return noIdentificacionCE;
+    }
+
+    public void setNoIdentificacionCE(String noIdentificacionCE) {
+        this.noIdentificacionCE = noIdentificacionCE;
+    }
+
+    public String getFraccionArancelariaCE() {
+        return fraccionArancelariaCE;
+    }
+
+    public void setFraccionArancelariaCE(String fraccionArancelariaCE) {
+        this.fraccionArancelariaCE = fraccionArancelariaCE;
+    }
+
+    public String getCantidadAduanaCE() {
+        return cantidadAduanaCE;
+    }
+
+    public void setCantidadAduanaCE(String cantidadAduanaCE) {
+        this.cantidadAduanaCE = cantidadAduanaCE;
+    }
+
+    public String getUnidadAdunaCE() {
+        return unidadAdunaCE;
+    }
+
+    public void setUnidadAdunaCE(String unidadAdunaCE) {
+        this.unidadAdunaCE = unidadAdunaCE;
+    }
+
+    public String getValorUnitarioAduanaCE() {
+        return valorUnitarioAduanaCE;
+    }
+
+    public void setValorUnitarioAduanaCE(String valorUnitarioAduanaCE) {
+        this.valorUnitarioAduanaCE = valorUnitarioAduanaCE;
+    }
+
+    public String getValorDolaresCE() {
+        return valorDolaresCE;
+    }
+
+    public void setValorDolaresCE(String valorDolaresCE) {
+        this.valorDolaresCE = valorDolaresCE;
+    }
+
+    public String getMarcaCE() {
+        return marcaCE;
+    }
+
+    public void setMarcaCE(String marcaCE) {
+        this.marcaCE = marcaCE;
+    }
+
+    public String getModeloCE() {
+        return modeloCE;
+    }
+
+    public void setModeloCE(String modeloCE) {
+        this.modeloCE = modeloCE;
+    }
+
+    public String getSubmodeloCE() {
+        return submodeloCE;
+    }
+
+    public void setSubmodeloCE(String submodeloCE) {
+        this.submodeloCE = submodeloCE;
+    }
+
+    public String getUmSerieCE() {
+        return umSerieCE;
+    }
+
+    public void setUmSerieCE(String umSerieCE) {
+        this.umSerieCE = umSerieCE;
+    }
+
+    public Boolean getTablaPropietarios() {
+        return tablaPropietarios;
+    }
+
+    public void setTablaPropietarios(Boolean tablaPropietarios) {
+        this.tablaPropietarios = tablaPropietarios;
+    }
+
+    public Boolean getTablaDomicilios() {
+        return tablaDomicilios;
+    }
+
+    public void setTablaDomicilios(Boolean tablaDomicilios) {
+        this.tablaDomicilios = tablaDomicilios;
+    }
+
+    public Boolean getTablaDestinatarios() {
+        return tablaDestinatarios;
+    }
+
+    public void setTablaDestinatarios(Boolean tablaDestinatarios) {
+        this.tablaDestinatarios = tablaDestinatarios;
+    }
+
+    public Boolean getTablaDescripciones() {
+        return tablaDescripciones;
+    }
+
+    public void setTablaDescripciones(Boolean tablaDescripciones) {
+        this.tablaDescripciones = tablaDescripciones;
+    }
+
+    public Boolean getTablaMercancias() {
+        return tablaMercancias;
+    }
+
+    public void setTablaMercancias(Boolean tablaMercancias) {
+        this.tablaMercancias = tablaMercancias;
+    }
+
+    public MercanciasCompComExt getMercancia() {
+        return mercancia;
+    }
+
+    public void setMercancia(MercanciasCompComExt mercancia) {
+        this.mercancia = mercancia;
+    }
+
+    public DescEspecCompComExt getDescpEsp() {
+        return descpEsp;
+    }
+
+    public void setDescpEsp(DescEspecCompComExt descpEsp) {
+        this.descpEsp = descpEsp;
+    }
+
+    public DestinatarioCompComExt getDestinatario() {
+        return destinatario;
+    }
+
+    public void setDestinatario(DestinatarioCompComExt destinatario) {
+        this.destinatario = destinatario;
+    }
+
+    public DomicilioCompComExt getDomicilioDestin() {
+        return domicilioDestin;
+    }
+
+    public void setDomicilioDestin(DomicilioCompComExt domicilioDestin) {
+        this.domicilioDestin = domicilioDestin;
+    }
+
+    public PropietarioCompComExt getPropietario() {
+        return propietario;
+    }
+
+    public void setPropietario(PropietarioCompComExt propietario) {
+        this.propietario = propietario;
+    }
+
+    public ComplementoComExt getCompComExt() {
+        return compComExt;
+    }
+
+    public void setCompComExt(ComplementoComExt compComExt) {
+        this.compComExt = compComExt;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
     }
 
     public String getMonedaS() {
@@ -954,14 +1588,6 @@ public class cfdi33V implements Serializable {
         this.cliente = cliente;
     }
 
-    public String getFechaActual() {
-        return fechaActual;
-    }
-
-    public void setFechaActual(String fechaActual) {
-        this.fechaActual = fechaActual;
-    }
-
     public Integer getNextFolio() {
         return nextFolio;
     }
@@ -1097,7 +1723,6 @@ public class cfdi33V implements Serializable {
     public void verificarSesion() {
         System.out.println("verificando..................");
         try {
-            FacesContext context = FacesContext.getCurrentInstance();
             usuarioSeleccionado = (Usuario) context.getExternalContext().getSessionMap().get("usuarioElegido");
             if (usuarioSeleccionado == null) {
                 context.getExternalContext().redirect("index.xhtml");
@@ -1758,42 +2383,48 @@ public class cfdi33V implements Serializable {
 
     public void activarAlum() {
         if (CURP != null && !CURP.equals("")) {
-            renderAlu = true;
             CURP = mayus(CURP);
+            if (CURP.length() > 17) {
+                renderAlu = false;
+            }
         } else {
-            renderAlu = false;
-            renderRfc = false;
-            renderAut = false;
-            renderNEdu = false;
-        }
-    }
-
-    public void activarRfc() {
-        if (Alumno != null && !Alumno.equals("")) {
+            renderAlu = true;
             renderRfc = true;
-            Alumno = mayus(Alumno);
-        } else {
-            renderRfc = false;
-            renderAut = false;
-            renderNEdu = false;
+            renderAut = true;
+            renderNEdu = true;
         }
     }
 
     public void activarAutRVOE() {
-        if (RFCAl != null && !RFCAl.equals("")) {
-            renderAut = true;
-            RFCAl = mayus(RFCAl);
-        } else {
+        if (Alumno != null && !Alumno.equals("")) {
             renderAut = false;
-            renderNEdu = false;
+            Alumno = mayus(Alumno);
+        } else {
+            renderRfc = true;
+            renderAut = true;
+            renderNEdu = true;
         }
     }
 
     public void activarNEduc() {
         if (autRVOE != null && !autRVOE.equals("")) {
-            renderNEdu = true;
-        } else {
+            autRVOE = mayus(autRVOE);
             renderNEdu = false;
+        } else {
+            renderRfc = true;
+            renderNEdu = true;
+        }
+    }
+
+    public void activarRfc() {
+        if (nivelEduc != null && !nivelEduc.equals("")) {
+            renderRfc = false;
+        }
+    }
+
+    public void sepRFC() {
+        if (RFCAl != null && !RFCAl.equals("")) {
+            RFCAl = mayus(RFCAl);
         }
     }
 
@@ -1805,7 +2436,6 @@ public class cfdi33V implements Serializable {
     }
 
     public void validarCamposCFDI() {
-        FacesContext context = FacesContext.getCurrentInstance();
         CreacionArchivo creacionArchivo = new CreacionArchivo();
         String[] error;
         ComplementoSEP sep = new ComplementoSEP();
@@ -1821,32 +2451,36 @@ public class cfdi33V implements Serializable {
                                     if (conceptos.size() > 0) {
                                         Boolean bandera = false;
                                         Boolean complemtoSEP = false;
-                                        if (!CURP.equals("")) {
+                                        if (CURP != null && !CURP.equals("")) {
                                             if (CURP.length() == 18) {
-                                                if (!Alumno.equals("")) {
-                                                    if (!RFCAl.equals("")) {
-                                                        if (RFCAl.length() >= 12) {
-                                                            if (!autRVOE.equals("")) {
-                                                                if (!nivelEduc.equals("")) {
-                                                                    bandera = true;
-                                                                    complemtoSEP = true;
-                                                                    sep.setAlumno(Alumno);
-                                                                    sep.setAutoRVOE(autRVOE);
-                                                                    sep.setCurp(CURP);
-                                                                    sep.setNivelEducativo(nivelEduc);
-                                                                    sep.setRfc(RFCAl);
-                                                                } else {
-                                                                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Selecionar Nivel Educativo"));
+                                                if (Alumno != null && !Alumno.equals("")) {
+                                                    if (autRVOE != null && !autRVOE.equals("")) {
+                                                        if (nivelEduc != null && !nivelEduc.equals("")) {
+                                                            Boolean rf = true;
+                                                            if (RFCAl != null && !RFCAl.equals("")) {
+                                                                if (RFCAl.length() < 12) {
+                                                                    rf = false;
+                                                                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) RFC no cumle con la especificacion"));
                                                                 }
                                                             } else {
-                                                                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Agregar autRVOE"));
+                                                                RFCAl = "";
+                                                            }
+                                                            if (rf) {
+                                                                bandera = true;
+                                                                complemtoSEP = true;
+                                                                sep.setAlumno(Alumno);
+                                                                sep.setAutoRVOE(autRVOE);
+                                                                sep.setCurp(CURP);
+                                                                sep.setNivelEducativo(nivelEduc);
+                                                                sep.setRfc(RFCAl);
                                                             }
                                                         } else {
-                                                            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) RFC no cumle con la especificacion"));
+                                                            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Selecionar Nivel Educativo"));
                                                         }
                                                     } else {
-                                                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Agregar RFC"));
+                                                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Agregar autRVOE"));
                                                     }
+
                                                 } else {
                                                     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Agregar Alumno"));
                                                 }
@@ -1855,15 +2489,15 @@ public class cfdi33V implements Serializable {
                                             }
 
                                         } else {
-                                            sep=null;
+                                            sep = null;
                                             bandera = true;
                                         }
 
                                         if (bandera) {
-                                            if(uuidRelacionados.size()>0){
+                                            if (uuidRelacionados.size() > 0) {
                                                 factura.setRelacionado(true);
                                                 factura.setTipoRelacion(tipoRelacion);
-                                            }else{
+                                            } else {
                                                 factura.setRelacionado(false);
                                                 factura.setTipoRelacion(null);
                                             }
@@ -1877,7 +2511,7 @@ public class cfdi33V implements Serializable {
                                             factura.setUsoCfdi(usosDao.buscarXIdentifica(usoCfdiBean.getIdentifica()));
                                             factura.setSubtotal(subTotal.setScale(2, RoundingMode.HALF_UP));
                                             factura.setTotal(total.setScale(2, RoundingMode.HALF_UP));
-                                            
+
                                             factura.setFechaCreacion(new Date());
                                             factura.setResponsableCreacion(usuarioSeleccionado.getNombre());
                                             factura.setLugarExpedicion(usuarioSeleccionado.getCp());
@@ -1889,26 +2523,27 @@ public class cfdi33V implements Serializable {
                                             }
                                             factura.setFolio(serie.getNombre() + serie.getFolioActual());
                                             factura.setConsecutivo(serie.getFolioActual());
-                                            factura.setSerie(serie.getIdentifica());  
-                                            factura.setFormaPago(formaPagoS);                           
+                                            factura.setSerie(serie.getIdentifica());
+                                            factura.setFormaPago(formaPagoS);
                                             factura.setConfirmacion("");
-                                            Double descuT =0.0;
-                                            for(Conceptos con:conceptos){
-                                                if(con.getDescuento().doubleValue()>0){
-                                                   descuT+= con.getDescuento().setScale(2, RoundingMode.HALF_UP).doubleValue();
+                                            factura.setObservaciones(observaciones);
+                                            Double descuT = 0.0;
+                                            for (Conceptos con : conceptos) {
+                                                if (con.getDescuento().doubleValue() > 0) {
+                                                    descuT += con.getDescuento().setScale(2, RoundingMode.HALF_UP).doubleValue();
                                                 }
                                             }
                                             factura.setDescuento(new BigDecimal(descuT).setScale(2, RoundingMode.HALF_UP));
-                                            CrearXML xml= new CrearXML();
-                                            String datoXML=xml.crear(factura, serie, usuarioSeleccionado, uuidRelacionados, cliente, usoCfdiBean, numRegIdTrib, conceptos, sep, listILCT, listILCR);
+                                            CrearXML xml = new CrearXML();
+                                            String datoXML = xml.crear(factura, serie, usuarioSeleccionado, uuidRelacionados, cliente, usoCfdiBean, numRegIdTrib, conceptos, sep, listILCT, listILCR);
                                             System.out.println(datoXML);
-                                               //factura.setXml(creacionArchivo.generarXML(factura, serie, listaDetalleFactura, usuarioSeleccionado));
+                                            //factura.setXml(creacionArchivo.generarXML(factura, serie, listaDetalleFactura, usuarioSeleccionado));
 //                                            Serie actualizarConsecutivo = new Serie();
 //                                            actualizarConsecutivo.setIdentifica(factura.getSerie());
 //                                            actualizarConsecutivo = serieDao.findSerieByIdentifica(actualizarConsecutivo);
 //                                            actualizarConsecutivo.setFolioActual(factura.getConsecutivo());
 //                                            serieDao.updateSerie(actualizarConsecutivo);
-                                            
+
                                         }
 
                                     } else {
@@ -1936,9 +2571,10 @@ public class cfdi33V implements Serializable {
 
     }
 
-    public void condicionesP(){
-        condicionesPago= condicionesPago.toUpperCase();
+    public void condicionesP() {
+        condicionesPago = condicionesPago.toUpperCase();
     }
+
     public void tipoRel() {
         if (!tipoRelacionS.equals("")) {
             for (TipoRelacion tp : listaTiposRelacion) {
@@ -1997,5 +2633,115 @@ public class cfdi33V implements Serializable {
 
     public void usoCfdiBeanM(UsoCfdiBean us) {
         usoCfdiBean = us;
+    }
+
+    public void observacionesSet() {
+        observaciones = mayus(observaciones);
+    }
+
+    public void agregarPropietario() {
+        if (propietario.getNumRegIdTrib() != null && !propietario.getNumRegIdTrib().equals("")) {
+            if (propietario.getRecidenciaFiscal() != null && !propietario.getRecidenciaFiscal().equals("")) {
+                compComExt.getPropietarios().add(propietario);
+                tablaPropietarios=true;
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) Se debe de colocar RecidenciaFiscal"));
+            }
+        } else {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) Se debe de colocar NumRegIdTrib"));
+        }
+    }
+    public void eliminarPropietario(PropietarioCompComExt p){
+        compComExt.getPropietarios().remove(p);
+        if(compComExt.getPropietarios().size()==0){
+            tablaPropietarios=false;
+        }
+    }
+
+    public void agregarDomicilioDest() {
+        if (domicilioDestin.getCalle() != null && !domicilioDestin.getCalle().equals("")) {
+            if (domicilioDestin.getEstado() != null && !domicilioDestin.getEstado().equals("")) {
+                if (domicilioDestin.getPais() != null && !domicilioDestin.getPais().equals("")) {
+                    if (domicilioDestin.getCp() != null && !domicilioDestin.getCp().equals("")) {
+                        destinatario.getDomicilio().add(domicilioDestin);
+                        tablaDomicilios=true;
+                    } else {
+                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Destinatario- Codigo postal es obligatorio"));
+                    }
+                } else {
+                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Destinatario- pais es obligatorio"));
+                }
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Destinatario- Estado es obligatorio"));
+            }
+        } else {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Destinatario- Calle es obligatorio"));
+        }
+    }
+    
+    public void eliminarDomicilioDest(DomicilioCompComExt d){
+        destinatario.getDomicilio().remove(d);
+        if(destinatario.getDomicilio().size()==0){
+            tablaDomicilios=false;
+        }
+    }
+
+    public void agregarDestinatario() {
+        if (destinatario.getNumRegIdTrib() != null && !destinatario.getNumRegIdTrib().equals("")) {
+            if (destinatario.getNombre() != null && !destinatario.getNombre().equals("")) {
+                compComExt.getDestinatarios().add(destinatario);
+                tablaDestinatarios=true;
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Destinatario- Nombre es obligatorio"));
+            }
+        } else {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Destinatario- NumRegIdTrib es obligatorio"));
+        }
+    }
+    
+    public void eliminarDestinatario(DestinatarioCompComExt d){
+        compComExt.getDestinatarios().remove(d);
+        if(compComExt.getDestinatarios().size()==0){
+            tablaDestinatarios=false;
+        }
+    }
+    
+    public void agregarDescEsp(){
+        if(descpEsp.getMarca()!=null && !descpEsp.getMarca().equals("")){
+            mercancia.getDescEspec().add(descpEsp);
+            tablaDescripciones=true;
+        }else{
+           context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Mercancia- Marca es obligatorio")); 
+        }
+    }
+    
+    public void eliminarDescEsp(DescEspecCompComExt d){
+        mercancia.getDescEspec().remove(d);
+        if(mercancia.getDescEspec().size()==0){
+            tablaDescripciones=false;
+        }
+    }
+    
+    public void agregarMercancia(){
+        if(mercancia.getNoIdentificacion()!=null && ! mercancia.getNoIdentificacion().equals("")){
+            if(mercancia.getValorDolares()!=null && !mercancia.getValorDolares().equals("")){
+                compComExt.getMercancias().add(mercancia);
+                tablaMercancias=true;
+            }else{
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Mercancia- ValorDolares es obligatorio")); 
+            }
+        }else{
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Mercancia- NoIdentificacion es obligatorio")); 
+        }
+    }
+    
+    public void eliminarMercancia(MercanciasCompComExt m){
+        compComExt.getMercancias().remove(m);
+        if(compComExt.getMercancias().size()==0){
+            tablaMercancias=false;
+        }
+    }
+    public String mayus2(String d){
+        return d.toLowerCase();
     }
 }

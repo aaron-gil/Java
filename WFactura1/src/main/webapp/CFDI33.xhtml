@@ -11,25 +11,6 @@
         <link href="webjars/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
         <!--<script src="webjars/jquery/3.3.1/jquery.min.js"></script>-->
         <script src="webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <style>
-            .btn-link{
-                text-decoration: none;
-                color: white;
-            }
-            .card-header, .card-title{
-                background: rgb(244,129,16) !important;
-
-            }
-            .btn-link:hover {
-                color: rgb(251,201,151);
-                text-decoration: none !important;
-            }
-            .card{
-                border-radius: 10px 10px 0px 0px;
-
-            }
-
-        </style>
     </h:head>
     <h:body>
         <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -37,10 +18,14 @@
             <ui:define name="menuP"></ui:define>
             <ui:define name="contenido"></ui:define>
             <ui:define name="contenidoFull">
-                <p:messages id="messages" showDetail="true" closable="true">
-                    <p:autoUpdate />
-                </p:messages>
+                <!--<p:messages id="messages" showDetail="true" closable="true">
+                    <p:autoUpdate /> formcfdi33:growl
+                </p:messages>-->
+
                 <h:form id="formcfdi33">
+                    <p:growl id="growl" showDetail="true" sticky="true" life="800">
+                        <p:autoUpdate />
+                    </p:growl>
                     <div class="accordion texto13" id="cfdi33">
                         <div class="card">
                             <div class="card-header" id="emisor">
@@ -56,69 +41,65 @@
                                     <div class="container-fluid">
                                         <p:outputPanel id="emisorPanel">
                                             <div class="row">
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="*RFC:" />
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*RFC" />
+                                                </div>                                                                                               
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Razon Social" />
                                                 </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:outputText value="#{cfdi33V.usuarioSeleccionado.nombre}" />
-                                                </div>                                                
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Razon Social:" />
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Lugar de expedición" />
                                                 </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:outputText value="#{cfdi33V.usuarioSeleccionado.nombreCompleto}" />
-                                                </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="*Fecha:" />
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:outputText value="#{cfdi33V.fechaActual}" />
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Regimen fiscal" />
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="*Lugar de expedición:" />
+                                                <div class="col-md-3">
+                                                    <h:inputText value="#{cfdi33V.usuarioSeleccionado.nombre}" readonly="true" />
+                                                </div> 
+                                                <div class="col-md-3">
+                                                    <h:inputText value="#{cfdi33V.usuarioSeleccionado.nombreCompleto}" readonly="true" />
                                                 </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:outputText value="#{cfdi33V.usuarioSeleccionado.cp}" />
+                                                <div class="col-md-3">
+                                                    <h:inputText value="#{cfdi33V.usuarioSeleccionado.cp}" readonly="true" />
                                                 </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="*Regimen fiscal:" />
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:outputText value="#{cfdi33V.usuarioSeleccionado.regimenFiscal}" />
+                                                <div class="col-md-3">
+                                                    <h:inputText value="#{cfdi33V.usuarioSeleccionado.regimenFiscal}" readonly="true"/>
                                                 </div>
                                             </div>
+                                            <br/>
                                             <div class="row">
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="*Tipo de documento:" />
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Tipo de documento" />
+                                                </div>                                               
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Serie" rendered="#{cfdi33V.renderSerie}" />
                                                 </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:selectOneMenu value="#{cfdi33V.tipoComp}" >
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Folio" rendered="#{cfdi33V.renderSerie}" />
+                                                </div>
+                                            </div>                                            
+                                            <div class="row">                                                
+                                                <div class="col-md-3">
+                                                    <p:selectOneMenu value="#{cfdi33V.tipoComp}"  style="width: 200px !important">
                                                         <f:selectItem itemValue="" itemLabel="Seleccionar" />
                                                         <f:selectItems value="#{cfdi33V.listaTiposComprobante}" var="td" itemValue="#{td.identifica}" itemLabel="#{td.nombre}"/>
                                                         <p:ajax update="emisorPanel" listener="#{cfdi33V.seriesSelc}"></p:ajax>
                                                     </p:selectOneMenu>
-                                                </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Serie:" rendered="#{cfdi33V.renderSerie}" />
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:selectOneMenu value="#{cfdi33V.serieS}"  rendered="#{cfdi33V.renderSerie}">
+                                                </div>                                                
+                                                <div class="col-md-3">
+                                                    <p:selectOneMenu value="#{cfdi33V.serieS}" style="width: 200px !important" rendered="#{cfdi33V.renderSerie}">
                                                         <f:selectItem itemValue="" itemLabel="Seleccionar" />
                                                         <f:selectItems value="#{cfdi33V.seriesSeleccionadas}" var="s" itemValue="#{s.identifica}" itemLabel="#{s.nombre}"/>
                                                         <p:ajax update="emisorPanel" listener="#{cfdi33V.folioSiguiente()}"></p:ajax>
                                                     </p:selectOneMenu>
-                                                </div>                                                
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Folio:" rendered="#{cfdi33V.renderSerie}" />
-                                                </div>
-                                                <div class="col-md-2 text-left" id="folio">
-                                                    <h:outputText value="#{cfdi33V.nextFolio}" rendered="#{cfdi33V.renderSerie}"/>
+                                                </div> 
+                                                <div class="col-md-3" id="folio">
+                                                    <h:inputText value="#{cfdi33V.nextFolio}" rendered="#{cfdi33V.renderSerie}" readonly="true"/>
                                                 </div>
                                             </div>
                                         </p:outputPanel>
-
                                     </div>
                                 </div>
                             </div>
@@ -144,30 +125,27 @@
                                         <p:outputPanel id="uuidRelacionado">        
                                             <p:outputPanel id="relacion">
                                                 <div class="row">
-                                                    <div class="col-md-2 text-right">
+                                                    <div class="col-md-3">
                                                         <h:outputText value="*Tipo Relación" />
                                                     </div>
-                                                    <div class="col-md-2">
-                                                        <p:selectOneMenu id="somTipoRelacion" value="#{cfdi33V.tipoRelacionS}" autoWidth="false" style="width: 150px" disabled="#{cfdi33V.relacionSelect}">
+                                                    <div class="col-md-4">
+                                                        <h:outputText value="*UUID"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row">                                                    
+                                                    <div class="col-md-3">
+                                                        <p:selectOneMenu id="somTipoRelacion" style="width: 200px !important" value="#{cfdi33V.tipoRelacionS}" autoWidth="false" disabled="#{cfdi33V.relacionSelect}">
                                                             <f:selectItem itemValue="" itemLabel="Seleccionar" ></f:selectItem>
                                                             <f:selectItems value="#{cfdi33V.listaTiposRelacion}" var="t" itemValue="#{t.identifica}" itemLabel="#{t.descripcion}" ></f:selectItems>
                                                             <p:ajax event="change" listener="#{cfdi33V.tipoRel}" />
                                                         </p:selectOneMenu>
-                                                    </div>
-                                                    <div class="col-md-1 text-right">
-                                                        <h:outputText value="*UUID"/>
-                                                    </div>
+                                                    </div>                                                    
                                                     <div class="col-md-4">
                                                         <p:inputMask id="uiii" size="40" value="#{cfdi33V.uuidRela}" mask="********-****-****-****-************">  <!--[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}-->
                                                             <p:ajax event="blur" listener="#{cfdi33V.verif()}" update="uiii" />
                                                         </p:inputMask>
-                                                        <!--<p:inputText  id="uiii" value="" maxlength="36" size="40" validatorMessage="Debe cumplir con el formato UUID">
-                                                            <f:validateRegex pattern="^([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})$"/>
-                                                            <p:ajax event="keyup" listener="#{cfdi33V.verif()}" update="uiii" />
-                                                            
-                                                        </p:inputText >-->
                                                     </div>
-                                                    <div class="col-md-1">
+                                                    <div class="col-md-2">
                                                         <h:commandButton value="Agregar">
                                                             <p:ajax listener="#{cfdi33V.agregarRelacionado}" update="formcfdi33:relacion formcfdi33:dtUUIDRel"/>
                                                         </h:commandButton>
@@ -193,9 +171,6 @@
                                 </div>
                             </div>
                         </div>
-
-
-
                         <div class="card">
                             <div class="card-header" id="receptor">
                                 <h2 class="mb-0">
@@ -208,13 +183,15 @@
                                 <div class="card-body">
                                     <div class="container-fluid">
                                         <p:outputPanel id="receptorPanel">
-                                            <div class="row">
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Buscar RFC receptor:" />
+                                            <div class="row"> 
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Buscar RFC receptor" />
                                                 </div>
-                                                <div class="col-md-2 text-left">
+                                            </div>
+                                            <div class="row">                                                
+                                                <div class="col-md-3">
                                                     <p:autoComplete id="clie" value="#{cfdi33V.cliente}" completeMethod="#{cfdi33V.completeCliente}"
-                                                                    var="cli" itemValue="#{cli}" itemLabel="#{cli.rfc}"  converter="clienteConverter" forceSelection="true" >
+                                                                    var="cli" itemValue="#{cli}" itemLabel="#{cli.rfc}"  converter="clienteConverter" forceSelection="true" scrollHeight="250" >
                                                         <p:column>
                                                             <h:outputText value="#{cli.rfc}" />
                                                         </p:column>
@@ -225,32 +202,50 @@
                                                     </p:autoComplete>
                                                 </div>                                            
                                             </div>
+                                            <br/>
                                             <div class="row">
-                                                <div class="col-md-2 text-right">
+                                                <div class="col-md-3">
                                                     <h:outputText value="Cliente:" />
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:outputText value="#{cfdi33V.cliente.nombre}" />
-                                                </div>
-                                                <div class="col-md-2 text-right">
+                                                </div> 
+                                                <div class="col-md-3">
                                                     <h:outputText value="*RFC: " />
                                                 </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:outputText value="#{cfdi33V.cliente.rfc}" />
-                                                </div>
-                                                <div class="col-md-2 text-right">
+                                                <div class="col-md-3">
                                                     <h:outputText value="Razon Social:" />
                                                 </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:outputText value="#{cfdi33V.cliente.razonSocial}" />
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Recidencia fiscal: " />
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-2 text-right">
+
+                                                <div class="col-md-3">
+                                                    <h:outputText value="#{cfdi33V.cliente.nombre}" />
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <h:outputText value="#{cfdi33V.cliente.rfc}" />
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <h:outputText value="#{cfdi33V.cliente.razonSocial}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="#{cfdi33V.cliente.cp}" />
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            <div class="row">
+                                                <div class="col-md-5">
                                                     <h:outputText value="*Uso CFDI:" />
                                                 </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:autoComplete id="uso" value="#{cfdi33V.usoCfdiBean}" completeMethod="#{cfdi33V.completeUso}"
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Número de registro:" />
+                                                </div>
+                                            </div>
+                                            <div class="row">                                                
+                                                <div class="col-md-5">
+                                                    <p:autoComplete id="uso" value="#{cfdi33V.usoCfdiBean}" completeMethod="#{cfdi33V.completeUso}" scrollHeight="250"
                                                                     var="us" itemValue="#{us}" itemLabel="#{us.descripcion}"  converter="usoCfdiConverter" forceSelection="true" >
                                                         <p:column>
                                                             <h:outputText value="#{us.identifica}" />
@@ -260,17 +255,8 @@
                                                         </p:column>
                                                         <p:ajax event="itemSelect" update="formcfdi33:receptorPanel"></p:ajax>
                                                     </p:autoComplete>
-                                                </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Recidencia fiscal: " />
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:outputText value="#{cfdi33V.cliente.cp}" />
-                                                </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Número de registro:" />
-                                                </div>
-                                                <div class="col-md-2 text-left">
+                                                </div>                                             
+                                                <div class="col-md-3">
                                                     <h:inputText  value="#{cfdi33V.numRegIdTrib}" />
                                                 </div>
                                             </div>
@@ -292,31 +278,34 @@
                                     <div class="container-fluid">
                                         <p:outputPanel id="pagoPanel">
                                             <div class="row">
-                                                <div class="col-md-2 text-right">
+                                                <div class="col-md-3">
                                                     <h:outputText value="*Moneda:" />
+                                                </div> 
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Forma de Pago: " />
                                                 </div>
-                                                <div class="col-md-1 text-left">
-                                                    <p:selectOneMenu value="#{cfdi33V.monedaS}">
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Método de Pago: " />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-md-3">
+                                                    <p:selectOneMenu style="width: 200px !important" value="#{cfdi33V.monedaS}">
                                                         <f:selectItem itemValue="MXN" itemLabel="MXN" />
                                                         <f:selectItems	value="#{cfdi33V.listaMonedas}" var="m" itemValue="#{m.identifica}" itemLabel="#{m.identifica}"></f:selectItems>  4
                                                         <p:ajax event="itemSelect" listener="#{cfdi33V.monedaM}" />
                                                     </p:selectOneMenu>
-                                                </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Forma de Pago: " />
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:selectOneMenu value="#{cfdi33V.formaPagoS}" disabled="false">
+                                                </div>                                                
+                                                <div class="col-md-3">
+                                                    <p:selectOneMenu style="width: 200px !important" value="#{cfdi33V.formaPagoS}" disabled="false">
                                                         <f:selectItem itemValue="" itemLabel="Seleccionar una opción"></f:selectItem>
                                                         <f:selectItems value="#{cfdi33V.listaFormasPago}" var="m" itemValue="#{m.identifica}" itemLabel="#{m.descripcion}"></f:selectItems>
                                                         <p:ajax event="itemSelect" listener="#{cfdi33V.formPag}" />
                                                     </p:selectOneMenu>
-                                                </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Método de Pago: " />
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:selectOneMenu value="#{cfdi33V.metodoPagoS}">
+                                                </div>                                                
+                                                <div class="col-md-3">
+                                                    <p:selectOneMenu style="width: 200px !important" value="#{cfdi33V.metodoPagoS}">
                                                         <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
                                                         <f:selectItems value="#{cfdi33V.listaMetodosPago}" var="m" itemValue="#{m.identifica}" itemLabel="#{m.descripcion}"></f:selectItems>
                                                         <p:ajax event="itemSelect" listener="#{cfdi33V.metodoP}"/>
@@ -324,22 +313,22 @@
                                                 </div>
 
                                             </div>
+                                            <br/>
                                             <div class="row">
-                                                <div class="col-md-12 text-right">
-                                                    <h:outputText value=" &ensp;" />
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Tipo de cambio:" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Condiciones de pago:" />
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="*Tipo de cambio:" />
-                                                </div>
-                                                <div class="col-md-2 text-left">
+
+                                                <div class="col-md-3">
                                                     <p:inputNumber value="#{cfdi33V.tipoCambio}" decimalPlaces="6" />
                                                 </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Condiciones de pago:" />
-                                                </div>
-                                                <div class="col-md-2 text-left ">
+
+                                                <div class="col-md-3">
                                                     <h:inputText value="#{cfdi33V.condicionesPago}">
                                                         <p:ajax event="blur" listener="#{cfdi33V.condicionesP()}" />
                                                     </h:inputText>
@@ -361,26 +350,26 @@
                             <div id="concM" class="collapse" aria-labelledby="conc" data-parent="#cfdi33">
                                 <div class="card-body">
                                     <p:outputPanel id="conceptosPanel">
+                                        <div class="row">
+                                            <div class="col-md-2 text-right">
+                                                <h:outputText value="Buscar producto: " />
+                                            </div>
+                                            <div class="col-md-6 text-left">
+                                                <p:autoComplete id="producto" value="#{cfdi33V.producto}" completeMethod="#{cfdi33V.completeProducto}"
+                                                                var="p" itemValue="#{p}" itemLabel="#{p.descripcion}"  converter="productoConverter" forceSelection="true" >
+                                                    <p:column>
+                                                        <h:outputText value="#{p.codigoSat}" />
+                                                    </p:column>
+                                                    <p:column>
+                                                        <h:outputText value="#{p.descripcion}" />
+                                                    </p:column>
+                                                    <p:ajax event="itemSelect" update="conceptosPanel" listener="#{cfdi33V.habilitarInputs}"></p:ajax>
+                                                </p:autoComplete>
+                                            </div>
+                                        </div>
+                                        <br/>
                                         <div class="row">                                        
-                                            <div class="col-md-4">
-                                                <div class="row">
-                                                    <div class="col-md-6 text-right">
-                                                        <h:outputText value="Buscar producto: " />
-
-                                                    </div>
-                                                    <div class="col-md-6 text-left">
-                                                        <p:autoComplete id="producto" value="#{cfdi33V.producto}" completeMethod="#{cfdi33V.completeProducto}"
-                                                                        var="p" itemValue="#{p}" itemLabel="#{p.descripcion}"  converter="productoConverter" forceSelection="true" >
-                                                            <p:column>
-                                                                <h:outputText value="#{p.codigoSat}" />
-                                                            </p:column>
-                                                            <p:column>
-                                                                <h:outputText value="#{p.descripcion}" />
-                                                            </p:column>
-                                                            <p:ajax event="itemSelect" update="conceptosPanel" listener="#{cfdi33V.habilitarInputs}"></p:ajax>
-                                                        </p:autoComplete>
-                                                    </div>
-                                                </div>
+                                            <div class="col-md-6">                                                
                                                 <div class="row">
                                                     <div class="col-md-6 text-right">
                                                         <h:outputText value="*Claveproducto/servicio: " />
@@ -421,8 +410,6 @@
                                                         <h:outputText value="#{cfdi33V.producto.numeroPredial}" />
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
                                                 <div class="row">
                                                     <div class="col-md-6 text-right">
                                                         <h:outputText value="No. Identificador: " />
@@ -431,6 +418,8 @@
                                                         <h:outputText value="#{cfdi33V.producto.numeroIdentificador}" />
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="col-md-6">                                                
                                                 <div class="row">
                                                     <div class="col-md-6 text-right">
                                                         <h:outputText value="*Cantidad: " />
@@ -483,18 +472,108 @@
                                                         </h:outputText>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <!--<div class="row">
-                                                    <div class="col-md-6 text-right">
-                                                        <h:outputText value="*Descripcion: " />
-                                                    </div>
-                                                    <div class="col-md-6 text-left">
-                                                        <h:inputTextarea style="width: 150px; height: 175px"  />
-                                                    </div>
-                                                </div>-->
-                                            </div>                                        
+                                            </div>                                      
                                         </div>
+                                        <br/>    
+                                        <div class="row">
+                                            <div class="col-md-12 text-left">
+                                                <p:selectBooleanCheckbox itemLabel="Impuestos Trasladados" value="#{cfdi33V.checktrasladados}" rendered="#{cfdi33V.activChecksImp}">
+                                                    <p:ajax update=":formcfdi33:panelTrasl" listener="#{cfdi33V.agregarVTrasladados()}" />
+                                                </p:selectBooleanCheckbox>
+                                            </div>
+                                        </div>
+                                        <p:outputPanel id="panelTrasl">
+                                            <p:outputPanel style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;" rendered="#{cfdi33V.checktrasladados}" >
+
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <h:outputText value="Base: " rendered="#{cfdi33V.checktrasladados}" />
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <h:outputText value="Impuesto:  " rendered="#{cfdi33V.checktrasladados}"/>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <h:outputText value="Tipo Factor:  " rendered="#{cfdi33V.checktrasladados}" />
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <h:outputText value="Tasa o Cuota:  " rendered="#{cfdi33V.checktrasladados}"/>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <h:outputText value="Importe:  " rendered="#{cfdi33V.checktrasladados}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row" >
+
+                                                    <div class="col-md-2">
+                                                        <h:inputText value="#{cfdi33V.baseT}" rendered="#{cfdi33V.checktrasladados}" />
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <p:selectOneMenu style="width: 200px !important" value="#{cfdi33V.ivaT}" disabled="false" rendered="#{cfdi33V.checktrasladados}" >
+                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
+                                                            <f:selectItem itemValue="iva" itemLabel="IVA"></f:selectItem>
+                                                            <f:selectItem itemValue="ieps" itemLabel="IEPS"></f:selectItem>
+                                                            <p:ajax event="itemSelect" update="formcfdi33:tipFT" listener="#{cfdi33V.activTipFacTra}"></p:ajax>
+                                                        </p:selectOneMenu>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <p:selectOneMenu style="width: 200px !important" id="tipFT" value="#{cfdi33V.tipoFactorT}" rendered="#{cfdi33V.checktrasladados}" disabled="#{cfdi33V.tipoFactorTActiv}">
+                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
+                                                            <f:selectItems value="#{cfdi33V.tipoFactorTL}" var="tf" itemLabel="#{tf}" itemValue="#{tf}" />
+                                                            <p:ajax event="itemSelect" update="formcfdi33:tasCT" listener="#{cfdi33V.tasaOCuotaTraList}"></p:ajax>
+                                                        </p:selectOneMenu>
+                                                    </div>   
+                                                    <div class="col-md-3">
+                                                        <p:selectOneMenu style="width: 200px !important" id="tasCT" value="#{cfdi33V.tasaOCuotaT}" rendered="#{cfdi33V.checktrasladados}" disabled="#{cfdi33V.tipoTasaOCTActiv}">
+                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
+                                                            <f:selectItems value="#{cfdi33V.listTCTras}"/>
+                                                            <p:ajax event="itemSelect" update=":formcfdi33:panelTrasl" listener="#{cfdi33V.calcularImpuestosTrasladados}"></p:ajax>
+                                                        </p:selectOneMenu>
+                                                    </div> 
+
+                                                    <div class="col-md-1">
+                                                        <h:outputText id="impotT" value="#{cfdi33V.importeT}" rendered="#{cfdi33V.checktrasladados}" >
+                                                            <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="6" type="currency" locale="es_MX" />
+                                                        </h:outputText>
+                                                    </div> 
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12 text-right">
+                                                        <h:commandButton value="Agregar Traslado" rendered="#{cfdi33V.btnAgrTra}" >
+                                                            <p:ajax listener="#{cfdi33V.agregarImpTras}" update="formcfdi33:impTrasladadosTable formcfdi33:panelTrasl" ></p:ajax>
+                                                        </h:commandButton>
+                                                    </div>
+                                                </div>
+                                                <p:outputPanel id="impTrasladadosPanel" >
+                                                    <p:dataTable var="impTras" value="#{cfdi33V.listTras}" id="impTrasladadosTable" rendered="#{cfdi33V.impTraPan}">
+                                                        <p:column headerText="Base" class="texto13">
+                                                            <h:outputText value="#{impTras.base}" />
+                                                        </p:column>
+                                                        <p:column headerText="Impuesto" class="texto13">
+                                                            <h:outputText value="#{impTras.iva}" />
+                                                        </p:column>                                                    
+                                                        <p:column headerText="T Factor" class="texto13">
+                                                            <h:outputText value="#{impTras.tipoFactor}" />
+                                                        </p:column>
+                                                        <p:column headerText="TasaOCuota" class="texto13">
+                                                            <h:outputText value="#{impTras.tasaOCuota}" />
+                                                        </p:column>
+                                                        <p:column headerText="Importe" class="texto13">
+                                                            <h:outputText value="#{impTras.importe}" />
+                                                        </p:column>
+                                                        <p:column headerText="Opción" class="texto13" >
+                                                            <div class="text-right">
+                                                                <h:commandButton value="Eliminar">
+                                                                    <p:ajax listener="#{cfdi33V.eliminarImpTra(impTras)}" update="formcfdi33:impTrasladadosTable formcfdi33:impTrasladadosPanel" ></p:ajax>
+                                                                </h:commandButton>
+                                                            </div>
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                </p:outputPanel>
+                                            </p:outputPanel>
+                                        </p:outputPanel>
+                                        <br/>
                                         <div class="row">
                                             <div class="col-md-12 text-left">
                                                 <p:selectBooleanCheckbox itemLabel="Impuestos Retenidos" value="#{cfdi33V.checkRetenidos}"  rendered="#{cfdi33V.activChecksImp}">  
@@ -505,56 +584,58 @@
 
                                         <p:outputPanel id="panelReten">
                                             <p:outputPanel style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;" rendered="#{cfdi33V.checkRetenidos}" >
-                                                <div class="row" >
-                                                    <div class="col-md-1 text-right">
+                                                <div class="row">
+                                                    <div class="col-md-2">
                                                         <h:outputText value="Base: " rendered="#{cfdi33V.checkRetenidos}" />
                                                     </div>
-                                                    <div class="col-md-2 text-left">
-                                                        <h:inputText value="#{cfdi33V.baseR}" rendered="#{cfdi33V.checkRetenidos}" />
-                                                    </div>
-                                                    <div class="col-md-2 text-right">
+                                                    <div class="col-md-3">
                                                         <h:outputText value="Impuesto:  " rendered="#{cfdi33V.checkRetenidos}"/>
                                                     </div>
-                                                    <div class="col-md-2 text-left">
-                                                        <p:selectOneMenu value="#{cfdi33V.ivaR}" disabled="false" rendered="#{cfdi33V.checkRetenidos}" >
+                                                    <div class="col-md-3">
+                                                        <h:outputText value="Tipo Factor:  " rendered="#{cfdi33V.checkRetenidos}" />
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <h:outputText value="Tasa o Cuota:  " rendered="#{cfdi33V.checkRetenidos}"/>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <h:outputText value="Importe:  " rendered="#{cfdi33V.checkRetenidos}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row" >                                                    
+                                                    <div class="col-md-2">
+                                                        <h:inputText value="#{cfdi33V.baseR}" rendered="#{cfdi33V.checkRetenidos}" />
+                                                    </div>                                                    
+                                                    <div class="col-md-3">
+                                                        <p:selectOneMenu style="width: 200px !important" value="#{cfdi33V.ivaR}" disabled="false" rendered="#{cfdi33V.checkRetenidos}" >
                                                             <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
                                                             <f:selectItem itemValue="iva" itemLabel="IVA"></f:selectItem>
                                                             <f:selectItem itemValue="ieps" itemLabel="IEPS"></f:selectItem>
                                                             <f:selectItem itemValue="isr" itemLabel="ISR"></f:selectItem>
                                                             <p:ajax event="itemSelect" update="formcfdi33:tipFR" listener="#{cfdi33V.activTipFacRet}"></p:ajax>
                                                         </p:selectOneMenu>
-                                                    </div>
-                                                    <div class="col-md-2 text-right">
-                                                        <h:outputText value="Tipo Factor:  " rendered="#{cfdi33V.checkRetenidos}" />
-                                                    </div>
-                                                    <div class="col-md-2 text-left">
-                                                        <p:selectOneMenu id="tipFR" value="#{cfdi33V.tipoFactorR}" rendered="#{cfdi33V.checkRetenidos}" disabled="#{cfdi33V.tipoFactorRActiv}">
+                                                    </div>                                                    
+                                                    <div class="col-md-3">
+                                                        <p:selectOneMenu style="width: 200px !important" id="tipFR" value="#{cfdi33V.tipoFactorR}" rendered="#{cfdi33V.checkRetenidos}" disabled="#{cfdi33V.tipoFactorRActiv}">
                                                             <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
                                                             <f:selectItems value="#{cfdi33V.tipoFactorRL}" var="tf" itemLabel="#{tf}" itemValue="#{tf}" />
                                                             <p:ajax event="itemSelect" update="formcfdi33:tasCR" listener="#{cfdi33V.tasaOCuotaRetList}"></p:ajax>
                                                         </p:selectOneMenu>
-                                                    </div>                                             
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-2 text-right">
-                                                        <h:outputText value="Tasa o Cuota:  " rendered="#{cfdi33V.checkRetenidos}"/>
                                                     </div>
-                                                    <div class="col-md-2 text-left">
-                                                        <p:selectOneMenu id="tasCR" value="#{cfdi33V.tasaOCuotaR}" rendered="#{cfdi33V.checkRetenidos}" disabled="#{cfdi33V.tipoTasaOCRActiv}">
+                                                    <div class="col-md-3">
+                                                        <p:selectOneMenu style="width: 200px !important" id="tasCR" value="#{cfdi33V.tasaOCuotaR}" rendered="#{cfdi33V.checkRetenidos}" disabled="#{cfdi33V.tipoTasaOCRActiv}">
                                                             <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
                                                             <f:selectItems value="#{cfdi33V.listTCReten}"/>
                                                             <p:ajax event="itemSelect" update=":formcfdi33:panelReten" listener="#{cfdi33V.calcularImpuestosRetenidos}"></p:ajax>
                                                         </p:selectOneMenu>
-                                                    </div> 
-                                                    <div class="col-md-2 text-right">
-                                                        <h:outputText value="Importe:  " rendered="#{cfdi33V.checkRetenidos}"/>
                                                     </div>
-                                                    <div class="col-md-1 text-left">
+                                                    <div class="col-md-1">
                                                         <h:outputText id="impotR" value="#{cfdi33V.importeR}" rendered="#{cfdi33V.checkRetenidos}" >
                                                             <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="6" type="currency" locale="es_MX" />
                                                         </h:outputText>
                                                     </div> 
-                                                    <div class="col-md-5 text-right">
+                                                </div>
+                                                <div class="row">                                     
+                                                    <div class="col-md-12 text-right">
                                                         <h:commandButton value="Agregar Retenido" rendered="#{cfdi33V.btnAgrRet}" >
                                                             <p:ajax listener="#{cfdi33V.agregarImpRete}" update="formcfdi33:impRetenidosTable formcfdi33:panelReten" ></p:ajax>
                                                         </h:commandButton>
@@ -589,97 +670,6 @@
                                             </p:outputPanel>
                                         </p:outputPanel>
                                         <div class="row">
-                                            <div class="col-md-12 text-left">
-                                                <p:selectBooleanCheckbox itemLabel="Impuestos Trasladados" value="#{cfdi33V.checktrasladados}" rendered="#{cfdi33V.activChecksImp}">
-                                                    <p:ajax update=":formcfdi33:panelTrasl" listener="#{cfdi33V.agregarVTrasladados()}" />
-                                                </p:selectBooleanCheckbox>
-                                            </div>
-                                        </div>
-                                        <p:outputPanel id="panelTrasl">
-                                            <p:outputPanel style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;" rendered="#{cfdi33V.checktrasladados}" >
-                                                <div class="row" >
-                                                    <div class="col-md-1 text-right">
-                                                        <h:outputText value="Base: " rendered="#{cfdi33V.checktrasladados}" />
-                                                    </div>
-                                                    <div class="col-md-2 text-left">
-                                                        <h:inputText value="#{cfdi33V.baseT}" rendered="#{cfdi33V.checktrasladados}" />
-                                                    </div>
-                                                    <div class="col-md-2 text-right">
-                                                        <h:outputText value="Impuesto:  " rendered="#{cfdi33V.checktrasladados}"/>
-                                                    </div>
-                                                    <div class="col-md-2 text-left">
-                                                        <p:selectOneMenu value="#{cfdi33V.ivaT}" disabled="false" rendered="#{cfdi33V.checktrasladados}" >
-                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
-                                                            <f:selectItem itemValue="iva" itemLabel="IVA"></f:selectItem>
-                                                            <f:selectItem itemValue="ieps" itemLabel="IEPS"></f:selectItem>
-                                                            <p:ajax event="itemSelect" update="formcfdi33:tipFT" listener="#{cfdi33V.activTipFacTra}"></p:ajax>
-                                                        </p:selectOneMenu>
-                                                    </div>
-                                                    <div class="col-md-2 text-right">
-                                                        <h:outputText value="Tipo Factor:  " rendered="#{cfdi33V.checktrasladados}" />
-                                                    </div>
-                                                    <div class="col-md-2 text-left">
-                                                        <p:selectOneMenu id="tipFT" value="#{cfdi33V.tipoFactorT}" rendered="#{cfdi33V.checktrasladados}" disabled="#{cfdi33V.tipoFactorTActiv}">
-                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
-                                                            <f:selectItems value="#{cfdi33V.tipoFactorTL}" var="tf" itemLabel="#{tf}" itemValue="#{tf}" />
-                                                            <p:ajax event="itemSelect" update="formcfdi33:tasCT" listener="#{cfdi33V.tasaOCuotaTraList}"></p:ajax>
-                                                        </p:selectOneMenu>
-                                                    </div>                                             
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-2 text-right">
-                                                        <h:outputText value="Tasa o Cuota:  " rendered="#{cfdi33V.checktrasladados}"/>
-                                                    </div>
-                                                    <div class="col-md-2 text-left">
-                                                        <p:selectOneMenu id="tasCT" value="#{cfdi33V.tasaOCuotaT}" rendered="#{cfdi33V.checktrasladados}" disabled="#{cfdi33V.tipoTasaOCTActiv}">
-                                                            <f:selectItem itemValue="" itemLabel="Seleccionar"></f:selectItem>
-                                                            <f:selectItems value="#{cfdi33V.listTCTras}"/>
-                                                            <p:ajax event="itemSelect" update=":formcfdi33:panelTrasl" listener="#{cfdi33V.calcularImpuestosTrasladados}"></p:ajax>
-                                                        </p:selectOneMenu>
-                                                    </div> 
-                                                    <div class="col-md-2 text-right">
-                                                        <h:outputText value="Importe:  " rendered="#{cfdi33V.checktrasladados}"/>
-                                                    </div>
-                                                    <div class="col-md-1 text-left">
-                                                        <h:outputText id="impotT" value="#{cfdi33V.importeT}" rendered="#{cfdi33V.checktrasladados}" >
-                                                            <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="6" type="currency" locale="es_MX" />
-                                                        </h:outputText>
-                                                    </div> 
-                                                    <div class="col-md-5 text-right">
-                                                        <h:commandButton value="Agregar Traslado" rendered="#{cfdi33V.btnAgrTra}" >
-                                                            <p:ajax listener="#{cfdi33V.agregarImpTras}" update="formcfdi33:impTrasladadosTable formcfdi33:panelTrasl" ></p:ajax>
-                                                        </h:commandButton>
-                                                    </div>
-                                                </div>
-                                                <p:outputPanel id="impTrasladadosPanel" >
-                                                    <p:dataTable var="impTras" value="#{cfdi33V.listTras}" id="impTrasladadosTable" rendered="#{cfdi33V.impTraPan}">
-                                                        <p:column headerText="Base" class="texto13">
-                                                            <h:outputText value="#{impTras.base}" />
-                                                        </p:column>
-                                                        <p:column headerText="Impuesto" class="texto13">
-                                                            <h:outputText value="#{impTras.iva}" />
-                                                        </p:column>                                                    
-                                                        <p:column headerText="T Factor" class="texto13">
-                                                            <h:outputText value="#{impTras.tipoFactor}" />
-                                                        </p:column>
-                                                        <p:column headerText="TasaOCuota" class="texto13">
-                                                            <h:outputText value="#{impTras.tasaOCuota}" />
-                                                        </p:column>
-                                                        <p:column headerText="Importe" class="texto13">
-                                                            <h:outputText value="#{impTras.importe}" />
-                                                        </p:column>
-                                                        <p:column headerText="Opción" class="texto13" >
-                                                            <div class="text-right">
-                                                                <h:commandButton value="Eliminar">
-                                                                    <p:ajax listener="#{cfdi33V.eliminarImpTra(impTras)}" update="formcfdi33:impTrasladadosTable formcfdi33:impTrasladadosPanel" ></p:ajax>
-                                                                </h:commandButton>
-                                                            </div>
-                                                        </p:column>
-                                                    </p:dataTable>
-                                                </p:outputPanel>
-                                            </p:outputPanel>
-                                        </p:outputPanel>
-                                        <div class="row">
                                             <div class="col-md-5 text-right">
                                                 <h:outputText value="" />
                                             </div>
@@ -690,6 +680,7 @@
                                             </div>
                                         </div>
                                     </p:outputPanel>
+                                    <br/>
                                     <p:outputPanel id="listaConceptosPanel" style="margin-top: 20px">
                                         <p:outputPanel style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;" rendered="#{cfdi33V.conceptosTableActv}" >
 
@@ -740,54 +731,61 @@
                                     <p:outputPanel id="sepPanel">
                                         <p:outputPanel>
                                             <div class="row">
-                                                <div class="col-md-1 text-right">
+                                                <div class="col-md-3">
                                                     <h:outputText value="CURP"/>
                                                 </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:inputText value="#{cfdi33V.CURP}" maxlength="18">
-                                                        <p:ajax event="keyup" update="formcfdi33:sepPanel" listener="#{cfdi33V.activarAlum}"  />
-                                                    </p:inputText>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Nombre Alumno" />
                                                 </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Nombre Alumno" rendered="#{cfdi33V.renderAlu}"/>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="autRVOE" />
                                                 </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:inputText value="#{cfdi33V.alumno}" rendered="#{cfdi33V.renderAlu}">
-                                                        <p:ajax event="keyup" update="formcfdi33:sepPanel" listener="#{cfdi33V.activarRfc}" />
-                                                    </h:inputText>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Nivel Educativo"/>
                                                 </div>
-                                                <div class="col-md-1 text-right">
-                                                    <h:outputText value="RFC" rendered="#{cfdi33V.renderRfc}"/>
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:inputText value="#{cfdi33V.RFCAl}" rendered="#{cfdi33V.renderRfc}" maxlength="13">
-                                                        <p:ajax event="keyup" update="formcfdi33:sepPanel" listener="#{cfdi33V.activarAutRVOE}" />
-                                                    </h:inputText>
-                                                </div>
+
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-1 text-right">
-                                                    <h:outputText value="autRVOE" rendered="#{cfdi33V.renderAut}"/>
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <h:inputText value="#{cfdi33V.autRVOE}" rendered="#{cfdi33V.renderAut}">
-                                                        <p:ajax event="keyup" update="formcfdi33:sepPanel" listener="#{cfdi33V.activarNEduc}" />
+                                            <div class="row">                                                
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.CURP}" maxlength="18">
+                                                        <f:ajax event="blur" render="formcfdi33:sepPanel" listener="#{cfdi33V.activarAlum}"  />
+                                                    </p:inputText>
+                                                </div>                                                
+                                                <div class="col-md-3">
+                                                    <h:inputText value="#{cfdi33V.alumno}" disabled="#{cfdi33V.renderAlu}">
+                                                        <f:ajax event="blur" render="formcfdi33:sepPanel" listener="#{cfdi33V.activarAutRVOE}" />
+                                                    </h:inputText>
+                                                </div>                                                
+                                                <div class="col-md-3">
+                                                    <h:inputText value="#{cfdi33V.autRVOE}" disabled="#{cfdi33V.renderAut}">
+                                                        <f:ajax event="blur" render="formcfdi33:sepPanel" listener="#{cfdi33V.activarNEduc}" />
                                                     </h:inputText>
                                                 </div>
-                                                <div class="col-md-2 text-right">
-                                                    <h:outputText value="Nivel Educativo" rendered="#{cfdi33V.renderNEdu}"/>
-                                                </div>
-                                                <div class="col-md-2 text-left">
-                                                    <p:selectOneMenu value="#{cfdi33V.nivelEduc}" rendered="#{cfdi33V.renderNEdu}">
+                                                <div class="col-md-3">
+                                                    <p:selectOneMenu style="width: 200px !important" value="#{cfdi33V.nivelEduc}" disabled="#{cfdi33V.renderNEdu}">
                                                         <f:selectItem itemLabel="Seleccione" itemValue="" noSelectionOption="true" />
                                                         <f:selectItem itemLabel="Preescolar" itemValue="Preescolar" />
                                                         <f:selectItem itemLabel="Primaria" itemValue="Primaria" />
                                                         <f:selectItem itemLabel="Secundaria" itemValue="Secundaria" />
                                                         <f:selectItem itemLabel="Profesional tecnico" itemValue="Profesional tecnico" />
                                                         <f:selectItem itemLabel="Bachillerato o su equivalente" itemValue="Bachillerato o su equivalente" />
-                                                        <p:ajax event="itemSelect" update="formcfdi33:sepPanel" />
+                                                        <p:ajax event="itemSelect" update="formcfdi33:sepPanel" listener="#{cfdi33V.activarRfc}"/>
                                                     </p:selectOneMenu>
-                                                </div>                                       
+                                                </div> 
+
+                                            </div>
+                                            <br/>
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <h:outputText value="RFC" />
+                                                </div>
+                                            </div>
+                                            <div class="row">                                                
+                                                <div class="col-md-2">
+                                                    <h:inputText value="#{cfdi33V.RFCAl}" disabled="#{cfdi33V.renderRfc}" maxlength="13">
+                                                        <f:ajax event="blur" render="formcfdi33:sepPanel" listener="#{cfdi33V.sepRFC}" />
+                                                    </h:inputText>
+                                                </div>
                                             </div>
                                         </p:outputPanel>
                                     </p:outputPanel>
@@ -804,78 +802,40 @@
                             </div>
                             <div id="CILM" class="collapse" aria-labelledby="CIL" data-parent="#cfdi33">
                                 <div class="card-body">
-                                    <p:outputPanel id="CILPanel">
-                                        Retenciones Locales
-                                        <p:outputPanel id="CILPanelR" style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;">
-                                            <div class="row">
-                                                <div class="col-md-4 text-left">
-                                                    <h:outputText value="*Descripción"/>                                       
-                                                    <p:inputText value="#{cfdi33V.decripCompImpLocRet}" >
-                                                        <p:ajax event="keyup" update="formcfdi33:CILPanel" listener="#{cfdi33V.habilitarRenderILCRT}" />
-                                                    </p:inputText>
-                                                </div> 
-                                                <div class="col-md-3 text-left">
-                                                    <h:outputText value="*%TASA" rendered="#{cfdi33V.renderILCRT}"/>                                                
-                                                    <p:inputNumber value="#{cfdi33V.tasaCompImpLocRet}" style="max-width:50px !important" rendered="#{cfdi33V.renderILCRT}"  maxValue="200" decimalPlaces="0">
-                                                        <p:ajax event="keyup" update="formcfdi33:CILPanel" listener="#{cfdi33V.habilitarRenderILCRI}" />
-                                                    </p:inputNumber>
-                                                </div> 
-                                                <div class="col-md-3 text-left">
-                                                    <h:outputText value="*Importe" rendered="#{cfdi33V.renderILCRI}"/>
-                                                    <p:inputNumber value="#{cfdi33V.importeCompImpLocRet}" style="width:100px" rendered="#{cfdi33V.renderILCRI}" decimalPlaces="6">
-                                                        <p:ajax event="keyup" update="formcfdi33:CILPanel" listener="#{cfdi33V.habilitarRenderILCRB}" />
-                                                    </p:inputNumber>
-                                                </div> 
-                                                <div class="col-md-2 text-right">
-                                                    <h:commandButton value="Agregar"  rendered="#{cfdi33V.renderILCRB}" >
-                                                        <p:ajax update="formcfdi33:CILPanel formcfdi33:CILTableR formcfdi33:totalPanel" listener="#{cfdi33V.agregarILCR()}"></p:ajax>
-                                                    </h:commandButton>
-                                                </div> 
-                                            </div>
-                                            <p:outputPanel id="CILTableR">
-                                                <p:dataTable var="ILRT" value="#{cfdi33V.listILCR}" id="listaCILTRTable" rendered="#{cfdi33V.renderILCRTable}">
-                                                    <f:facet name="header">
-                                                        <h:outputText value="Impuestos agregados"/>
-                                                    </f:facet>
-                                                    <p:column headerText="Descripción" class="texto13">
-                                                        <h:outputText value="#{ILRT.descripcion}" />
-                                                    </p:column>
-                                                    <p:column headerText="Tasa" class="texto13">
-                                                        <h:outputText value="#{ILRT.porcentaje}" />
-                                                    </p:column>
-                                                    <p:column headerText="Importe" class="texto13">
-                                                        <h:outputText value="#{ILRT.importe}" />
-                                                    </p:column>
-                                                    <p:column headerText="Opción" class="texto13">
-                                                        <h:commandButton value="Eliminar" >
-                                                            <p:ajax update="formcfdi33:CILPanel formcfdi33:CILTableR formcfdi33:totalPanel" listener="#{cfdi33V.eliminarILCR(ILRT)}"></p:ajax>
-                                                        </h:commandButton>
-                                                    </p:column>
-                                                </p:dataTable>
-                                            </p:outputPanel>
-                                        </p:outputPanel>
+                                    <p:outputPanel id="CILPanel">                                        
                                         Trasladados Locales
                                         <p:outputPanel id="CILPanelT" style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;">
                                             <div class="row">
-                                                <div class="col-md-4 text-left">
-                                                    <h:outputText value="*Descripción"/>                                       
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Descripción"/> 
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*%TASA" rendered="#{cfdi33V.renderILCTT}"/> 
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Importe" rendered="#{cfdi33V.renderILCTI}"/>
+                                                </div>
+                                                <div class="col-md-3">
+
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">                                                                                          
                                                     <p:inputText value="#{cfdi33V.decripCompImpLocTra}" >
                                                         <p:ajax event="keyup" update="formcfdi33:CILPanel" listener="#{cfdi33V.habilitarRenderILCTT}" />
                                                     </p:inputText>
                                                 </div> 
-                                                <div class="col-md-3 text-left">
-                                                    <h:outputText value="*%TASA" rendered="#{cfdi33V.renderILCTT}"/>                                                
+                                                <div class="col-md-3">                                                                                                   
                                                     <p:inputNumber value="#{cfdi33V.tasaCompImpLocTra}" style="max-width:50px !important" rendered="#{cfdi33V.renderILCTT}"  maxValue="200" decimalPlaces="0">
                                                         <p:ajax event="keyup" update="formcfdi33:CILPanel" listener="#{cfdi33V.habilitarRenderILCTI}" />
                                                     </p:inputNumber>
                                                 </div> 
-                                                <div class="col-md-3 text-left">
-                                                    <h:outputText value="*Importe" rendered="#{cfdi33V.renderILCTI}"/>
+                                                <div class="col-md-3">                                                    
                                                     <p:inputNumber value="#{cfdi33V.importeCompImpLocTra}" style="width:100px" rendered="#{cfdi33V.renderILCTI}" decimalPlaces="6">
                                                         <p:ajax event="keyup" update="formcfdi33:CILPanel" listener="#{cfdi33V.habilitarRenderILCTB}" />
                                                     </p:inputNumber>
                                                 </div> 
-                                                <div class="col-md-2 text-right">
+                                                <div class="col-md-3">
                                                     <h:commandButton value="Agregar"  rendered="#{cfdi33V.renderILCTB}" >
                                                         <p:ajax update="formcfdi33:CILPanel formcfdi33:CILTableT formcfdi33:totalPanel" listener="#{cfdi33V.agregarILCT()}"></p:ajax>
                                                     </h:commandButton>
@@ -903,10 +863,696 @@
                                                 </p:dataTable>
                                             </p:outputPanel>
                                         </p:outputPanel>
+                                        Retenciones Locales
+                                        <p:outputPanel id="CILPanelR" style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Descripción"/>  
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*%TASA" rendered="#{cfdi33V.renderILCRT}"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Importe" rendered="#{cfdi33V.renderILCRI}"/>
+                                                </div>
+                                                <div class="col-md-3">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-3">                                                                                         
+                                                    <p:inputText value="#{cfdi33V.decripCompImpLocRet}" >
+                                                        <p:ajax event="keyup" update="formcfdi33:CILPanel" listener="#{cfdi33V.habilitarRenderILCRT}" />
+                                                    </p:inputText>
+                                                </div> 
+                                                <div class="col-md-3">                                                                                                    
+                                                    <p:inputNumber value="#{cfdi33V.tasaCompImpLocRet}" style="max-width:50px !important" rendered="#{cfdi33V.renderILCRT}"  maxValue="200" decimalPlaces="0">
+                                                        <p:ajax event="keyup" update="formcfdi33:CILPanel" listener="#{cfdi33V.habilitarRenderILCRI}" />
+                                                    </p:inputNumber>
+                                                </div> 
+                                                <div class="col-md-3">                                                    
+                                                    <p:inputNumber value="#{cfdi33V.importeCompImpLocRet}" style="width:100px" rendered="#{cfdi33V.renderILCRI}" decimalPlaces="6">
+                                                        <p:ajax event="keyup" update="formcfdi33:CILPanel" listener="#{cfdi33V.habilitarRenderILCRB}" />
+                                                    </p:inputNumber>
+                                                </div> 
+                                                <div class="col-md-3">
+                                                    <h:commandButton value="Agregar"  rendered="#{cfdi33V.renderILCRB}" >
+                                                        <p:ajax update="formcfdi33:CILPanel formcfdi33:CILTableR formcfdi33:totalPanel" listener="#{cfdi33V.agregarILCR()}"></p:ajax>
+                                                    </h:commandButton>
+                                                </div> 
+                                            </div>
+                                            <p:outputPanel id="CILTableR">
+                                                <p:dataTable var="ILRT" value="#{cfdi33V.listILCR}" id="listaCILTRTable" rendered="#{cfdi33V.renderILCRTable}">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Impuestos agregados"/>
+                                                    </f:facet>
+                                                    <p:column headerText="Descripción" class="texto13">
+                                                        <h:outputText value="#{ILRT.descripcion}" />
+                                                    </p:column>
+                                                    <p:column headerText="Tasa" class="texto13">
+                                                        <h:outputText value="#{ILRT.porcentaje}" />
+                                                    </p:column>
+                                                    <p:column headerText="Importe" class="texto13">
+                                                        <h:outputText value="#{ILRT.importe}" />
+                                                    </p:column>
+                                                    <p:column headerText="Opción" class="texto13">
+                                                        <h:commandButton value="Eliminar" >
+                                                            <p:ajax update="formcfdi33:CILPanel formcfdi33:CILTableR formcfdi33:totalPanel" listener="#{cfdi33V.eliminarILCR(ILRT)}"></p:ajax>
+                                                        </h:commandButton>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:outputPanel>
+                                        </p:outputPanel>
                                     </p:outputPanel>
                                 </div>
                             </div>
                         </div>
+
+
+
+                        <div class="card">
+                            <div class="card-header" id="CCE">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#CCEM" aria-expanded="false" aria-controls="CCEM">
+                                        Complemento Comercio Exterior
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="CCEM" class="collapse" aria-labelledby="CCE" data-parent="#cfdi33">
+                                <div class="card-body">
+                                    <p:outputPanel id="datosGenerales">
+                                        *Datos Generales Comercio Exterior
+                                        <div style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Tipo de operación"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Motivo traslado"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Clave Pedimento"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Certificado origen"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.tipoOperacion}" readonly="true" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.motivoTraslado}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.claveDePedimento}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText  value="#{cfdi33V.compComExt.certificadoOrigen}"  />
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Num Certificado Org"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Num Expor Confiab"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Incoterm"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Subdivisión"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.numCertificadoOrigen}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText  value="#{cfdi33V.compComExt.numeroExportacionConfiable}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.incoterm}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.subDivicion}"  />
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Observaciones"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Tipo cambio USD"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Total USD"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.observaciones}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.tipoCambioUSD}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.totalUSD}"  />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        *Emisor
+                                        <div style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h:outputText value="CURP"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Calle"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Num Exterior"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Num Interior"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.curp}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioE.calle}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioE.numExt}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioE.numInt}"  />
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Colonia"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Localidad"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Referencia"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Municipio"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioE.colonia}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioE.localidad}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioE.referencia}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioE.municipio}"  />
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Estado"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Pais"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Codigo Postal"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioE.estado}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioE.pais}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioE.cp}"  />
+                                                </div>
+                                            </div>
+                                            <br/>
+                                        </div>
+                                        <br/>
+                                        *Receptor
+                                        <div style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h:outputText value="NumRegIdTrib"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Calle"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Num Exterior"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Num Interior"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.numRegIdTribR}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioR.calle}"  />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioR.numExt}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioR.numInt}" />
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Colonia"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Localidad"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Referencia"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="Municipio"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioR.colonia}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioR.localidad}"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioR.referencia}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioR.municipio}" />
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Estado"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Pais"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h:outputText value="*Codigo Postal"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioR.estado}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioR.pais}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p:inputText value="#{cfdi33V.compComExt.domicilioR.cp}" />
+                                                </div>
+                                            </div>
+                                            <br/>
+                                        </div>
+                                        <br/>
+                                        Propietario
+                                        <div style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;">
+                                            <p:outputPanel id="propietarioP">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <h:outputText value="*NumRegIdTrib"/>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <h:outputText value="*Recidencia Fiscal"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <p:inputText value="#{cfdi33V.propietario.numRegIdTrib}" >
+                                                            <p:ajax event="keyup" update="formcfdi33:propietarioP" listener="#{cfdi33V.mayus2(cfdi33V.propietario.numRegIdTrib)}"/>
+                                                        </p:inputText>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <p:inputText value="#{cfdi33V.propietario.recidenciaFiscal}" />
+                                                    </div>
+                                                    <div class="col-md-3">                                                    
+                                                        <h:commandButton value="agregar">
+                                                            <p:ajax update="formcfdi33:propietarioP" listener="#{cfdi33V.agregarPropietario}" />
+                                                        </h:commandButton>
+                                                    </div>
+                                                </div>
+                                                <br/>
+                                                <p:outputPanel id="tablePropietario">
+                                                    <p:dataTable value="#{cfdi33V.compComExt.propietarios}" var="p" rendered="#{cfdi33V.tablaPropietarios}">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Lista Propietarios"/>
+                                                        </f:facet>
+                                                        <p:column headerText="NuRegIdTrib">
+                                                            <h:outputText value="#{p.numRegIdTrib}"/>
+                                                        </p:column>
+                                                        <p:column headerText="Recidencia Fiscal">
+                                                            <h:outputText value="#{p.recidenciaFiscal}"/>
+                                                        </p:column>
+                                                        <p:column headerText="">
+                                                            <h:commandButton value="Eliminar">
+                                                                <p:ajax update="formcfdi33:propietarioP" listener="#{cfdi33V.eliminarPropietario(p)}"/>
+                                                            </h:commandButton>
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                </p:outputPanel>                                                
+                                            </p:outputPanel>
+                                            <br/>
+                                        </div>
+                                        <br/>
+                                        Destinatario
+                                        <div style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;">
+                                            <p:outputPanel id="destinatarios">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <h:outputText value="NumRegIdTrib"/>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <h:outputText value="Nombre"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <p:inputText value="#{cfdi33V.destinatario.numRegIdTrib}" />
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <p:inputText value="#{cfdi33V.destinatario.nombre}" />
+                                                    </div>
+                                                </div>
+                                                <br/>
+                                                <p:outputPanel id="desDirecciones">
+                                                    Domicilios
+                                                    <div style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;">
+                                                        <div class="row">                                                        
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="*Calle"/>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="Num Exterior"/>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="Num Interior"/>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="Colonia"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">                                                        
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.domicilioDestin.calle}" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.domicilioDestin.numExt}" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.domicilioDestin.numInt}" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.domicilioDestin.colonia}" />
+                                                            </div>
+                                                        </div>
+                                                        <br/>
+                                                        <div class="row">                                                        
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="Localidad"/>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="Referencia"/>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="Municipio"/>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="*Estado"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">                                                        
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.domicilioDestin.localidad}" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.domicilioDestin.referencia}" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.domicilioDestin.municipio}" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.domicilioDestin.estado}" />
+                                                            </div>
+                                                        </div>
+                                                        <br/>
+                                                        <div class="row">                                                        
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="*Pais"/>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="*Codigo Postal"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">                                                        
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.domicilioDestin.pais}" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.domicilioDestin.cp}" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h:commandButton value="Agregar domicilio">
+                                                                    <p:ajax update="formcfdi33:desDirecciones" listener="#{cfdi33V.agregarDomicilioDest}" />
+                                                                </h:commandButton>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <p:outputPanel id="doiciliosTable">
+                                                        <p:dataTable value="#{cfdi33V.destinatario.domicilio}" var="d" rendered="#{cfdi33V.tablaDomicilios}">
+                                                            <f:facet name="header">
+                                                                <h:outputText value="Lista domicilio"/>
+                                                            </f:facet>
+                                                            <p:column headerText="Calle">
+                                                                <h:outputText value="#{d.calle}"/>
+                                                            </p:column>
+                                                            <p:column headerText="Pais">
+                                                                <h:outputText value="#{d.pais}"/>
+                                                            </p:column>
+                                                            <p:column headerText="Estado">
+                                                                <h:outputText value="#{d.estado}"/>
+                                                            </p:column>
+                                                            <p:column headerText="C.P.">
+                                                                <h:outputText value="#{d.cp}"/>
+                                                            </p:column>
+                                                            <p:column headerText="">
+                                                                <h:commandButton value="Eliminar" >
+                                                                    <p:ajax update="formcfdi33:desDirecciones" listener="#{cfdi33V.eliminarDomicilioDest(d)}"/>
+                                                                </h:commandButton>
+                                                            </p:column>
+                                                        </p:dataTable>
+                                                    </p:outputPanel>
+                                                </p:outputPanel>
+                                                <br/>
+                                                <div class="row">
+                                                    <div class="col-md-12 text-right">
+                                                        <h:commandButton value="Agregar destinatario">
+                                                            <p:ajax update="formcfdi33:destinatarios" listener="#{cfdi33V.agregarDestinatario}" />
+                                                        </h:commandButton>
+                                                    </div>
+                                                </div>
+                                                <br/>
+                                                <p:outputPanel id="destinatarioTable">
+                                                    <p:dataTable value="#{cfdi33V.compComExt.destinatarios}" var="d" rendered="#{cfdi33V.tablaDestinatarios}">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Lista destinatarios"/>
+                                                        </f:facet>
+                                                        <p:column headerText="NuRegIdTrib">
+                                                            <h:outputText value="#{d.numRegIdTrib}"/>
+                                                        </p:column>
+                                                        <p:column headerText="Nombre">
+                                                            <h:outputText value="#{d.nombre}"/>
+                                                        </p:column>
+                                                        <p:column headerText="">
+                                                            <h:commandButton value="Eliminar">
+                                                                <p:ajax update="formcfdi33:destinatarios" listener="#{cfdi33V.eliminarDestinatario(d)}"/>
+                                                            </h:commandButton>
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                </p:outputPanel>
+                                            </p:outputPanel>
+                                        </div>
+                                        <br/>
+                                        *Mercancia
+                                        <div style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;">
+                                            <p:outputPanel id="mercancias">
+                                                <div class="row">                                                        
+                                                    <div class="col-md-4">
+                                                        <h:outputText value="*NoIdentificación"/>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h:outputText value="Fracción arancelaria"/>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h:outputText value="Cantidad aduana"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row">                                                        
+                                                    <div class="col-md-4">
+                                                        <p:inputText value="#{cfdi33V.mercancia.noIdentificacion}" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <p:inputText value="#{cfdi33V.mercancia.fraccionArancelaria}" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <p:inputText value="#{cfdi33V.mercancia.cantidadAduana}" />
+                                                    </div>
+                                                </div>
+                                                <br/>
+                                                <div class="row">                                                        
+                                                    <div class="col-md-4">
+                                                        <h:outputText value="Unidad aduana"/>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h:outputText value="Valor unitario aduana"/>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h:outputText value="*Valor dolares"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row">                                                        
+                                                    <div class="col-md-4">
+                                                        <p:inputText value="#{cfdi33V.mercancia.unidadAduana}" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <p:inputText value="#{cfdi33V.mercancia.valorUnitarioAduana}" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <p:inputText value="#{cfdi33V.mercancia.valorUnitarioAduana}" />
+                                                    </div>
+                                                </div>
+                                                <br/>
+                                                <p:outputPanel id="mercDescrip">
+                                                    Descripciones Especificas
+                                                    <div style="border-style: dashed; border-color: rgb(244,129,16); padding: 5px; margin-bottom: 7px;">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="*Marca"/>
+                                                            </div> 
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="Modelo"/>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="SubModelo"/>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h:outputText value="Numero Serie"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">                                                        
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.descpEsp.marca}" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.descpEsp.modelo}" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.descpEsp.subModelo}" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <p:inputText value="#{cfdi33V.descpEsp.numeroSerie}" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12 text-right">
+                                                                <h:commandButton value="Agregar Descripción">
+                                                                    <p:ajax update="formcfdi33:mercDescrip" listener="#{cfdi33V.agregarDescEsp}"/>
+                                                                </h:commandButton>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <p:outputPanel id="descripcionesTable">
+                                                        <p:dataTable var="d" value="#{cfdi33V.mercancia.descEspec}" rendered="#{cfdi33V.tablaDescripciones}">
+                                                            <f:facet name="header">
+                                                                <h:outputText value="Lista Descripciones"/>
+                                                            </f:facet>
+                                                            <p:column headerText="Marca">
+                                                                <h:outputText value="#{d.marca}"/>
+                                                            </p:column>
+                                                            <p:column headerText="Modelo">
+                                                                <h:outputText value="#{d.modelo}"/>
+                                                            </p:column>
+                                                            <p:column headerText="SubModelo">
+                                                                <h:outputText value="#{d.subModelo}"/>
+                                                            </p:column>
+                                                            <p:column headerText="Serie">
+                                                                <h:outputText value="#{d.numeroSerie}"/>
+                                                            </p:column>
+                                                            <p:column headerText="">
+                                                                <h:commandButton value="Eliminar">
+                                                                    <p:ajax update="formcfdi33:mercDescrip" listener="#{cfdi33V.eliminarDescEsp(d)}"/>
+                                                                </h:commandButton>
+                                                            </p:column>
+                                                        </p:dataTable>
+                                                    </p:outputPanel>
+                                                </p:outputPanel>
+                                                <div class="row">
+                                                    <div class="col-md-12 text-right">
+                                                        <h:commandButton value="Agregar Mercancia">
+                                                            <p:ajax update="formcfdi33:mercancias" listener="#{cfdi33V.agregarMercancia}"/>
+                                                        </h:commandButton>
+                                                    </div>
+                                                </div>
+                                                <br/>
+                                                <p:outputPanel id="mercanciasTable">
+                                                    <p:dataTable value="#{cfdi33V.compComExt.mercancias}" var="m" rendered="#{cfdi33V.tablaMercancias}">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Lista Mercancias"/>
+                                                        </f:facet>
+                                                        <p:column headerText="NoIdentificacón">
+                                                            <h:outputText value="#{m.noIdentificacion}"/>
+                                                        </p:column>
+                                                        <p:column headerText="Valor dolares">
+                                                            <h:outputText value="#{m.valorDolares}"/>
+                                                        </p:column>
+                                                        <p:column headerText="">
+                                                            <h:commandButton value="Eliminar">
+                                                                <p:ajax update="formcfdi33:mercancias" listener="#{cfdi33V.eliminarMercancia(m)}"/>
+                                                            </h:commandButton>
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                </p:outputPanel>
+                                            </p:outputPanel>
+                                        </div>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                        </div>
+
+
+
                         <div class="card">
                             <div class="card-header" id="total">
                                 <h2 class="mb-0">
@@ -919,75 +1565,84 @@
                                 <div class="card-body">
                                     <p:outputPanel id="totalPanel">
                                         <div class="row">
-                                            <div class="col-md-2 text-right">
+                                            <div class="col-md-12">
                                                 <h:outputText value="Importe con letra:" />
-                                            </div>
-                                            <div class="col-md-7 text-left">
+                                            </div>                                            
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
                                                 <h:outputText value="#{cfdi33V.totalFacturaEnLetras}" />
                                             </div>
-
-                                            <div class="col-md-3 text-left">
-                                                <!--<h:selectOneRadio>
-                                                    <f:selectItem itemLabel="PDF Español"/>
-                                                    <f:selectItem itemLabel="PDF Inglés"/>
-                                                </h:selectOneRadio>-->
-                                            </div>
                                         </div>
+                                        <br/>
                                         <div class="row">
-                                            <div class="col-md-8"></div>
-                                            <div class="col-md-2 text-right">
-                                                <h:outputText value="*Subtotal:" />
+                                            <div class="col-md-8">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <h:outputText value="Observaciones" />
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <p:inputTextarea rows="6" value="#{cfdi33V.observaciones}" style="width: 100% !important;">
+                                                            <p:ajax  update="formcfdi33:totalPanel" event="blur" listener="#{cfdi33V.observacionesSet}"/>
+                                                        </p:inputTextarea>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-2 text-left">
-                                                <h:outputText value="#{cfdi33V.subTotal}">
-                                                    <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
-                                                </h:outputText>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-6 text-right">
+                                                        <h:outputText value="*Subtotal:" />
+                                                    </div>
+                                                    <div class="col-md-6 text-left">
+                                                        <h:outputText value="#{cfdi33V.subTotal}">
+                                                            <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
+                                                        </h:outputText>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 text-right">
+                                                        <h:outputText value="Descuento total:" />
+                                                    </div>
+                                                    <div class="col-md-6 text-left">
+                                                        <h:outputText value="#{cfdi33V.descuentoTotal}">
+                                                            <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
+                                                        </h:outputText>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 text-right">
+                                                        <h:outputText value="Trasladados:" />
+                                                    </div>
+                                                    <div class="col-md-6 text-left">
+                                                        <h:outputText value="#{cfdi33V.totalTrasl}">
+                                                            <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
+                                                        </h:outputText>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 text-right">
+                                                        <h:outputText value="Retenidos:" />
+                                                    </div>
+                                                    <div class="col-md-6 text-left">
+                                                        <h:outputText value="#{cfdi33V.totalReten}">
+                                                            <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
+                                                        </h:outputText>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 text-right">
+                                                        <h:outputText value="*Total:" />
+                                                    </div>
+                                                    <div class="col-md-6 text-left">
+                                                        <h:outputText value="#{cfdi33V.total}">
+                                                            <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
+                                                        </h:outputText>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-8"></div>
-                                            <div class="col-md-2 text-right">
-                                                <h:outputText value="Descuento total:" />
-                                            </div>
-                                            <div class="col-md-2 text-left">
-                                                <h:outputText value="#{cfdi33V.descuentoTotal}">
-                                                    <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
-                                                </h:outputText>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-8"></div>
-                                            <div class="col-md-2 text-right">
-                                                <h:outputText value="Trasladados:" />
-                                            </div>
-                                            <div class="col-md-2 text-left">
-                                                <h:outputText value="#{cfdi33V.totalTrasl}">
-                                                    <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
-                                                </h:outputText>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-8"></div>
-                                            <div class="col-md-2 text-right">
-                                                <h:outputText value="Retenidos:" />
-                                            </div>
-                                            <div class="col-md-2 text-left">
-                                                <h:outputText value="#{cfdi33V.totalReten}">
-                                                    <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
-                                                </h:outputText>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-8"></div>
-                                            <div class="col-md-2 text-right">
-                                                <h:outputText value="*Total:" />
-                                            </div>
-                                            <div class="col-md-2 text-left">
-                                                <h:outputText value="#{cfdi33V.total}">
-                                                    <f:convertNumber currencySymbol="$" groupingUsed="true"  maxFractionDigits="2" type="currency" locale="es_MX" />
-                                                </h:outputText>
-                                            </div>
-                                        </div>
+                                        </div>                                        
                                         <div class="row">
                                             <div class="col-md-8"></div>
                                             <div class="col-md-4 text-right">

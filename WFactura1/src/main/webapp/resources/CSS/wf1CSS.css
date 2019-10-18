@@ -1,0 +1,124 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 14/10/2019, 12:43:36 PM
+    Author     : WF Consulting
+*/
+
+.backgroundWF{
+    background: rgb(244,129,16);
+    color:white;
+}
+ul[class*=nav-tabs]>li[class*=nav-item]>a[class*=nav-link]{
+    color: white;
+}
+.texto13{
+    font-size: 13px;
+}
+.texto16{
+    font-size: 16px;
+    font-style: oblique;
+    font-weight: bold;
+}
+.btn-link{
+    text-decoration: none;
+    color: white;
+}
+.card-header{
+    background: rgb(244,129,16);
+    padding: 5px 10px 5px 10px !important;
+
+}
+.btn-link:hover {
+    color: rgb(251,201,151);
+    text-decoration: none !important;
+}
+.card{
+    border-radius: 10px 10px 0px 0px;
+
+}
+div[class=card-body]>div[class=container-fluid]>div[class=row]{
+    padding: 5px !important;
+}
+div[class=card-body]{
+    background: rgba(136,136,136,.1);
+}
+div[class=row]>div[class=col-md-4]>div[class=row]{
+    padding: 2px !important;
+}
+
+input[type=submit]{
+    background: rgb(244,129,16);
+    color: white;
+    border-radius: 7px;
+}
+#totalM>div[class=card-body]>div[class=row]{
+    padding: 2px !important;
+}
+.padding10{
+    padding: 5px !important;
+}
+
+div[class="border border-warning padding10"]> div[class=row]{
+    padding: 5px !important;
+}
+th[class="ui-state-default texto13"]{
+    background: rgb(244,129,16) !important;
+    color: white !important;
+}
+
+div[role="navigation"]{
+    font-size: 13px;
+}
+
+div[class="ui-datatable-header ui-widget-header ui-corner-top"]{
+    background: rgb(244,129,16) !important;
+    color: white !important;
+
+}
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(244,129,16);
+    color: white;
+    text-align: center;
+    border-top: 5px solid chocolate;
+    height: 50px;
+}
+.espacio{
+    border-bottom: 5px solid chocolate;
+    height: 50px;
+}
+div[class="ui-tooltip ui-widget ui-tooltip-top"]{
+    font-size: 13px !important;
+}
+div[class="ui-selectonemenu ui-widget ui-state-default ui-corner-all"]{
+    padding-right: 0 !important;
+}
+div[class="ui-selectonemenu-trigger ui-state-default ui-corner-right"]{
+    padding-right: 0 !important;
+    background: rgba(244,129,16,.5) !important;
+}
+div[class="ui-selectonemenu-trigger ui-state-default ui-corner-right ui-state-hover"]{
+    padding-right: 0 !important;
+    background: rgba(244,129,16,.7) !important;
+}
+div[class="ui-selectonemenu-trigger ui-state-default ui-corner-right ui-state-focus"]{
+    padding-right: 0 !important;
+    background: rgba(244,129,16,1) !important;
+}
+li[class="ui-selectonemenu-item ui-selectonemenu-list-item ui-corner-all ui-state-highlight"]{
+    background: rgba(244,129,16,1) !important;
+}
+input[id="formcfdi33:uso_input"]{
+    width: 100% !important;
+}
+/*
+ LAOS800716JT3
+ Folios1084++1
+*/
