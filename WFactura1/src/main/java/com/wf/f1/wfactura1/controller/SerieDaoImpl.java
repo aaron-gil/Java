@@ -114,4 +114,21 @@ public class SerieDaoImpl implements SerieDao {
 		}
 		return series;
 	}
+        
+        @Override
+	public Serie buscarId(Usuario usuario, Integer id){
+		Serie serie = null;
+		try{
+			Query query = em.createQuery("from Serie s where s.responsableCreacion =:nombre and s.identifica=:id");
+			query.setParameter("nombre", usuario.getNombre());
+                        query.setParameter("id", id);
+			List<Serie> series = query.getResultList();
+                        if(series.size()>0){
+                            serie=series.get(0);
+                        }
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return serie;
+	}
 }

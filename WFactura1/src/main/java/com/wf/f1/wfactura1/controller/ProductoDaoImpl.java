@@ -90,7 +90,6 @@ public class ProductoDaoImpl implements ProductoDao {
 			query.setParameter("status", status);
 			query.setParameter("nombre", usuario.getNombre());
 			productos = query.getResultList();
-
 		}catch(Exception e){
 			//throw e;
 		}
@@ -108,6 +107,25 @@ public class ProductoDaoImpl implements ProductoDao {
 		}catch(NoResultException e) {
 	        producto = null;
 	    }
+		return producto;
+	}
+        
+        @Override
+        public Producto listarProductosUsuario(boolean status,Usuario usuario,String sat, String desc){
+		Producto producto = null;
+		try{
+			Query query = em.createQuery("select p from Producto p where p.status =:status and p.responsableCreacion =:nombre and p.codigoSat=:sat and p.descripcion=:desc");
+			query.setParameter("status", status);
+			query.setParameter("nombre", usuario.getNombre());
+                        query.setParameter("sat", sat);
+                        query.setParameter("desc", desc);
+			List<Producto>productos = query.getResultList();
+                        if(productos.size()>0){
+                            producto=productos.get(0);
+                        }
+		}catch(Exception e){
+			//throw e;
+		}
 		return producto;
 	}
 

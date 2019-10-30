@@ -130,13 +130,13 @@ public class UsuarioDaoImpl implements UsuarioDao {
     @Override
     public Usuario buscarUsuarioYContrasena(String nombre, String contrasena) {
         System.out.println("buscando datos "+nombre+"   "+ contrasena);
-        Usuario usuario = new Usuario();
+        Usuario usuario =null;
         try {
             Query query = em.createQuery("from Usuario u where u.nombre=:nombre and u.password=:contrasena");
             query.setParameter("nombre", nombre);
             query.setParameter("contrasena", contrasena);
             List<Usuario> usuarios = query.getResultList();
-            if(usuarios.size()>0){
+            if(usuarios!=null && usuarios.size()>0){
                 System.out.println("tamaño de lista "+usuarios.size());
                 usuario=usuarios.get(0);
             }

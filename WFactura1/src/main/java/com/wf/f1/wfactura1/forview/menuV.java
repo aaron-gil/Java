@@ -6,13 +6,16 @@
 package com.wf.f1.wfactura1.forview;
 
 import com.wf.f1.wfactura1.model.Usuario;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-
 
 /**
  *
@@ -20,7 +23,8 @@ import javax.faces.context.FacesContext;
  */
 @ManagedBean(name = "menuV")
 @ViewScoped
-public class menuV implements Serializable{
+public class menuV implements Serializable {
+
     private Usuario usuarioSeleccionado;
 
     public Usuario getUsuarioSeleccionado() {
@@ -30,9 +34,10 @@ public class menuV implements Serializable{
     public void setUsuarioSeleccionado(Usuario usuarioSeleccionado) {
         this.usuarioSeleccionado = usuarioSeleccionado;
     }
-    
+
     @PostConstruct
     public void inicializar() {
+        usuarioSeleccionado = new Usuario();
         verificarSesion();
 
     }
@@ -43,24 +48,29 @@ public class menuV implements Serializable{
             usuarioSeleccionado = (Usuario) context.getExternalContext().getSessionMap().get("usuarioElegido");
             if (usuarioSeleccionado == null) {
                 context.getExternalContext().redirect("index.xhtml");
-            } 
+            }
         } catch (Exception localException) {
         }
     }
-    public String cfdi(){
+
+    public String cfdi() {
         System.out.println("ir a cfdi33");
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuarioElegido", usuarioSeleccionado);
-        return  "CFDI33?faces-redirect=true";
+        return "CFDI33?faces-redirect=true";
     }
-    
-    public String principal(){
+
+    public String principal() {
         System.out.println("ir a inicio");
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuarioElegido", usuarioSeleccionado);
-        return  "inicio?faces-redirect=true";
+        return "inicio?faces-redirect=true";
     }
-    public String sessionC(){
+
+    public String sessionC() {
         System.out.println("cerrar session");
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuarioElegido", null);
+          FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("usuarioElegido");
+          FacesContext.getCurrentInstance().getExternalContext().getSessionMap().clear();
+          FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return  "index?faces-redirect=true";
+
     }
 }

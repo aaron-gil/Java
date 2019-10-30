@@ -19,7 +19,7 @@ public class MontoLetra {
    public MontoLetra() {
    }
  
-    public String Convertir(String numero, boolean mayusculas) {
+    public String Convertir(String numero, boolean mayusculas, String moneda) {
         String literal = "";
         String parte_decimal;   
         //si el numero utiliza (.) en lugar de (,) -> se reemplaza
@@ -50,7 +50,13 @@ public class MontoLetra {
             }
             //devuelve el resultado en mayusculas o minusculas
             if (mayusculas) {
-                return (literal + parte_decimal).toUpperCase();
+                String tipoM="";
+                if(moneda.equals("MXN")){
+                    tipoM="PESOS ";
+                }else if(moneda.equals("USD")){
+                    tipoM="DOLARES ";
+                }
+                return (literal +tipoM+ parte_decimal+" " +moneda).toUpperCase();
             } else {
                 return (literal + parte_decimal);
             }

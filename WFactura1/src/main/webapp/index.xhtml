@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Factura 1</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
@@ -47,7 +47,7 @@
             div[class=row]>div[class=col-md-4]>div[class=row]{
                 padding: 2px !important;
             }
-            
+
             input[type=submit]{
                 background: rgb(244,129,16);
                 color: white;
@@ -59,7 +59,7 @@
             .padding10{
                 padding: 5px !important;
             }
-            
+
             div[class="border border-warning padding10"]> div[class=row]{
                 padding: 5px !important;
             }
@@ -70,8 +70,10 @@
         </style>
     </h:head>
     <h:body>
-        <h:messages globalOnly="true" />
         <div class="container">
+            <p:growl id="growl" showDetail="true" sticky="true" life="800">
+                <p:autoUpdate />
+            </p:growl>
             <div class="row" style="margin-top: 15%">
                 <div class="col-md-6 text-right">
                     <img src="resources/img/LogoWF.png" alt="WF Consulting logo"/>
@@ -97,7 +99,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h:outputText value="Contraseña: &ensp;" />
-                                    <h:inputText value="#{indexV.contrasena}"/>
+                                    <h:inputSecret value="#{indexV.contrasena}"/>
                                 </div>
                             </div>
                             <div class="row">

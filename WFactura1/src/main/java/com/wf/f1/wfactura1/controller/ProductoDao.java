@@ -27,4 +27,6 @@ public interface ProductoDao {
     public List<Producto> listarProductosPorStatusYUsuario(boolean status,Usuario usuario);
     
     public Producto encontrarSiExisteIdentificador(String identificador);
+    
+    public Producto listarProductosUsuario(boolean status,Usuario usuario,String sat, String desc);
 }

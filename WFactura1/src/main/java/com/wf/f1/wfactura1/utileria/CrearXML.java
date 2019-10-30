@@ -45,14 +45,12 @@ public class CrearXML {
             String noCertificado = "";
             String tipoImpuesto = "";
             try {
-                System.out.println("Buscar  noCertificado de  " + usuario.getNombre().trim());
                 Query QueryCert = sess.createQuery("from Certs as C WHERE C.rfc = :RFC and C.estatusCer = 'A' order by C.fin desc").setString("RFC", usuario.getNombre().trim());
                 List<Certs> Certificados = (List<Certs>) QueryCert.list();
                 if (Certificados != null && Certificados.size() > 0) {
                     noCertificado = Certificados.get(0).getNoCert();
                 }
             } catch (Exception e) {
-                System.out.println("No se pudo encontrar certificado");
                 e.printStackTrace();
             } finally {
 
@@ -66,8 +64,8 @@ public class CrearXML {
             rootElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
             rootElement.setAttribute("xmlns:cfdi", "http://www.sat.gob.mx/cfd/3");
             rootElement.setAttribute("Version", "3.3");
-            rootElement.setAttribute("Serie", serie.getNombre());
-            rootElement.setAttribute("Folio", factura.getFolio());
+            rootElement.setAttribute("Serie", factura.getFolio());
+            rootElement.setAttribute("Folio", factura.getSerie().toString());
             Date fecha = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
             String fech1 = sdf.format(fecha);
@@ -76,7 +74,9 @@ public class CrearXML {
             rootElement.setAttribute("FormaPago", factura.getFormaPago());
             rootElement.setAttribute("NoCertificado", noCertificado);
             rootElement.setAttribute("Certificado", "");
-            rootElement.setAttribute("CondicionesDePago", factura.getCondicionPago());
+            if (factura.getCondicionPago() != null && !factura.getCondicionPago().trim().equals("")) {
+                rootElement.setAttribute("CondicionesDePago", factura.getCondicionPago());
+            }
             rootElement.setAttribute("SubTotal", factura.getSubtotal().toString());
             if (factura.getDescuento().doubleValue() > 0) {
                 rootElement.setAttribute("Descuento", factura.getDescuento().toString());
@@ -118,6 +118,9 @@ public class CrearXML {
             if (!numRegIdTrib.equals("")) {
                 receptor.setAttribute("NumRegIdTrib", numRegIdTrib);
             }
+            if(cliente.getCp()!=null && !cliente.getCp().equals("")&& !cliente.getPais().equals("MEX")){
+                receptor.setAttribute("ResidenciaFiscal", cliente.getPais());
+            }
 
             Element conceptos = doc.createElement("cfdi:Conceptos");
             rootElement.appendChild(conceptos);
@@ -134,6 +137,9 @@ public class CrearXML {
                 concepto.setAttribute("Descripcion", c.getProducto().getDescripcion());
                 if (c.getDescuento() != null && c.getDescuento().doubleValue() > 0) {
                     concepto.setAttribute("Descuento", c.getDescuento().toString());
+                }
+                if (c.getProducto().getNumeroIdentificador() != null && !c.getProducto().getNumeroIdentificador().trim().equals("")) {
+                    concepto.setAttribute("NoIdentificacion", c.getProducto().getNumeroIdentificador());
                 }
                 concepto.setAttribute("Importe", c.getImporte().toString());
                 concepto.setAttribute("ValorUnitario", c.getProducto().getValorUnitario().toString());
@@ -196,6 +202,21 @@ public class CrearXML {
                             RetenidosT.setAttribute("TipoFactor", it.getTipoFactor());
                         }
                     }
+                    if (c.getProducto().getNumeroPredial() != null && !c.getProducto().getNumeroPredial().equals("")) {
+                        Element predial = doc.createElement("cfdi:CuentaPredial");
+                        concepto.appendChild(predial);
+                        predial.setAttribute("Numero", c.getProducto().getNumeroPredial());
+                    }
+                    if (c.getProducto().getNpedimento() != null && !c.getProducto().getNpedimento().equals("")) {
+                        String[] pedimentos = c.getProducto().getNpedimento().split(";");
+                        for (int i = 0; i < pedimentos.length; i++) {
+                            if (pedimentos[i] != null && !pedimentos[i].trim().equals("")) {
+                                Element pedimento = doc.createElement("cfdi:InformacionAduanera");
+                                concepto.appendChild(pedimento);
+                                pedimento.setAttribute("NumeroPedimento", pedimentos[i]);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -253,7 +274,7 @@ public class CrearXML {
 
             if (sep != null) {
                 rootElement.setAttribute("xsi:schemaLocation", "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd http://www.sat.gob.mx/iedu http://www.sat.gob.mx/sitio_internet/cfd/iedu/iedu.xsd");
-            } else if ((ilT != null && ilT.size() > 0  ) || (ilR != null && ilR.size() > 0)) {
+            } else if ((ilT != null && ilT.size() > 0) || (ilR != null && ilR.size() > 0)) {
                 rootElement.setAttribute("xmlns:implocal", "http://www.sat.gob.mx/implocal");
                 rootElement.setAttribute("xsi:schemaLocation", "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd http://www.sat.gob.mx/implocal http://www.sat.gob.mx/sitio_internet/cfd/implocal/implocal.xsd");
                 Element ComplementoRoot = doc.createElement("cfdi:Complemento");

@@ -57,7 +57,7 @@ public class Cliente implements Serializable{
 	@Column(name = "CLI_PAIS",length=3) 
 	private String pais;
 	
-	@Column(name = "CLI_EMAIL",length=50) 
+	@Column(name = "CLI_EMAIL",length=300) 
 	private String email;
 	@Column(name = "CLI_RESPONSABLECREACION",nullable=false,length=20) 
 	private String responsableCreacion;

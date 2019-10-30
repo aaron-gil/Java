@@ -107,19 +107,20 @@ public class ClienteDaoImpl implements ClienteDao {
     }
 
     @Override
-    public List<Cliente> autocomplete(String dato, Usuario usuario) {
-        List<Cliente>listCliente= new ArrayList<>();
+    public Cliente buscarIdentifica(String rfc, String rz, Usuario u) {
+        Cliente cliente = null;
         try {
-            Query query = em.createQuery("from Cliente c where c.rfc like('%" + dato + "%') and c.responsableCreacion=:usuario order by c.rfc");
-            query.setParameter("usuario", usuario.getNombre());
-            listCliente = query.getResultList();
-            System.out.println("tamano de la lista " + listCliente.size());
-            if (listCliente.size() > 0) {
-                return listCliente;
+            Query query = em.createQuery("from Cliente c where c.rfc=:rfc and c.razonSocial=:rz and c.responsableCreacion =:u");
+            query.setParameter("rfc", rfc);
+            query.setParameter("rz", rz);
+            query.setParameter("u", u.getNombre());
+            List<Cliente> clientes = query.getResultList();
+            if (clientes.size() > 0) {
+                cliente = clientes.get(0);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return listCliente;
+        return cliente;
     }
 }

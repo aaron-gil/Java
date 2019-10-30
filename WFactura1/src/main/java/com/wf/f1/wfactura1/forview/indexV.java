@@ -57,9 +57,12 @@ public class indexV implements Serializable {
 
     @PostConstruct
     public void inicializar() {
+        System.out.println("iniciando . . . . . ");
         usuarioSeleccionado= new Usuario();
         contrasena="";
         usuario="";
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("usuarioElegido");
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
     }
     
     public String validarInicioSesion() {
@@ -67,10 +70,10 @@ public class indexV implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         if (usuario.equals("")) {
             System.out.println("sin usuario");
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso  Debe ingresar un nombre de usuario ",null));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso","Debe ingresar un nombre de usuario "));
         } else if (contrasena.equals("")) {
             System.out.println("sin contrasena");
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso Debe ingresar un password", null));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso","Debe ingresar un password"));
         } else {
             return iniciarSesion();
         }
@@ -87,11 +90,11 @@ public class indexV implements Serializable {
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuarioElegido", usuarioSeleccionado);
                 redireccion = "inicio?faces-redirect=true";
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso Usuario o Password Incorrecto",null));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso","Usuario o Password Incorrecto"));
             }
         } catch (Exception e) {
             e.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso No hay conexion", null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso","No hay conexion"));
         }
         return redireccion;
     }

@@ -30,7 +30,7 @@ import org.hibernate.Session;
  * @author WF Consulting
  */
 @ManagedBean(name = "inicioV")
-@SessionScoped
+@ViewScoped
 public class inicioV implements Serializable {
 
     @EJB
@@ -113,6 +113,7 @@ public class inicioV implements Serializable {
     @PostConstruct
     public void inicializar() {
         fechaActual = new Date();
+        usuarioSeleccionado= new Usuario();
         verificarSesion();
 
     }

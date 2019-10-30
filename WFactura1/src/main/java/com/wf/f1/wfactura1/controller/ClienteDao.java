@@ -26,6 +26,6 @@ public interface ClienteDao {
     
     public List<Cliente> listarClientesPorStatusYUsuario(boolean status,Usuario usuario);
     
-    public List<Cliente> autocomplete(String dato, Usuario usuario);
+    public Cliente buscarIdentifica(String rfc, String rz, Usuario u);
 
 }

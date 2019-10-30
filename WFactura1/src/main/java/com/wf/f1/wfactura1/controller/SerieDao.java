@@ -28,5 +28,7 @@ public interface SerieDao {
     public List<Serie> listarSeriesPorUsuario(Usuario usuario);
     
     public List<Serie> listarSeriesPorTipoComprobanteYUsuario(TipoComprobante tipoComprobante,Usuario usuario);
+    
+    public Serie buscarId(Usuario usuario, Integer id);
 
 }

@@ -16,17 +16,21 @@ import com.wf.f1.wfactura1.beanext.MercanciasCompComExt;
 import com.wf.f1.wfactura1.beanext.PropietarioCompComExt;
 import com.wf.f1.wfactura1.beanext.impRetenidos;
 import com.wf.f1.wfactura1.beanext.impTrasladados;
+import com.wf.f1.wfactura1.controller.ClienteDao;
+import com.wf.f1.wfactura1.controller.FacturaDao;
 import com.wf.f1.wfactura1.controller.FormaPagoDao;
 import com.wf.f1.wfactura1.controller.MetodoPagoDao;
 import com.wf.f1.wfactura1.controller.MonedaDao;
+import com.wf.f1.wfactura1.controller.ProductoDao;
 import com.wf.f1.wfactura1.controller.SerieDao;
 import com.wf.f1.wfactura1.controller.TipoComprobanteDao;
 import com.wf.f1.wfactura1.controller.TipoRelacionDao;
 import com.wf.f1.wfactura1.controller.UsoCfdiDao;
+import com.wf.f1.wfactura1.controller.ZonahorariaDao;
 import com.wf.f1.wfactura1.converterbeans.UsoCfdiBean;
-import com.wf.f1.wfactura1.converterbeans.clienteService;
-import com.wf.f1.wfactura1.converterbeans.productoService;
 import com.wf.f1.wfactura1.converterbeans.usoCfdiService;
+import com.wf.f1.wfactura1.entities.Certs;
+import com.wf.f1.wfactura1.entities.HibernateUtil;
 import com.wf.f1.wfactura1.model.Cliente;
 import com.wf.f1.wfactura1.model.Factura;
 import com.wf.f1.wfactura1.model.FormaPago;
@@ -38,12 +42,28 @@ import com.wf.f1.wfactura1.model.TipoComprobante;
 import com.wf.f1.wfactura1.model.TipoRelacion;
 import com.wf.f1.wfactura1.model.UsoCfdi;
 import com.wf.f1.wfactura1.model.Usuario;
+import com.wf.f1.wfactura1.utileria.Conversion;
 import com.wf.f1.wfactura1.utileria.CreacionArchivo;
 import com.wf.f1.wfactura1.utileria.CrearXML;
+import com.wf.f1.wfactura1.utileria.EnvioEmail;
 import com.wf.f1.wfactura1.utileria.MontoLetra;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,6 +76,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -64,6 +87,8 @@ import javax.faces.context.FacesContext;
 @ManagedBean(name = "cfdi33V")
 @ViewScoped
 public class cfdi33V implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @EJB
     private UsoCfdiDao usosDao;
@@ -79,6 +104,16 @@ public class cfdi33V implements Serializable {
     private SerieDao serieDao;
     @EJB
     private TipoRelacionDao tipoRelacionService;
+    @EJB
+    private ZonahorariaDao zonahorariaDao;
+    @EJB
+    private FacturaDao facturaService;
+    @EJB
+    private ClienteDao clienteDao;
+    @EJB
+    private ProductoDao productoDao;
+    @EJB
+    private UsoCfdiDao usoCfdiDao;
 
     private Usuario usuarioSeleccionado;
     private List<Serie> seriesSeleccionadas;
@@ -187,11 +222,11 @@ public class cfdi33V implements Serializable {
     private Factura factura;
     private String observaciones;
     private ComplementoComExt compComExt;
-    private PropietarioCompComExt propietario;
-    private DestinatarioCompComExt destinatario;
-    private DomicilioCompComExt domicilioDestin;
-    private MercanciasCompComExt mercancia;
-    private DescEspecCompComExt descpEsp;
+    private List<PropietarioCompComExt> propietario;
+    private List<DestinatarioCompComExt> destinatario;
+    private List<DomicilioCompComExt> domicilioDestin;
+    private List<MercanciasCompComExt> mercancia;
+    private List<DescEspecCompComExt> descpEsp;
     private Boolean tablaPropietarios;
     private Boolean tablaDomicilios;
     private Boolean tablaDestinatarios;
@@ -253,25 +288,57 @@ public class cfdi33V implements Serializable {
     private String marcaCE;
     private String modeloCE;
     private String submodeloCE;
-    private String umSerieCE;
+    private String numSerieCE;
+    private Boolean checkComplementoSEP;
+    private Boolean checkComplementoCE;
+    private Boolean checkComplementoIL;
+    private String strComplementoSEP;
+    private String strComplementoCE;
+    private String strComplementoIL;
+    private String strUUIDRel;
+    private Boolean tipoCambioBool;
+    private String descripcionProducto;
+    private BigDecimal valorUnitarioB;
+    private String xmlTimbrado;
+    private StreamedContent filePdfVP;
+    private String vpPdf;
+    private Boolean vpPdfB;
+    private Boolean btnsVE;
+    private String errorTimbrado;
+    private Boolean errorBol;
+    private List<UsoCfdiBean> allUsos;
+    private List<Cliente> allClientes;
+    private List<Producto> allProducto;
+    private String clienteString;
+    private String productoString;
 
     @ManagedProperty(value = "#{usoCfdiService}")
     private usoCfdiService service;
-    @ManagedProperty(value = "#{clienteService}")
-    private clienteService serviceC;
-    @ManagedProperty(value = "#{productoService}")
-    private productoService serviceP;
-
-    FacesContext context = FacesContext.getCurrentInstance();
 
     @PostConstruct
     public void inicializar() {
-        tipoOperacionCE="2";
-        descpEsp = new DescEspecCompComExt();
-        mercancia = new MercanciasCompComExt();
-        destinatario = new DestinatarioCompComExt();
-        domicilioDestin = new DomicilioCompComExt();
-        propietario = new PropietarioCompComExt();
+        clienteString = "";
+        productoString = "";
+        usuarioSeleccionado = new Usuario();
+        FacesContext context = FacesContext.getCurrentInstance();
+        usuarioSeleccionado = (Usuario) context.getExternalContext().getSessionMap().get("usuarioElegido");
+        allClientes = new ArrayList<Cliente>();
+        allUsos = new ArrayList<UsoCfdiBean>();
+        allProducto = new ArrayList<Producto>();
+        vpPdf = "";//System.getProperty("java.io.tmpdir")+"\\facturaTem"+usuarioSeleccionado.getNombre()+".pdf";
+        valorUnitarioB = new BigDecimal(0);
+        descripcionProducto = "";
+        tipoCambioBool = true;
+        strComplementoSEP = "none";
+        strComplementoCE = "none";
+        strComplementoIL = "none";
+        strUUIDRel = "none";
+        tipoOperacionCE = "2";
+        descpEsp = new ArrayList<>();
+        mercancia = new ArrayList<>();
+        destinatario = new ArrayList<>();
+        domicilioDestin = new ArrayList<>();
+        propietario = new ArrayList<>();
         compComExt = new ComplementoComExt();
         observaciones = "";
         renderAlu = true;
@@ -286,7 +353,7 @@ public class cfdi33V implements Serializable {
         moneda.setDescripcion("Peso Mexicano");
         moneda.setIdentifica("MXN");
         moneda.setPorcentajeVariacion("35%");
-        monedaS = "";
+        monedaS = "MXN";
         metodoPagoS = "";
         formapago = new FormaPago();
         formaPagoS = "";
@@ -324,15 +391,206 @@ public class cfdi33V implements Serializable {
         tipoTasaOCRActiv = true;
         tipoFactorTActiv = true;
         tipoTasaOCTActiv = true;
-        usuarioSeleccionado = new Usuario();
         seriesSeleccionadas = new ArrayList<Serie>();
         opcSeries = new ArrayList<String>();
         nextFolio = 0;
         todoUsos = new ArrayList<UsoCfdiBean>();
+        renderILCTT = true;
+        renderILCTI = true;
+        renderILCTB = true;
+        renderILCRT = true;
+        renderILCRI = true;
+        renderILCRB = true;
+        errorTimbrado = "";
         verificarSesion();
+        cargar();
 
     }
- 
+
+    public void cargar() {
+        List<UsoCfdi> allUsosB = usosDao.findAllUsoCfdies();
+        int i = 1;
+        for (UsoCfdi u : allUsosB) {
+            UsoCfdiBean ub = new UsoCfdiBean();
+            ub.setId(i);
+            ub.setIdentifica(u.getIdentifica());
+            ub.setDescripcion(u.getDescripcion());
+            i++;
+            allUsos.add(ub);
+        }
+
+        allClientes = clienteDao.listarClientesPorStatusYUsuario(true, usuarioSeleccionado);
+        allProducto = productoDao.listarProductosPorStatusYUsuario(true, usuarioSeleccionado);
+    }
+
+    public String getProductoString() {
+        return productoString;
+    }
+
+    public void setProductoString(String productoString) {
+        this.productoString = productoString;
+    }
+
+    public String getClienteString() {
+        return clienteString;
+    }
+
+    public void setClienteString(String clienteString) {
+        this.clienteString = clienteString;
+    }
+
+    public Boolean getErrorBol() {
+        return errorBol;
+    }
+
+    public void setErrorBol(Boolean errorBol) {
+        this.errorBol = errorBol;
+    }
+
+    public String getErrorTimbrado() {
+        return errorTimbrado;
+    }
+
+    public void setErrorTimbrado(String errorTimbrado) {
+        this.errorTimbrado = errorTimbrado;
+    }
+
+    public Boolean getBtnsVE() {
+        return btnsVE;
+    }
+
+    public void setBtnsVE(Boolean btnsVE) {
+        this.btnsVE = btnsVE;
+    }
+
+    public Boolean getVpPdfB() {
+        return vpPdfB;
+    }
+
+    public void setVpPdfB(Boolean vpPdfB) {
+        this.vpPdfB = vpPdfB;
+    }
+
+    public String getVpPdf() {
+        return vpPdf;
+    }
+
+    public void setVpPdf(String vpPdf) {
+        this.vpPdf = vpPdf;
+    }
+
+    public String getDescripcionProducto() {
+        return descripcionProducto;
+    }
+
+    public void setDescripcionProducto(String descripcionProducto) {
+        this.descripcionProducto = descripcionProducto;
+    }
+
+    public Boolean getTipoCambioBool() {
+        return tipoCambioBool;
+    }
+
+    public void setTipoCambioBool(Boolean tipoCambioBool) {
+        this.tipoCambioBool = tipoCambioBool;
+    }
+
+    public String getStrComplementoSEP() {
+        return strComplementoSEP;
+    }
+
+    public void setStrComplementoSEP(String strComplementoSEP) {
+        this.strComplementoSEP = strComplementoSEP;
+    }
+
+    public String getStrComplementoCE() {
+        return strComplementoCE;
+    }
+
+    public void setStrComplementoCE(String strComplementoCE) {
+        this.strComplementoCE = strComplementoCE;
+    }
+
+    public String getStrComplementoIL() {
+        return strComplementoIL;
+    }
+
+    public void setStrComplementoIL(String strComplementoIL) {
+        this.strComplementoIL = strComplementoIL;
+    }
+
+    public String getStrUUIDRel() {
+        return strUUIDRel;
+    }
+
+    public void setStrUUIDRel(String strUUIDRel) {
+        this.strUUIDRel = strUUIDRel;
+    }
+
+    public Boolean getCheckComplementoSEP() {
+        return checkComplementoSEP;
+    }
+
+    public void setCheckComplementoSEP(Boolean checkComplementoSEP) {
+        this.checkComplementoSEP = checkComplementoSEP;
+    }
+
+    public Boolean getCheckComplementoCE() {
+        return checkComplementoCE;
+    }
+
+    public void setCheckComplementoCE(Boolean checkComplementoCE) {
+        this.checkComplementoCE = checkComplementoCE;
+    }
+
+    public Boolean getCheckComplementoIL() {
+        return checkComplementoIL;
+    }
+
+    public void setCheckComplementoIL(Boolean checkComplementoIL) {
+        this.checkComplementoIL = checkComplementoIL;
+    }
+
+    public List<PropietarioCompComExt> getPropietario() {
+        return propietario;
+    }
+
+    public void setPropietario(List<PropietarioCompComExt> propietario) {
+        this.propietario = propietario;
+    }
+
+    public List<DestinatarioCompComExt> getDestinatario() {
+        return destinatario;
+    }
+
+    public void setDestinatario(List<DestinatarioCompComExt> destinatario) {
+        this.destinatario = destinatario;
+    }
+
+    public List<DomicilioCompComExt> getDomicilioDestin() {
+        return domicilioDestin;
+    }
+
+    public void setDomicilioDestin(List<DomicilioCompComExt> domicilioDestin) {
+        this.domicilioDestin = domicilioDestin;
+    }
+
+    public List<MercanciasCompComExt> getMercancia() {
+        return mercancia;
+    }
+
+    public void setMercancia(List<MercanciasCompComExt> mercancia) {
+        this.mercancia = mercancia;
+    }
+
+    public List<DescEspecCompComExt> getDescpEsp() {
+        return descpEsp;
+    }
+
+    public void setDescpEsp(List<DescEspecCompComExt> descpEsp) {
+        this.descpEsp = descpEsp;
+    }
+
     public String getMunicipioRCE() {
         return municipioRCE;
     }
@@ -340,6 +598,7 @@ public class cfdi33V implements Serializable {
     public void setMunicipioRCE(String municipioRCE) {
         this.municipioRCE = municipioRCE;
     }
+
     public String getTipoOperacionCE() {
         return tipoOperacionCE;
     }
@@ -780,12 +1039,12 @@ public class cfdi33V implements Serializable {
         this.submodeloCE = submodeloCE;
     }
 
-    public String getUmSerieCE() {
-        return umSerieCE;
+    public String getNumSerieCE() {
+        return numSerieCE;
     }
 
-    public void setUmSerieCE(String umSerieCE) {
-        this.umSerieCE = umSerieCE;
+    public void setNumSerieCE(String numSerieCE) {
+        this.numSerieCE = numSerieCE;
     }
 
     public Boolean getTablaPropietarios() {
@@ -826,46 +1085,6 @@ public class cfdi33V implements Serializable {
 
     public void setTablaMercancias(Boolean tablaMercancias) {
         this.tablaMercancias = tablaMercancias;
-    }
-
-    public MercanciasCompComExt getMercancia() {
-        return mercancia;
-    }
-
-    public void setMercancia(MercanciasCompComExt mercancia) {
-        this.mercancia = mercancia;
-    }
-
-    public DescEspecCompComExt getDescpEsp() {
-        return descpEsp;
-    }
-
-    public void setDescpEsp(DescEspecCompComExt descpEsp) {
-        this.descpEsp = descpEsp;
-    }
-
-    public DestinatarioCompComExt getDestinatario() {
-        return destinatario;
-    }
-
-    public void setDestinatario(DestinatarioCompComExt destinatario) {
-        this.destinatario = destinatario;
-    }
-
-    public DomicilioCompComExt getDomicilioDestin() {
-        return domicilioDestin;
-    }
-
-    public void setDomicilioDestin(DomicilioCompComExt domicilioDestin) {
-        this.domicilioDestin = domicilioDestin;
-    }
-
-    public PropietarioCompComExt getPropietario() {
-        return propietario;
-    }
-
-    public void setPropietario(PropietarioCompComExt propietario) {
-        this.propietario = propietario;
     }
 
     public ComplementoComExt getCompComExt() {
@@ -1500,14 +1719,6 @@ public class cfdi33V implements Serializable {
         this.producto = producto;
     }
 
-    public productoService getServiceP() {
-        return serviceP;
-    }
-
-    public void setServiceP(productoService serviceP) {
-        this.serviceP = serviceP;
-    }
-
     public String getFormaPagoS() {
         return formaPagoS;
     }
@@ -1554,14 +1765,6 @@ public class cfdi33V implements Serializable {
 
     public void setListaMetodosPago(List<MetodoPago> listaMetodosPago) {
         this.listaMetodosPago = listaMetodosPago;
-    }
-
-    public clienteService getServiceC() {
-        return serviceC;
-    }
-
-    public void setServiceC(clienteService serviceC) {
-        this.serviceC = serviceC;
     }
 
     public usoCfdiService getService() {
@@ -1720,23 +1923,38 @@ public class cfdi33V implements Serializable {
         this.numRegIdTrib = numRegIdTrib;
     }
 
+    public BigDecimal getValorUnitarioB() {
+        return valorUnitarioB;
+    }
+
+    public void setValorUnitarioB(BigDecimal valorUnitarioB) {
+        this.valorUnitarioB = valorUnitarioB;
+    }
+
+    public StreamedContent getFilePdfVP() {
+        return filePdfVP;
+    }
+
+    public void setFilePdfVP(StreamedContent filePdfVP) {
+        this.filePdfVP = filePdfVP;
+    }
+
     public void verificarSesion() {
-        System.out.println("verificando..................");
         try {
-            usuarioSeleccionado = (Usuario) context.getExternalContext().getSessionMap().get("usuarioElegido");
             if (usuarioSeleccionado == null) {
+                FacesContext context = FacesContext.getCurrentInstance();
                 context.getExternalContext().redirect("index.xhtml");
             } else {
-
-                listarTiposComprobante();
-                listarUsos();
-                listarMetodosPago();
-                listarMonedas();
-                listarFormasPago();
-                listarTiposRelacion();
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            listarTiposComprobante();
+            listarUsos();
+            listarMetodosPago();
+            listarMonedas();
+            listarFormasPago();
+            listarTiposRelacion();
         }
     }
 
@@ -1773,19 +1991,11 @@ public class cfdi33V implements Serializable {
     }
 
     public void folioSiguiente() {
-        for (Serie ss : seriesSeleccionadas) {
-            if (ss.getIdentifica() == serieS) {
-                serie = ss;
-                nextFolio = serie.getFolioActual() + 1;
-                break;
-            } else {
-                nextFolio = 0;
-            }
-        }
+        serie = serieDao.buscarId(usuarioSeleccionado, serieS);
+        nextFolio = serie.getFolioActual() + 1;
     }
 
     public List<UsoCfdiBean> completeUso(String dato) {
-        List<UsoCfdiBean> allUsos = service.getUsos();
         List<UsoCfdiBean> filteredUsos = new ArrayList<UsoCfdiBean>();
         for (UsoCfdiBean usoF : allUsos) {
             if (usoF.getIdentifica().toLowerCase().contains(dato.toLowerCase())) {
@@ -1797,35 +2007,48 @@ public class cfdi33V implements Serializable {
         return filteredUsos;
     }
 
-    public List<Cliente> completeCliente(String dato) {
-        List<Cliente> allClientes = serviceC.getClientes();
-        List<Cliente> filteredCliente = new ArrayList<Cliente>();
+    public List<String> completeCliente(String dato) {
+        List<String> filteredCliente = new ArrayList<String>();
         for (Cliente c : allClientes) {
             if (c.getRfc().toLowerCase().contains(dato.toLowerCase())) {
-                filteredCliente.add(c);
+                filteredCliente.add(c.getRfc() + " : " + c.getRazonSocial());
             } else if (c.getRazonSocial().toLowerCase().contains(dato.toLowerCase())) {
-                filteredCliente.add(c);
+                filteredCliente.add(c.getRfc() + " : " + c.getRazonSocial());
             }
         }
         return filteredCliente;
     }
 
-    public List<Producto> completeProducto(String dato) {
-        List<Producto> allProducto = serviceP.getProductos();
-        List<Producto> filteredProducto = new ArrayList<Producto>();
+    public void compClienSet() {
+        clienteString = clienteString.replaceAll(" : ", ":");
+        cliente = clienteDao.buscarIdentifica(clienteString.substring(0, clienteString.indexOf(":")), clienteString.substring(clienteString.indexOf(":") + 1), usuarioSeleccionado);
+        clienteString = "";
+    }
+
+    public List<String> completeProducto(String dato) {
+        List<String> filteredProducto = new ArrayList<String>();
         for (Producto p : allProducto) {
             if (p.getDescripcion().toLowerCase().contains(dato.toLowerCase())) {
-                filteredProducto.add(p);
+                filteredProducto.add(p.getCodigoSat() + " : " + p.getDescripcion());
             } else if (p.getCodigoSat().toLowerCase().contains(dato.toLowerCase())) {
-                filteredProducto.add(p);
+                filteredProducto.add(p.getCodigoSat() + " : " + p.getDescripcion());
             }
         }
         return filteredProducto;
     }
 
+    public void compProdSet() {
+        productoString = productoString.replaceAll(" : ", ":");
+        producto = productoDao.listarProductosUsuario(true, usuarioSeleccionado, productoString.substring(0, productoString.indexOf(":")), productoString.substring(productoString.indexOf(":") + 1));
+        productoString = "";
+        cantidad = new BigDecimal(0);
+        importe = new BigDecimal(0);
+        habilitarInputs();
+    }
+
     public void cantidadXvalor() {
         try {
-            importe = cantidad.multiply(producto.getValorUnitario());
+            importe = cantidad.multiply(valorUnitarioB);
             if (cantidad.intValue() > 0) {
                 activChecksImp = true;
                 baseR = importe;
@@ -1884,6 +2107,9 @@ public class cfdi33V implements Serializable {
                 tipoFactorRL.add("Tasa");
             }
         } else {
+            tipoTasaOCRActiv = true;
+            importeT = new BigDecimal(0);
+            btnAgrRet = false;
             tipoFactorRActiv = true;
         }
     }
@@ -1903,43 +2129,114 @@ public class cfdi33V implements Serializable {
             }
         } else {
             tipoFactorTActiv = true;
+            tipoTasaOCTActiv = true;
+            importeT = new BigDecimal(0);
+            btnAgrTra = false;
+        }
+    }
+
+    public void tasaOCuotaTraList() {
+        listTCTras = new HashMap<String, BigDecimal>();
+        if (ivaT.equals("iva")) {
+            if (tipoFactorT == null) {
+                importeT = new BigDecimal(0);
+                btnAgrTra = false;
+                tipoTasaOCTActiv = true;
+            } else if (tipoFactorT.equals("Tasa")) {
+                listTCTras.put("0", new BigDecimal("0.000000"));
+                listTCTras.put("8", new BigDecimal("0.080000"));
+                listTCTras.put("16", new BigDecimal("0.160000"));
+                btnAgrTra = false;
+                tipoTasaOCTActiv = false;
+            } else if (tipoFactorT.equals("Exento")) {
+                listTCTras.put("", new BigDecimal("0.000000"));
+                tasaOCuotaT = new BigDecimal(0);
+                calcularImpuestosTrasladados();
+                tipoTasaOCTActiv = true;
+            } else {
+                importeT = new BigDecimal(0);
+                btnAgrTra = false;
+                tipoTasaOCTActiv = true;
+            }
+
+        } else if (ivaT.equals("ieps")) {
+            if (tipoFactorT == null) {
+                importeT = new BigDecimal(0);
+                btnAgrTra = false;
+                tipoTasaOCTActiv = true;
+            } else if (tipoFactorT.equals("Tasa")) {
+
+                listTCTras.put("0.06", new BigDecimal("0.060000"));
+                listTCTras.put("0.07", new BigDecimal("0.070000"));
+                listTCTras.put("0.08", new BigDecimal("0.080000"));
+                listTCTras.put("0.09", new BigDecimal("0.090000"));
+                listTCTras.put("0.25", new BigDecimal("0.250000"));
+                listTCTras.put("0.265", new BigDecimal("0.2650000"));
+                listTCTras.put("0.3", new BigDecimal("0.300000"));
+                listTCTras.put("0.304", new BigDecimal("0.304000"));
+                listTCTras.put("0.5", new BigDecimal("0.500000"));
+                listTCTras.put("0.53", new BigDecimal("0.530000"));
+                listTCTras.put("1.6", new BigDecimal("1.600000"));
+                tipoTasaOCTActiv = false;
+                btnAgrTra = false;
+
+            } else if (tipoFactorT.equals("Cuota")) {
+                listTCTras.put("0", new BigDecimal("0.000000"));
+                listTCTras.put("0.06", new BigDecimal("0.060000"));
+                listTCTras.put("0.07", new BigDecimal("0.070000"));
+                listTCTras.put("0.08", new BigDecimal("0.080000"));
+                listTCTras.put("0.09", new BigDecimal("0.090000"));
+                listTCTras.put("0.16", new BigDecimal("0.160000"));
+                listTCTras.put("0.25", new BigDecimal("0.250000"));
+                listTCTras.put("0.265", new BigDecimal("0.2650000"));
+                listTCTras.put("0.3", new BigDecimal("0.300000"));
+                listTCTras.put("0.304", new BigDecimal("0.304000"));
+                listTCTras.put("0.5", new BigDecimal("0.500000"));
+                listTCTras.put("0.53", new BigDecimal("0.530000"));
+                tipoTasaOCTActiv = false;
+                btnAgrTra = false;
+            } else {
+                btnAgrTra = false;
+                tasaOCuotaT = new BigDecimal(0);
+                calcularImpuestosTrasladados();
+                tipoTasaOCTActiv = true;
+
+            }
         }
     }
 
     public void tasaOCuotaRetList() {
         listTCReten = new HashMap<String, BigDecimal>();
         if (ivaR.equals("iva")) {
-            if (tipoFactorR.equals("Tasa")) {
+            if (tipoFactorR == null) {
+                importeR = new BigDecimal(0);
+                btnAgrRet = false;
+                tipoTasaOCRActiv = true;
+            } else if (tipoFactorR.equals("Tasa")) {
                 listTCReten.put("0", new BigDecimal("0.000000"));
                 listTCReten.put("8", new BigDecimal("0.080000"));
                 listTCReten.put("16", new BigDecimal("0.160000"));
                 tipoTasaOCRActiv = false;
+                btnAgrRet = false;
             } else if (tipoFactorR.equals("Exento")) {
+                tasaOCuotaR = new BigDecimal(0);
                 listTCReten.put("", new BigDecimal("0.000000"));
-                tipoTasaOCRActiv = false;
+                calcularImpuestosRetenidos();
+                tipoTasaOCRActiv = true;
             } else {
+                importeR = new BigDecimal(0);
+                btnAgrRet = false;
                 tipoTasaOCRActiv = true;
             }
 
         } else if (ivaR.equals("ieps")) {
-            System.out.println("ieps");
-            if (tipoFactorR.equals("Tasa")) {
-
-                listTCReten.put("0.06", new BigDecimal("0.060000"));
-                listTCReten.put("0.07", new BigDecimal("0.070000"));
-                listTCReten.put("0.08", new BigDecimal("0.080000"));
-                listTCReten.put("0.09", new BigDecimal("0.090000"));
-                listTCReten.put("0.25", new BigDecimal("0.250000"));
-                listTCReten.put("0.265", new BigDecimal("0.2650000"));
-                listTCReten.put("0.3", new BigDecimal("0.300000"));
-                listTCReten.put("0.304", new BigDecimal("0.304000"));
-                listTCReten.put("0.5", new BigDecimal("0.500000"));
-                listTCReten.put("0.53", new BigDecimal("0.530000"));
-                listTCReten.put("1.6", new BigDecimal("1.600000"));
-                tipoTasaOCRActiv = false;
-
-            } else if (tipoFactorR.equals("Cuota")) {
+            if (tipoFactorR == null) {
+                importeR = new BigDecimal(0);
+                btnAgrRet = false;
+                tipoTasaOCRActiv = true;
+            } else if (tipoFactorR.equals("Tasa")) {
                 listTCReten.put("0", new BigDecimal("0.000000"));
+                listTCReten.put("0.03", new BigDecimal("0.030000"));
                 listTCReten.put("0.06", new BigDecimal("0.060000"));
                 listTCReten.put("0.07", new BigDecimal("0.070000"));
                 listTCReten.put("0.08", new BigDecimal("0.080000"));
@@ -1947,17 +2244,31 @@ public class cfdi33V implements Serializable {
                 listTCReten.put("0.16", new BigDecimal("0.160000"));
                 listTCReten.put("0.25", new BigDecimal("0.250000"));
                 listTCReten.put("0.265", new BigDecimal("0.2650000"));
-                listTCReten.put("0.3", new BigDecimal("0.300000"));
                 listTCReten.put("0.304", new BigDecimal("0.304000"));
-                listTCReten.put("0.5", new BigDecimal("0.500000"));
-                listTCReten.put("0.53", new BigDecimal("0.530000"));
+                listTCReten.put("1.6", new BigDecimal("1.600000"));
+                tipoTasaOCRActiv = false;
+                btnAgrRet = false;
+
+            } else if (tipoFactorR.equals("Exento")) {
+                listTCReten.put("", new BigDecimal("0.000000"));
+                tasaOCuotaR = new BigDecimal(0);
+                calcularImpuestosRetenidos();
+                tipoTasaOCRActiv = true;
+            } else if (tipoFactorR.equals("Cuota")) {
+                listTCReten.put("0", new BigDecimal("0.000000"));
                 tipoTasaOCRActiv = false;
             } else {
+                importeR = new BigDecimal(0);
+                btnAgrRet = false;
                 tipoTasaOCRActiv = true;
             }
 
         } else if (ivaR.equals("isr")) {
-            if (tipoFactorR.equals("Tasa")) {
+            if (tipoFactorR == null) {
+                importeR = new BigDecimal(0);
+                btnAgrRet = false;
+                tipoTasaOCRActiv = true;
+            } else if (tipoFactorR.equals("Tasa")) {
                 listTCReten.put("0", new BigDecimal("0.000000"));
                 listTCReten.put("0.06", new BigDecimal("0.060000"));
                 listTCReten.put("0.07", new BigDecimal("0.070000"));
@@ -1972,50 +2283,6 @@ public class cfdi33V implements Serializable {
                 listTCReten.put("0.35", new BigDecimal("0.350000"));
                 tipoTasaOCRActiv = false;
             }
-        }
-    }
-
-    public void tasaOCuotaTraList() {
-        listTCTras = new HashMap<String, BigDecimal>();
-        if (ivaT.equals("iva")) {
-            if (tipoFactorT.equals("Tasa")) {
-                listTCTras.put("0", new BigDecimal("0.000000"));
-                listTCTras.put("8", new BigDecimal("0.080000"));
-                listTCTras.put("16", new BigDecimal("0.160000"));
-                tipoTasaOCTActiv = false;
-            } else if (tipoFactorT.equals("Exento")) {
-                listTCTras.put("", new BigDecimal("0.000000"));
-                tipoTasaOCTActiv = false;
-            } else {
-                tipoTasaOCTActiv = true;
-            }
-
-        } else if (ivaT.equals("ieps")) {
-            System.out.println("ieps");
-            if (tipoFactorT.equals("Tasa")) {
-                listTCTras.put("0", new BigDecimal("0.000000"));
-                listTCTras.put("0.03", new BigDecimal("0.030000"));
-                listTCTras.put("0.06", new BigDecimal("0.060000"));
-                listTCTras.put("0.07", new BigDecimal("0.070000"));
-                listTCTras.put("0.08", new BigDecimal("0.080000"));
-                listTCTras.put("0.09", new BigDecimal("0.090000"));
-                listTCTras.put("0.16", new BigDecimal("0.160000"));
-                listTCTras.put("0.25", new BigDecimal("0.250000"));
-                listTCTras.put("0.265", new BigDecimal("0.2650000"));
-                listTCTras.put("0.304", new BigDecimal("0.304000"));
-                listTCTras.put("1.6", new BigDecimal("1.600000"));
-                tipoTasaOCTActiv = false;
-
-            } else if (tipoFactorT.equals("Exento")) {
-                listTCTras.put("", new BigDecimal("0.000000"));
-                tipoTasaOCTActiv = false;
-            } else if (tipoFactorT.equals("Cuota")) {
-                listTCTras.put("0", new BigDecimal("0.000000"));
-                tipoTasaOCTActiv = false;
-            } else {
-                tipoTasaOCTActiv = true;
-            }
-
         }
     }
 
@@ -2045,11 +2312,13 @@ public class cfdi33V implements Serializable {
         if (!ivaR.equals("") && !tipoFactorR.equals("")) {
             try {
                 impRetenidos im = new impRetenidos();
-                im.setBase(baseR);
-                im.setImporte(importeR);
+                im.setBase(baseR.divide(tipoCambio, 6, RoundingMode.HALF_UP));
+                im.setImporte(importeR.divide(tipoCambio, 6, RoundingMode.HALF_UP));
                 im.setIva(ivaR);
                 im.setTasaOCuota(tasaOCuotaR);
                 im.setTipoFactor(tipoFactorR);
+                im.setMoneda(monedaS);
+                im.setTipoCambio(tipoCambio);
                 listRete.add(im);
                 importeR = new BigDecimal(0);
                 ivaR = "";
@@ -2067,6 +2336,7 @@ public class cfdi33V implements Serializable {
         } else {
             impRetPan = false;
         }
+        calcularTotalGlobal();
     }
 
     public void eliminarImpRet(impRetenidos ipR) {
@@ -2079,17 +2349,20 @@ public class cfdi33V implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        calcularTotalGlobal();
     }
 
     public void agregarImpTras() {
         if (!ivaT.equals("") && !tipoFactorT.equals("")) {
             try {
                 impTrasladados im = new impTrasladados();
-                im.setBase(baseT);
-                im.setImporte(importeT);
+                im.setBase(baseT.divide(tipoCambio, 6, RoundingMode.HALF_UP));
+                im.setImporte(importeT.divide(tipoCambio, 6, RoundingMode.HALF_UP));
                 im.setIva(ivaT);
                 im.setTasaOCuota(tasaOCuotaT);
                 im.setTipoFactor(tipoFactorT);
+                im.setMoneda(monedaS);
+                im.setTipoCambio(tipoCambio);
                 listTras.add(im);
                 importeT = new BigDecimal(0);
                 ivaT = "";
@@ -2107,6 +2380,7 @@ public class cfdi33V implements Serializable {
         } else {
             impTraPan = false;
         }
+        calcularTotalGlobal();
     }
 
     public void eliminarImpTra(impTrasladados ipT) {
@@ -2119,18 +2393,34 @@ public class cfdi33V implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        calcularTotalGlobal();
     }
 
     public void agregarConcepto() {
+        Conceptos c = new Conceptos();
         try {
             if (cantidad.intValue() > 0) {
-                Conceptos c = new Conceptos();
+                btnsVE = true;
+                Producto pr = new Producto();
+                pr.setCodigoSat(producto.getCodigoSat());
+                pr.setDescripcion(descripcionProducto);
+                pr.setDescripcionCodigoSat(producto.getDescripcionCodigoSat());
+                pr.setEmpresa(producto.getEmpresa());
+                pr.setFechaCreacion(producto.getFechaCreacion());
+                pr.setIdentifica(producto.getIdentifica());
+                pr.setIva(producto.getIva());
+                pr.setMedida(producto.getMedida());
+                pr.setNpedimento(producto.getNpedimento());
+                pr.setNumeroIdentificador(producto.getNumeroIdentificador());
+                pr.setResponsableCreacion(producto.getResponsableCreacion());
+                pr.setValorUnitario(valorUnitarioB.divide(tipoCambio, 6, RoundingMode.HALF_UP));
+                pr.setNumeroPredial(producto.getNumeroPredial());
                 c.setCantidad(cantidad);
                 c.setDescripcion("");
-                c.setDescuento(descuento);
-                c.setImporte(importe);
+                c.setDescuento(descuento.divide(tipoCambio, 6, RoundingMode.HALF_UP));
+                c.setImporte(importe.divide(tipoCambio, 6, RoundingMode.HALF_UP));
                 c.setPorcentaje(porcentajeDes);
-                c.setProducto(producto);
+                c.setProducto(pr);
                 if (listRete.size() > 0) {
                     c.setRetenidos(listRete);
                 }
@@ -2138,30 +2428,33 @@ public class cfdi33V implements Serializable {
                     c.setTrasladados(listTras);
                 }
                 conceptos.add(c);
-                cantidad = new BigDecimal(0);
-                descuento = new BigDecimal(0);
-                importe = new BigDecimal(0);
-                porcentajeDes = new BigDecimal(0);
-                producto = new Producto();
-                producto.setIdentifica(0);
-                listRete = new ArrayList<>();
-                listTras = new ArrayList<>();
-                conceptosTableActv = true;
-                btnAgrCon = true;
-                checkRetenidos = false;
-                checktrasladados = false;
-                activChecksImp = false;
-                impRetPan = false;
-                impTraPan = false;
-                btnAgrRet = false;
-                btnAgrTra = false;
-                inputCon = true;
                 agregarVRetenciones();
                 agregarVTrasladados();
             }
             calcularTotalGlobal();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            descripcionProducto = "";
+            cantidad = new BigDecimal(0);
+            descuento = new BigDecimal(0);
+            importe = new BigDecimal(0);
+            porcentajeDes = new BigDecimal(0);
+            producto = new Producto();
+            producto.setIdentifica(0);
+            listRete = new ArrayList<>();
+            listTras = new ArrayList<>();
+            conceptosTableActv = true;
+            btnAgrCon = true;
+            checkRetenidos = false;
+            checktrasladados = false;
+            activChecksImp = false;
+            impRetPan = false;
+            impTraPan = false;
+            btnAgrRet = false;
+            btnAgrTra = false;
+            inputCon = true;
+            valorUnitarioB = new BigDecimal(0);
         }
     }
 
@@ -2180,21 +2473,32 @@ public class cfdi33V implements Serializable {
                     for (impRetenidos r : c.getRetenidos()) {
 
                         retenidosC += r.getImporte().setScale(2, RoundingMode.HALF_UP).doubleValue();
-                        System.out.println("->" + retenidosC);
                     }
                 }
                 if (c.getTrasladados() != null && c.getTrasladados().size() > 0) {
                     for (impTrasladados t : c.getTrasladados()) {
-
                         trasladadosC += t.getImporte().setScale(2, RoundingMode.HALF_UP).doubleValue();
-                        System.out.println("->" + trasladadosC);
                     }
                 }
             }
-            subTotal = new BigDecimal(importeC);
-            descuentoTotal = new BigDecimal(decuentoC);
-            total = new BigDecimal((((subTotal.doubleValue() + trasladadosC + importeCompImpLocTra.doubleValue()) - retenidosC) - descuentoTotal.doubleValue()));
+            if (listILCR != null && listILCR.size() > 0) {
+                for (ImpuestosLocalesC r : listILCR) {
+                    retenidosC += r.getImporte().doubleValue();
+                }
+            }
+            if (listILCT != null && listILCT.size() > 0) {
+                for (ImpuestosLocalesC t : listILCT) {
+                    trasladadosC += t.getImporte().doubleValue();
+                }
+            }
+            totalTrasl = new BigDecimal(trasladadosC);
+            totalReten = new BigDecimal(retenidosC);
+            subTotal = new BigDecimal(importeC).setScale(2, RoundingMode.HALF_UP);
+            descuentoTotal = new BigDecimal(decuentoC).setScale(2, RoundingMode.HALF_UP);
+            total = new BigDecimal((((subTotal.doubleValue() + trasladadosC + importeCompImpLocTra.doubleValue()) - retenidosC) - descuentoTotal.doubleValue())).setScale(2, RoundingMode.HALF_UP);
         } else {
+            totalTrasl = new BigDecimal(0);
+            totalReten = new BigDecimal(0);
             subTotal = new BigDecimal(0);
             descuentoTotal = new BigDecimal(0);
             total = new BigDecimal(0);
@@ -2205,12 +2509,22 @@ public class cfdi33V implements Serializable {
     public void eliminarConcepto(Conceptos c) {
         conceptos.remove(c);
         if (conceptos.size() == 0) {
+            btnsVE = false;
             conceptosTableActv = false;
         }
+        calcularTotalGlobal();
     }
 
     public void habilitarInputs() {
-        inputCon = false;
+        if (producto != null) {
+            descripcionProducto = producto.getMedida().getNombre();
+            inputCon = false;
+            valorUnitarioB = producto.getValorUnitario();
+        } else {
+            descripcionProducto = "";
+            inputCon = true;
+            valorUnitarioB = new BigDecimal(0);
+        }
     }
 
     public void agregarILCR() {
@@ -2220,9 +2534,6 @@ public class cfdi33V implements Serializable {
             imR.setPorcentaje(tasaCompImpLocRet);
             imR.setImporte(importeCompImpLocRet);
             listILCR.add(imR);
-            Double tt = total.doubleValue();
-            total = new BigDecimal(tt - importeCompImpLocRet.doubleValue()).setScale(2, RoundingMode.HALF_UP);
-            totalReten = new BigDecimal(totalReten.doubleValue() + importeCompImpLocRet.doubleValue());
             decripCompImpLocRet = "";
             tasaCompImpLocRet = 0;
             importeCompImpLocRet = new BigDecimal(0);
@@ -2232,6 +2543,7 @@ public class cfdi33V implements Serializable {
         } else {
             renderILCRTable = false;
         }
+        calcularTotalGlobal();
         montoLetra();
         renderILCRT = false;
         renderILCRI = false;
@@ -2239,10 +2551,6 @@ public class cfdi33V implements Serializable {
     }
 
     public void eliminarILCR(ImpuestosLocalesC imp) {
-
-        Double tt = total.doubleValue();
-        total = new BigDecimal(tt + imp.getImporte().doubleValue()).setScale(2, RoundingMode.HALF_UP);
-        totalReten = new BigDecimal(totalReten.doubleValue() - imp.getImporte().doubleValue());
         listILCR.remove(imp);
         if (listILCR.size() > 0) {
             renderILCRTable = true;
@@ -2250,6 +2558,7 @@ public class cfdi33V implements Serializable {
             renderILCRTable = false;
         }
         montoLetra();
+        calcularTotalGlobal();
     }
 
     public void agregarILCT() {
@@ -2259,9 +2568,6 @@ public class cfdi33V implements Serializable {
             imR.setPorcentaje(tasaCompImpLocTra);
             imR.setImporte(importeCompImpLocTra);
             listILCT.add(imR);
-            Double tt = total.doubleValue();
-            total = new BigDecimal(tt + importeCompImpLocTra.doubleValue()).setScale(2, RoundingMode.HALF_UP);
-            totalTrasl = new BigDecimal(totalTrasl.doubleValue() + importeCompImpLocTra.doubleValue());
             decripCompImpLocTra = "";
             tasaCompImpLocTra = 0;
             importeCompImpLocTra = new BigDecimal(0);
@@ -2272,72 +2578,71 @@ public class cfdi33V implements Serializable {
             }
         }
         montoLetra();
+        calcularTotalGlobal();
         renderILCTT = false;
         renderILCTI = false;
         renderILCTB = false;
     }
 
     public void eliminarILCT(ImpuestosLocalesC imp) {
-        Double tt = total.doubleValue();
-        total = new BigDecimal(tt - imp.getImporte().doubleValue()).setScale(2, RoundingMode.HALF_UP);
-        totalTrasl = new BigDecimal(totalTrasl.doubleValue() - imp.getImporte().doubleValue());
         listILCT.remove(imp);
         if (listILCT.size() > 0) {
             renderILCTTable = true;
         } else {
             renderILCTTable = false;
         }
+        calcularTotalGlobal();
         montoLetra();
     }
 
     public void habilitarRenderILCRT() {
         if (decripCompImpLocRet != null && !decripCompImpLocRet.equals("")) {
-            renderILCRT = true;
-        } else {
             renderILCRT = false;
+        } else {
+            renderILCRT = true;
         }
     }
 
     public void habilitarRenderILCRI() {
         if (tasaCompImpLocRet != null && tasaCompImpLocRet > 0) {
-            renderILCRI = true;
-        } else {
             renderILCRI = false;
+        } else {
+            renderILCRI = true;
         }
     }
 
     public void habilitarRenderILCRB() {
         Double impLCR = importeCompImpLocRet.doubleValue();
         if (impLCR > 0) {
-            renderILCRB = true;
-        } else {
             renderILCRB = false;
+        } else {
+            renderILCRB = true;
         }
 
     }
 
     public void habilitarRenderILCTT() {
         if (decripCompImpLocTra != null && !decripCompImpLocTra.equals("")) {
-            renderILCTT = true;
-        } else {
             renderILCTT = false;
+        } else {
+            renderILCTT = true;
         }
     }
 
     public void habilitarRenderILCTI() {
         if (tasaCompImpLocTra != null && tasaCompImpLocTra > 0) {
-            renderILCTI = true;
-        } else {
             renderILCTI = false;
+        } else {
+            renderILCTI = true;
         }
     }
 
     public void habilitarRenderILCTB() {
         Double impLCR = importeCompImpLocTra.doubleValue();
         if (impLCR > 0) {
-            renderILCTB = true;
-        } else {
             renderILCTB = false;
+        } else {
+            renderILCTB = true;
         }
 
     }
@@ -2348,11 +2653,33 @@ public class cfdi33V implements Serializable {
 
     public void habilitarRelacionado() {
         if (checkRelacionados) {
-            relacionForm = true;
+            strUUIDRel = "block";
         } else {
-            relacionForm = false;
-            tipoRelacion = new TipoRelacion();
-            //uuidRel="";
+            strUUIDRel = "none";
+        }
+    }
+
+    public void habilitarSEP() {
+        if (checkComplementoSEP) {
+            strComplementoSEP = "block";
+        } else {
+            strComplementoSEP = "none";
+        }
+    }
+
+    public void habilitarIpLoc() {
+        if (checkComplementoIL) {
+            strComplementoIL = "block";
+        } else {
+            strComplementoIL = "none";
+        }
+    }
+
+    public void habilitarComExt() {
+        if (checkComplementoCE) {
+            strComplementoCE = "block";
+        } else {
+            strComplementoCE = "none";
         }
     }
 
@@ -2431,144 +2758,8 @@ public class cfdi33V implements Serializable {
     public void montoLetra() {
         MontoLetra m = new MontoLetra();
         if (total.doubleValue() >= 0) {
-            totalFacturaEnLetras = m.Convertir(total.toString(), true);
+            totalFacturaEnLetras = m.Convertir(total.toString(), true, monedaS);
         }
-    }
-
-    public void validarCamposCFDI() {
-        CreacionArchivo creacionArchivo = new CreacionArchivo();
-        String[] error;
-        ComplementoSEP sep = new ComplementoSEP();
-        if (tipoComp != null && !tipoComp.equals("")) {
-            if (serie != null) {
-                if (cliente != null) {
-                    if (usoCfdiBean == null) {
-                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Receptor) Elegir Uso de CFDI"));
-                    } else {
-                        if (!formaPagoS.equals("")) {
-                            if (metodoPago != null && !metodoPago.getIdentifica().equals("")) {
-                                if (tipoCambio.doubleValue() > 0) {
-                                    if (conceptos.size() > 0) {
-                                        Boolean bandera = false;
-                                        Boolean complemtoSEP = false;
-                                        if (CURP != null && !CURP.equals("")) {
-                                            if (CURP.length() == 18) {
-                                                if (Alumno != null && !Alumno.equals("")) {
-                                                    if (autRVOE != null && !autRVOE.equals("")) {
-                                                        if (nivelEduc != null && !nivelEduc.equals("")) {
-                                                            Boolean rf = true;
-                                                            if (RFCAl != null && !RFCAl.equals("")) {
-                                                                if (RFCAl.length() < 12) {
-                                                                    rf = false;
-                                                                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) RFC no cumle con la especificacion"));
-                                                                }
-                                                            } else {
-                                                                RFCAl = "";
-                                                            }
-                                                            if (rf) {
-                                                                bandera = true;
-                                                                complemtoSEP = true;
-                                                                sep.setAlumno(Alumno);
-                                                                sep.setAutoRVOE(autRVOE);
-                                                                sep.setCurp(CURP);
-                                                                sep.setNivelEducativo(nivelEduc);
-                                                                sep.setRfc(RFCAl);
-                                                            }
-                                                        } else {
-                                                            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Selecionar Nivel Educativo"));
-                                                        }
-                                                    } else {
-                                                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Agregar autRVOE"));
-                                                    }
-
-                                                } else {
-                                                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Agregar Alumno"));
-                                                }
-                                            } else {
-                                                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) CURP no cumple con la especificacion"));
-                                            }
-
-                                        } else {
-                                            sep = null;
-                                            bandera = true;
-                                        }
-
-                                        if (bandera) {
-                                            if (uuidRelacionados.size() > 0) {
-                                                factura.setRelacionado(true);
-                                                factura.setTipoRelacion(tipoRelacion);
-                                            } else {
-                                                factura.setRelacionado(false);
-                                                factura.setTipoRelacion(null);
-                                            }
-                                            factura.setSucursal(usuarioSeleccionado.getSucursal());
-                                            factura.setCliente(cliente);
-                                            factura.setTipoComprobante(tcc.getIdentifica());
-                                            factura.setMetodoPago(metodoPago);
-                                            //factura.setEstado(""); despues de timbrado
-                                            factura.setEstatus(null);
-                                            factura.setMoneda(moneda);
-                                            factura.setUsoCfdi(usosDao.buscarXIdentifica(usoCfdiBean.getIdentifica()));
-                                            factura.setSubtotal(subTotal.setScale(2, RoundingMode.HALF_UP));
-                                            factura.setTotal(total.setScale(2, RoundingMode.HALF_UP));
-
-                                            factura.setFechaCreacion(new Date());
-                                            factura.setResponsableCreacion(usuarioSeleccionado.getNombre());
-                                            factura.setLugarExpedicion(usuarioSeleccionado.getCp());
-                                            factura.setCondicionPago(condicionesPago);
-                                            if (moneda.getIdentifica().equals("MXN")) {
-                                                factura.setTipoCambio(tipoCambio);
-                                            } else {
-                                                factura.setTipoCambio(new BigDecimal(0));
-                                            }
-                                            factura.setFolio(serie.getNombre() + serie.getFolioActual());
-                                            factura.setConsecutivo(serie.getFolioActual());
-                                            factura.setSerie(serie.getIdentifica());
-                                            factura.setFormaPago(formaPagoS);
-                                            factura.setConfirmacion("");
-                                            factura.setObservaciones(observaciones);
-                                            Double descuT = 0.0;
-                                            for (Conceptos con : conceptos) {
-                                                if (con.getDescuento().doubleValue() > 0) {
-                                                    descuT += con.getDescuento().setScale(2, RoundingMode.HALF_UP).doubleValue();
-                                                }
-                                            }
-                                            factura.setDescuento(new BigDecimal(descuT).setScale(2, RoundingMode.HALF_UP));
-                                            CrearXML xml = new CrearXML();
-                                            String datoXML = xml.crear(factura, serie, usuarioSeleccionado, uuidRelacionados, cliente, usoCfdiBean, numRegIdTrib, conceptos, sep, listILCT, listILCR);
-                                            System.out.println(datoXML);
-                                            //factura.setXml(creacionArchivo.generarXML(factura, serie, listaDetalleFactura, usuarioSeleccionado));
-//                                            Serie actualizarConsecutivo = new Serie();
-//                                            actualizarConsecutivo.setIdentifica(factura.getSerie());
-//                                            actualizarConsecutivo = serieDao.findSerieByIdentifica(actualizarConsecutivo);
-//                                            actualizarConsecutivo.setFolioActual(factura.getConsecutivo());
-//                                            serieDao.updateSerie(actualizarConsecutivo);
-
-                                        }
-
-                                    } else {
-                                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Conceptos) Elegir Producto"));
-                                    }
-                                } else {
-                                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Forma de pago) Tipo de cambio debe de ser mayor a 0.0(cero)"));
-                                }
-                            } else {
-                                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Forma de pago) Elegir Método de pago"));
-                            }
-                        } else {
-                            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Forma de pago) Elegir Forma de pago"));
-                        }
-                    }
-                } else {
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Receptor) Elegir Receptor"));
-                }
-            } else {
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Emisor) Elegir Serie"));
-            }
-        } else {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Emisor) Elegir tipo Documento"));
-        }
-
     }
 
     public void condicionesP() {
@@ -2619,16 +2810,19 @@ public class cfdi33V implements Serializable {
     }
 
     public void monedaM() {
-        if (!monedaS.equals("")) {
+        monedaS = monedaS;
+        if (!monedaS.equals("MXN")) {
             for (Moneda m : listaMonedas) {
                 if (m.getIdentifica().equals(monedaS)) {
                     moneda = m;
                 }
             }
+            tipoCambioBool = false;
         } else {
-            moneda = new Moneda();
+            tipoCambioBool = true;
+            tipoCambio = new BigDecimal(1);
         }
-        monedaS = monedaS;
+
     }
 
     public void usoCfdiBeanM(UsoCfdiBean us) {
@@ -2640,10 +2834,16 @@ public class cfdi33V implements Serializable {
     }
 
     public void agregarPropietario() {
-        if (propietario.getNumRegIdTrib() != null && !propietario.getNumRegIdTrib().equals("")) {
-            if (propietario.getRecidenciaFiscal() != null && !propietario.getRecidenciaFiscal().equals("")) {
-                compComExt.getPropietarios().add(propietario);
-                tablaPropietarios=true;
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (numRegIdTribPCE != null && !numRegIdTribPCE.equals("")) {
+            if (recidenciaFiscalPCE != null && !recidenciaFiscalPCE.equals("")) {
+                PropietarioCompComExt p = new PropietarioCompComExt();
+                p.setNumRegIdTrib(numRegIdTribPCE);
+                p.setRecidenciaFiscal(recidenciaFiscalPCE);
+                propietario.add(p);
+                numRegIdTribPCE = "";
+                recidenciaFiscalPCE = "";
+                tablaPropietarios = true;
             } else {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) Se debe de colocar RecidenciaFiscal"));
             }
@@ -2651,20 +2851,43 @@ public class cfdi33V implements Serializable {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) Se debe de colocar NumRegIdTrib"));
         }
     }
-    public void eliminarPropietario(PropietarioCompComExt p){
-        compComExt.getPropietarios().remove(p);
-        if(compComExt.getPropietarios().size()==0){
-            tablaPropietarios=false;
+
+    public void eliminarPropietario(PropietarioCompComExt p) {
+        propietario.remove(p);
+        if (propietario.size() == 0) {
+            tablaPropietarios = false;
         }
     }
 
     public void agregarDomicilioDest() {
-        if (domicilioDestin.getCalle() != null && !domicilioDestin.getCalle().equals("")) {
-            if (domicilioDestin.getEstado() != null && !domicilioDestin.getEstado().equals("")) {
-                if (domicilioDestin.getPais() != null && !domicilioDestin.getPais().equals("")) {
-                    if (domicilioDestin.getCp() != null && !domicilioDestin.getCp().equals("")) {
-                        destinatario.getDomicilio().add(domicilioDestin);
-                        tablaDomicilios=true;
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (CalleDCE != null && !CalleDCE.equals("")) {
+            if (estadoDCE != null && !estadoDCE.equals("")) {
+                if (paisDCE != null && !paisDCE.equals("")) {
+                    if (cpDCE != null && !cpDCE.equals("")) {
+                        DomicilioCompComExt d = new DomicilioCompComExt();
+                        d.setCalle(CalleDCE);
+                        d.setEstado(estadoDCE);
+                        d.setPais(paisDCE);
+                        d.setCp(cpDCE);
+                        d.setColonia(coloniaDCE);
+                        d.setLocalidad(localidadDCE);
+                        d.setMunicipio(municipioDCE);
+                        d.setNumExt(numExtDCE);
+                        d.setNumInt(numIntDCE);
+                        d.setReferencia(ReferenciaDCE);
+                        domicilioDestin.add(d);
+                        tablaDomicilios = true;
+                        CalleDCE = "";
+                        estadoDCE = "";
+                        paisDCE = "";
+                        cpDCE = "";
+                        coloniaDCE = "";
+                        localidadDCE = "";
+                        municipioDCE = "";
+                        numExtDCE = "";
+                        numIntDCE = "";
+                        ReferenciaDCE = "";
                     } else {
                         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Destinatario- Codigo postal es obligatorio"));
                     }
@@ -2678,19 +2901,27 @@ public class cfdi33V implements Serializable {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Destinatario- Calle es obligatorio"));
         }
     }
-    
-    public void eliminarDomicilioDest(DomicilioCompComExt d){
-        destinatario.getDomicilio().remove(d);
-        if(destinatario.getDomicilio().size()==0){
-            tablaDomicilios=false;
+
+    public void eliminarDomicilioDest(DomicilioCompComExt d) {
+        domicilioDestin.remove(d);
+        if (domicilioDestin.size() == 0) {
+            tablaDomicilios = false;
         }
     }
 
     public void agregarDestinatario() {
-        if (destinatario.getNumRegIdTrib() != null && !destinatario.getNumRegIdTrib().equals("")) {
-            if (destinatario.getNombre() != null && !destinatario.getNombre().equals("")) {
-                compComExt.getDestinatarios().add(destinatario);
-                tablaDestinatarios=true;
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (numRegIdTribDCE != null && !numRegIdTribDCE.equals("")) {
+            if (nombreDCE != null && !nombreDCE.equals("")) {
+                DestinatarioCompComExt e = new DestinatarioCompComExt();
+                e.setNumRegIdTrib(numRegIdTribDCE);
+                e.setNombre(nombreDCE);
+                e.setDomicilio(domicilioDestin);
+                destinatario.add(e);
+                tablaDestinatarios = true;
+                numRegIdTribDCE = "";
+                nombreDCE = "";
+                domicilioDestin = new ArrayList<>();
             } else {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Destinatario- Nombre es obligatorio"));
             }
@@ -2698,50 +2929,479 @@ public class cfdi33V implements Serializable {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Destinatario- NumRegIdTrib es obligatorio"));
         }
     }
-    
-    public void eliminarDestinatario(DestinatarioCompComExt d){
-        compComExt.getDestinatarios().remove(d);
-        if(compComExt.getDestinatarios().size()==0){
-            tablaDestinatarios=false;
+
+    public void eliminarDestinatario(DestinatarioCompComExt d) {
+        destinatario.remove(d);
+        if (destinatario.size() == 0) {
+            tablaDestinatarios = false;
         }
     }
-    
-    public void agregarDescEsp(){
-        if(descpEsp.getMarca()!=null && !descpEsp.getMarca().equals("")){
-            mercancia.getDescEspec().add(descpEsp);
-            tablaDescripciones=true;
-        }else{
-           context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Mercancia- Marca es obligatorio")); 
+
+    public void agregarDescEsp() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (marcaCE != null && !marcaCE.equals("")) {
+            DescEspecCompComExt d = new DescEspecCompComExt();
+            d.setMarca(marcaCE);
+            d.setModelo(modeloCE);
+            d.setNumeroSerie(numSerieCE);
+            d.setSubModelo(submodeloCE);
+            descpEsp.add(d);
+            marcaCE = "";
+            modeloCE = "";
+            numSerieCE = "";
+            submodeloCE = "";
+            tablaDescripciones = true;
+        } else {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Mercancia- Marca es obligatorio"));
         }
     }
-    
-    public void eliminarDescEsp(DescEspecCompComExt d){
-        mercancia.getDescEspec().remove(d);
-        if(mercancia.getDescEspec().size()==0){
-            tablaDescripciones=false;
+
+    public void eliminarDescEsp(DescEspecCompComExt d) {
+        descpEsp.remove(d);
+        if (descpEsp.size() == 0) {
+            tablaDescripciones = false;
         }
     }
-    
-    public void agregarMercancia(){
-        if(mercancia.getNoIdentificacion()!=null && ! mercancia.getNoIdentificacion().equals("")){
-            if(mercancia.getValorDolares()!=null && !mercancia.getValorDolares().equals("")){
-                compComExt.getMercancias().add(mercancia);
-                tablaMercancias=true;
-            }else{
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Mercancia- ValorDolares es obligatorio")); 
+
+    public void agregarMercancia() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (noIdentificacionCE != null && !noIdentificacionCE.equals("")) {
+            if (valorDolaresCE != null && !valorDolaresCE.equals("")) {
+                MercanciasCompComExt m = new MercanciasCompComExt();
+                m.setNoIdentificacion(noIdentificacionCE);
+                m.setFraccionArancelaria(fraccionArancelariaCE);
+                m.setCantidadAduana(cantidadAduanaCE);
+                m.setUnidadAduana(unidadAdunaCE);
+                m.setValorUnitarioAduana(valorUnitarioAduanaCE);
+                m.setValorDolares(valorDolaresCE);
+                m.setDescEspec(descpEsp);
+                mercancia.add(m);
+                noIdentificacionCE = "";
+                fraccionArancelariaCE = "";
+                cantidadAduanaCE = "";
+                unidadAdunaCE = "";
+                valorUnitarioAduanaCE = "";
+                valorDolaresCE = "";
+                descpEsp = new ArrayList<>();
+                tablaMercancias = true;
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Mercancia- ValorDolares es obligatorio"));
             }
-        }else{
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Mercancia- NoIdentificacion es obligatorio")); 
+        } else {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Comercio Exterior) -Mercancia- NoIdentificacion es obligatorio"));
         }
     }
-    
-    public void eliminarMercancia(MercanciasCompComExt m){
-        compComExt.getMercancias().remove(m);
-        if(compComExt.getMercancias().size()==0){
-            tablaMercancias=false;
+
+    public void eliminarMercancia(MercanciasCompComExt m) {
+        mercancia.remove(m);
+        if (mercancia.size() == 0) {
+            tablaMercancias = false;
         }
     }
-    public String mayus2(String d){
+
+    public String mayus2(String d) {
         return d.toLowerCase();
+    }
+
+    public void mayusDatos(String d) {
+        if (d.equals("1")) {
+            motivoTrasladoCE = motivoTrasladoCE.toUpperCase();
+        } else if (d.equals("2")) {
+            clavePedimentoCE = clavePedimentoCE.toUpperCase();
+        } else if (d.equals("3")) {
+            certificadoOrigenCE = certificadoOrigenCE.toUpperCase();
+        } else if (d.equals("4")) {
+            numCertificadoOrigenCE = numCertificadoOrigenCE.toUpperCase();
+        } else if (d.equals("5")) {
+            numExportConfiabCE = numExportConfiabCE.toUpperCase();
+        } else if (d.equals("6")) {
+            incotermCE = incotermCE.toUpperCase();
+        } else if (d.equals("7")) {
+            subdivisionCE = subdivisionCE.toUpperCase();
+        } else if (d.equals("8")) {
+            observacionesCE = observacionesCE.toUpperCase();
+        } else if (d.equals("9")) {
+            tipoCambioUSDCE = tipoCambioUSDCE.toUpperCase();
+        } else if (d.equals("10")) {
+            totalUSDCE = totalUSDCE.toUpperCase();
+        } else if (d.equals("11")) {
+            CurpCE = CurpCE.toUpperCase();
+        } else if (d.equals("12")) {
+            CalleECE = CalleECE.toUpperCase();
+        } else if (d.equals("13")) {
+            numExtECE = numExtECE.toUpperCase();
+        } else if (d.equals("14")) {
+            numIntECE = numIntECE.toUpperCase();
+        } else if (d.equals("15")) {
+            coloniaECE = coloniaECE.toUpperCase();
+        } else if (d.equals("16")) {
+            localidadECE = localidadECE.toUpperCase();
+        } else if (d.equals("17")) {
+            ReferenciaECE = ReferenciaECE.toUpperCase();
+        } else if (d.equals("18")) {
+            municipioECE = municipioECE.toUpperCase();
+        } else if (d.equals("19")) {
+            estadoECE = estadoECE.toUpperCase();
+        } else if (d.equals("20")) {
+            paisECE = paisECE.toUpperCase();
+        } else if (d.equals("21")) {
+            cpECE = cpECE.toUpperCase();
+        } else if (d.equals("22")) {
+            CalleRCE = CalleRCE.toUpperCase();
+        } else if (d.equals("23")) {
+            numExtRCE = numExtRCE.toUpperCase();
+        } else if (d.equals("24")) {
+            numIntRCE = numIntRCE.toUpperCase();
+        } else if (d.equals("25")) {
+            coloniaRCE = coloniaRCE.toUpperCase();
+        } else if (d.equals("26")) {
+            localidadRCE = localidadRCE.toUpperCase();
+        } else if (d.equals("27")) {
+            ReferenciaRCE = ReferenciaRCE.toUpperCase();
+        } else if (d.equals("28")) {
+            municipioRCE = municipioRCE.toUpperCase();
+        } else if (d.equals("29")) {
+            estadoRCE = estadoRCE.toUpperCase();
+        } else if (d.equals("30")) {
+            paisRCE = paisRCE.toUpperCase();
+        } else if (d.equals("31")) {
+            cpRCE = cpRCE.toUpperCase();
+        } else if (d.equals("32")) {
+            numRegIdTribECE = numRegIdTribECE.toUpperCase();
+        } else if (d.equals("33")) {
+            numRegIdTribPCE = numRegIdTribPCE.toUpperCase();
+        } else if (d.equals("34")) {
+            recidenciaFiscalPCE = recidenciaFiscalPCE.toUpperCase();
+        } else if (d.equals("35")) {
+            numRegIdTribDCE = numRegIdTribDCE.toUpperCase();
+        } else if (d.equals("36")) {
+            nombreDCE = nombreDCE.toUpperCase();
+        } else if (d.equals("37")) {
+            CalleDCE = CalleDCE.toUpperCase();
+        } else if (d.equals("38")) {
+            numExtDCE = numExtDCE.toUpperCase();
+        } else if (d.equals("39")) {
+            numIntDCE = numIntDCE.toUpperCase();
+        } else if (d.equals("40")) {
+            coloniaDCE = coloniaDCE.toUpperCase();
+        } else if (d.equals("41")) {
+            localidadDCE = localidadDCE.toUpperCase();
+        } else if (d.equals("42")) {
+            ReferenciaDCE = ReferenciaDCE.toUpperCase();
+        } else if (d.equals("43")) {
+            municipioDCE = municipioDCE.toUpperCase();
+        } else if (d.equals("44")) {
+            estadoDCE = estadoDCE.toUpperCase();
+        } else if (d.equals("45")) {
+            paisDCE = paisDCE.toUpperCase();
+        } else if (d.equals("46")) {
+            cpDCE = cpDCE.toUpperCase();
+        } else if (d.equals("47")) {
+            noIdentificacionCE = noIdentificacionCE.toUpperCase();
+        } else if (d.equals("48")) {
+            fraccionArancelariaCE = fraccionArancelariaCE.toUpperCase();
+        } else if (d.equals("49")) {
+            cantidadAduanaCE = cantidadAduanaCE.toUpperCase();
+        } else if (d.equals("50")) {
+            unidadAdunaCE = unidadAdunaCE.toUpperCase();
+        } else if (d.equals("51")) {
+            valorUnitarioAduanaCE = valorUnitarioAduanaCE.toUpperCase();
+        } else if (d.equals("52")) {
+            valorDolaresCE = valorDolaresCE.toUpperCase();
+        } else if (d.equals("53")) {
+            marcaCE = marcaCE.toUpperCase();
+        } else if (d.equals("54")) {
+            modeloCE = modeloCE.toUpperCase();
+        } else if (d.equals("55")) {
+            submodeloCE = submodeloCE.toUpperCase();
+        } else if (d.equals("56")) {
+            numSerieCE = numSerieCE.toUpperCase();
+        }
+    }
+
+    public void tipoCambioSet() {
+        tipoCambio = tipoCambio;
+        calcularTotalGlobal();
+    }
+
+    public void descripcionProductoSet() {
+        descripcionProducto = descripcionProducto.toUpperCase();
+    }
+
+    @SuppressWarnings("deprecation")
+    public void validarCamposCFDI(Boolean vistaP) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        CreacionArchivo creacionArchivo = new CreacionArchivo();
+        String[] error;
+        ComplementoSEP sep = new ComplementoSEP();
+        try {
+            if (tipoComp != null && !tipoComp.equals("")) {
+                if (serie != null) {
+                    if (cliente != null) {
+                        if (usoCfdiBean == null) {
+                            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Receptor) Elegir Uso de CFDI"));
+                        } else {
+                            if (!formaPagoS.equals("")) {
+                                if (metodoPago != null && !metodoPago.getIdentifica().equals("")) {
+                                    if (tipoCambio != null && tipoCambio.doubleValue() > 0) {
+                                        if (conceptos.size() > 0) {
+                                            Boolean bandera = false;
+                                            Boolean complemtoSEP = false;
+                                            if (CURP != null && !CURP.equals("")) {
+                                                if (CURP.length() == 18) {
+                                                    if (Alumno != null && !Alumno.equals("")) {
+                                                        if (autRVOE != null && !autRVOE.equals("")) {
+                                                            if (nivelEduc != null && !nivelEduc.equals("")) {
+                                                                Boolean rf = true;
+                                                                if (RFCAl != null && !RFCAl.equals("")) {
+                                                                    if (RFCAl.length() < 12) {
+                                                                        rf = false;
+                                                                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) RFC no cumle con la especificacion"));
+                                                                    }
+                                                                } else {
+                                                                    RFCAl = "";
+                                                                }
+                                                                if (rf) {
+                                                                    bandera = true;
+                                                                    complemtoSEP = true;
+                                                                    sep.setAlumno(Alumno);
+                                                                    sep.setAutoRVOE(autRVOE);
+                                                                    sep.setCurp(CURP);
+                                                                    sep.setNivelEducativo(nivelEduc);
+                                                                    sep.setRfc(RFCAl);
+                                                                }
+                                                            } else {
+                                                                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Selecionar Nivel Educativo"));
+                                                            }
+                                                        } else {
+                                                            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Agregar autRVOE"));
+                                                        }
+
+                                                    } else {
+                                                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) Agregar Alumno"));
+                                                    }
+                                                } else {
+                                                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Complemento SEP) CURP no cumple con la especificacion"));
+                                                }
+
+                                            } else {
+                                                sep = null;
+                                                bandera = true;
+                                            }
+
+                                            if (bandera) {
+                                                if (uuidRelacionados.size() > 0) {
+                                                    factura.setRelacionado(true);
+                                                    factura.setTipoRelacion(tipoRelacion);
+                                                } else {
+                                                    factura.setRelacionado(false);
+                                                    factura.setTipoRelacion(null);
+                                                }
+                                                factura.setSucursal(usuarioSeleccionado.getSucursal());
+                                                factura.setCliente(cliente);
+                                                factura.setTipoComprobante(tcc.getIdentifica());
+                                                factura.setMetodoPago(metodoPago);
+                                                //factura.setEstado(""); despues de timbrado
+                                                factura.setEstatus(null);
+                                                factura.setMoneda(moneda);
+                                                factura.setUsoCfdi(usosDao.buscarXIdentifica(usoCfdiBean.getIdentifica()));
+                                                factura.setSubtotal(subTotal.setScale(2, RoundingMode.HALF_UP));
+                                                factura.setTotal(total.setScale(2, RoundingMode.HALF_UP));
+                                                LocalDate hoy = LocalDate.now();
+                                                LocalTime ahora = LocalTime.now();
+                                                LocalDateTime localDateTime = LocalDateTime.of(hoy, ahora);
+                                                ZoneId zoneCDMX = ZoneId.of("America/Mexico_City");
+                                                ZonedDateTime cdmxZonedDateTime = localDateTime.atZone(zoneCDMX);
+                                                ZoneId zoneForanea = ZoneId.of(zonahorariaDao.buscarCP(usuarioSeleccionado.getCp()));
+                                                ZonedDateTime nyDateTime = cdmxZonedDateTime.withZoneSameInstant(zoneForanea);
+                                                String nd = nyDateTime.toString();
+                                                nd = nd.substring(0, nd.indexOf("."));
+                                                nd = nd.replaceAll("T", " ");
+                                                Date d = null;
+                                                try {
+                                                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                                    d = formatter.parse(nd);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                                factura.setFechaCreacion(d);
+                                                factura.setResponsableCreacion(usuarioSeleccionado.getNombre());
+                                                factura.setLugarExpedicion(usuarioSeleccionado.getCp());
+                                                factura.setCondicionPago(condicionesPago);
+                                                if (moneda.getIdentifica().equals("MXN")) {
+                                                    factura.setTipoCambio(tipoCambio);
+                                                } else {
+                                                    factura.setTipoCambio(new BigDecimal(0));
+                                                }
+                                                factura.setFolio(serie.getNombre());
+                                                factura.setConsecutivo(nextFolio);
+                                                factura.setSerie(nextFolio);
+                                                factura.setFormaPago(formaPagoS);
+                                                factura.setConfirmacion("");
+                                                factura.setObservaciones(observaciones);
+                                                Double descuT = 0.0;
+                                                for (Conceptos con : conceptos) {
+                                                    if (con.getDescuento().doubleValue() > 0) {
+                                                        descuT += con.getDescuento().setScale(2, RoundingMode.HALF_UP).doubleValue();
+                                                    }
+                                                }
+                                                factura.setDescuento(new BigDecimal(descuT).setScale(2, RoundingMode.HALF_UP));
+                                                CrearXML xml = new CrearXML();
+                                                String datoXML = xml.crear(factura, serie, usuarioSeleccionado, uuidRelacionados, cliente, usoCfdiBean, numRegIdTrib, conceptos, sep, listILCT, listILCR);
+                                                factura.setXml(datoXML);
+                                                System.out.println("XML antes del timbrado \n" + datoXML +"\n");
+                                                if (vistaP) {
+                                                    try {
+                                                        filePdfVP = creacionArchivo.descargarPDFVP2(factura, factura.getXml(), usuarioSeleccionado.getNombre(), factura.getObservaciones());
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                } else {
+                                                    xmlTimbrado = timbrarFactura(datoXML);
+                                                    if (xmlTimbrado.contains("errores")) {
+                                                        errorTimbrado = xmlTimbrado;
+                                                        errorBol = true;
+                                                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Error!", "La factura no fue creada por que contiene errores"));
+                                                    } else {
+                                                        errorBol = false;
+                                                        errorTimbrado = "";
+                                                        Serie actualizarConsecutivo = new Serie();
+                                                        actualizarConsecutivo.setIdentifica(factura.getSerie());
+                                                        actualizarConsecutivo = serieDao.findSerieByIdentifica(actualizarConsecutivo);
+                                                        actualizarConsecutivo.setFolioActual(factura.getConsecutivo());
+                                                        serieDao.updateSerie(actualizarConsecutivo);
+                                                        if (factura.getMetodoPago() == null || factura.getMetodoPago().getIdentifica() == null || factura.getMetodoPago().getIdentifica().equals("")) {
+                                                            MetodoPago n = new MetodoPago();
+                                                            n.setIdentifica("PUE");
+                                                            n.setDescripcion("Pago en una sola exhibición");
+                                                            factura.setMetodoPago(n);
+                                                        }
+                                                        //Almacenar UUID FMRS
+                                                        String uuid = xmlTimbrado.substring(xmlTimbrado.lastIndexOf("UUID") + 6, xmlTimbrado.lastIndexOf("UUID") + 42);
+                                                        factura.setUuid(uuid);
+                                                        factura.setXmlTimbrado(xmlTimbrado);
+                                                        factura.setEstado("FACTURA CREADA EXITOSAMENTE");
+                                                        facturaService.insertFactura(factura);
+                                                        enviarEmailACliente(factura, usuarioSeleccionado.getNombre());
+                                                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "La factura fue creada de manera exitosa"));
+                                                    }
+                                                }
+                                            }
+
+                                        } else {
+                                            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Conceptos) Elegir Producto"));
+                                        }
+                                    } else {
+                                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Forma de pago) Tipo de cambio debe de ser mayor a 0.0(cero)"));
+                                    }
+                                } else {
+                                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Forma de pago) Elegir Método de pago"));
+                                }
+                            } else {
+                                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Forma de pago) Elegir Forma de pago"));
+                            }
+                        }
+                    } else {
+                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Receptor) Elegir Receptor"));
+                    }
+                } else {
+                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Emisor) Elegir Serie"));
+                }
+            } else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "(Emisor) Elegir tipo Documento"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String timbrarFactura(String xml) {
+        String resultado = "";
+        Session sess = HibernateUtil.getSessionFactory().openSession();
+        String userID = "";
+        try {
+            Query QueryCert = sess.createQuery("from Certs as C WHERE C.rfc = :RFC order by C.fin desc").setString("RFC", usuarioSeleccionado.getNombre());
+            List<Certs> Certificados = (List<Certs>) QueryCert.list();
+            if (Certificados != null) {
+                userID = String.valueOf(Certificados.get(0).getIdUsuario());
+            }
+        } catch (Exception e) {
+            System.out.println("-errores- No se pudo encontrar certificado");
+            resultado = "-errores- No se pudo encontrar certificado consultar con Soporte WFactra ";
+            e.printStackTrace();
+        } finally {
+
+            sess.clear();
+            sess.close();
+        }
+        userID="1205";
+        if (userID != null && !userID.trim().equals("")) {
+
+            String URL = "http://pac.wfactura.com/exp32/superpac?us=" + userID;/* pruebas Amazon */
+//            String URL = "http://pac.wfactura.com/exp32_Produccion/superpac?us=" + userID;/* produccion Amazon */
+
+            System.out.println("URL de timbrado " + URL);
+            try {
+                String queryEncode = URLEncoder.encode(
+                        xml.replace("xmlns:tfd=\"http://www.sat.gob.mx/TimbreFiscalDigital\"", ""), "ISO-8859-1");
+                try {
+
+                    URLConnection uc = new URL(URL).openConnection();
+                    uc.setDoOutput(true);
+                    uc.setDoInput(true);
+                    uc.setAllowUserInteraction(false);
+                    DataOutputStream dos = new DataOutputStream(uc.getOutputStream());
+                    dos.writeBytes("&cfdi=" + queryEncode);
+                    dos.close();
+                    DataInputStream dis = new DataInputStream(uc.getInputStream());
+                    String nextline;
+                    while ((nextline = dis.readLine()) != null) {
+                        resultado = resultado + nextline;
+                    }
+
+                    dis.close();
+
+//                    System.err.println(resultado);
+                    System.out.println("Respuesta del timbrado");
+                    System.out.println(resultado);
+                } catch (Exception exep) {
+                    exep.printStackTrace();
+                }
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        return resultado;
+    }
+
+    public void enviarEmailACliente(Factura factura, String Usuario) {
+//        System.out.println("entro a Enviar Mail al usuario  : " + Usuario + "  uuid: " + factura.getUuid() + "  " + factura.getCliente().getRfc());
+        FacesContext context = FacesContext.getCurrentInstance();
+        EnvioEmail envioEmail = new EnvioEmail();
+        Conversion conversion = new Conversion();
+        CreacionArchivo creacionArchivo = new CreacionArchivo();
+        File pdfFile = creacionArchivo.crearArchivoPdfParaEnviarEmail(factura);
+
+        try {
+            envioEmail.sendMailFactura(
+                    factura.getCliente().getEmail(),
+                    factura.getCliente().getRfc(),
+                    factura.getCliente().getRfc(),//factura.getSucursal().getEmpresa().getRfc(),
+                    factura.getCliente().getRazonSocial(),
+                    creacionArchivo.getFolio(creacionArchivo.crearArchivoXmlParaEnviarEmail(factura)),
+                    Usuario,
+                    factura.getTipoComprobante(),
+                    conversion.formatearFecha(new Date()),
+                    conversion.convertirBigDecimalAformatoMoneda(factura.getTotal().doubleValue()),
+                    "xxxxxxx", //resolucion
+                    factura.getFolio(),
+                    creacionArchivo.crearArchivoXmlParaEnviarEmail(factura),
+                    pdfFile);
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito!", "El correo fue enviado al destinatario"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
